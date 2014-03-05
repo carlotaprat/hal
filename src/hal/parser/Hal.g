@@ -1,4 +1,4 @@
-grammar PyEsque;
+grammar Hal;
 
 options
 {
