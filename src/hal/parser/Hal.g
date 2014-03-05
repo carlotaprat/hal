@@ -76,18 +76,19 @@ NewLine
     : NL (' ' {n++;} | '\t' {n += 8; n -= (n \% 8); })*
     {
         int next = input.LA(1);
+        int currentIndent = indentStack[indentLevel];
 
-        // If is an empty line
-        // Skip it!
-        if(next == '\r' || next == '\n' || next == -1)
+        // Skip if same indentation or empty line
+        if(n == currentIndent || next == '\r' || next == '\n' || next == -1)
+        {
             skip();
-
-        else if(n > indentStack[indentLevel])
+        }
+        else if(n > currentIndent)
         {
             jump(Indent);
             indentStack[indentLevel] = n;
         }
-        else if(n < indentStack[indentLevel])
+        else
         {
             while(indentLevel >= 0 && indentStack[indentLevel] > n)
                 jump(Dedent);
@@ -97,8 +98,6 @@ NewLine
 
             indentStack[indentLevel] = n;
         }
-        else
-            skip();
     }
     ;
 
