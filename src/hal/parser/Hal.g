@@ -79,7 +79,7 @@ NewLine
 
         // If is an empty line
         // Skip it!
-        if(next == '\r' || next == '\n')
+        if(next == '\r' || next == '\n' || next == -1)
             skip();
 
         else if(n > indentStack[indentLevel])
