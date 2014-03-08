@@ -1,9 +1,11 @@
-A
- 
-  C
-  C
-    D
-	E
-        E
- B
-A
+if True:
+  print 1
+
+elif x:   
+  print 2
+
+elif y:
+  print 3
+
+else:
+  print 4

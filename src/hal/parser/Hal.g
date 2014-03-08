@@ -8,6 +8,7 @@ options
 tokens
 {
     BLOCK;
+    IF_STMT;
 }
 
 @header
@@ -49,13 +50,16 @@ tokens
             if(indentLevel > 0)
             {
                 jump(Dedent);
-                return tokens.poll();
+                return nextToken();
             }
 
             return Token.EOF_TOKEN;
         }
-        
-        return tokens.poll();
+
+        Token t = tokens.poll();
+
+        System.err.println(t);
+        return t;
     }
 
     private void jump(int ttype)
@@ -74,7 +78,30 @@ block
     ;
 
 block_atoms
-    :  (Id | block)+
+    :   block_atom+
+    ;
+
+block_atom
+    :   if_statement
+    |   Id
+    |   block
+    ;
+
+if_statement
+    :   IF if_body -> ^(IF_STMT if_body)
+    ;
+
+if_body
+    :   test COLON! block if_extension?
+    ;
+
+if_extension
+    :   ELIF if_body -> ^(IF_STMT if_body)
+    |   ELSE! COLON! block
+    ;
+
+test
+    :   Id
     ;
 
 NewLine
@@ -99,24 +126,30 @@ NewLine
         }
         else
         {
-            while(indentLevel >= 0 && indentStack[indentLevel] > n)
+            while(indentLevel > 0 && indentStack[indentLevel] > n)
+            {
                 jump(Dedent);
+            }
 
             if(indentStack[indentLevel] != n)
                 throw new RuntimeException("Unexpected indentation.");
-
-            indentStack[indentLevel] = n;
         }
     }
     ;
 
+IF      : 'if';
+ELIF    : 'elif';
+ELSE    : 'else';
+COLON   : ':' ;
+
 Id
-    : ('a'..'z' | 'A'..'Z')+
+    : ('a'..'z' | 'A'..'Z' | '0'..'9')+
     ;
 
 SpaceChars
     : SP {skip();}
     ;
+
 
 fragment NL     : '\r'? '\n' | '\r';
 fragment SP     : (' ' | '\t')+;
