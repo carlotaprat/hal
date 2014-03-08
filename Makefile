@@ -34,8 +34,8 @@ DOCFLAGS = -classpath $(CLASSPATH) -d $(JAVADOC) -private
 # Source files
 GRAMMAR     = $(PARSER)/$(TARGET_CLASS).g
 MAIN_SRC    = $(MAIN)/$(TARGET_CLASS).java
-PARSER_SRC := $(shell find $(PARSER) -name '*.c')	
-INTERP_SRC := $(shell find $(INTERP) -name '*.c')
+PARSER_SRC := $(shell find $(PARSER) -name '*.java')	
+INTERP_SRC := $(shell find $(INTERP) -name '*.java')
 
 ALL_SRC     = $(MAIN_SRC) $(PARSER_SRC) $(INTERP_SRC)
 				
