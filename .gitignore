@@ -1,0 +1,7 @@
+bin/
+classes/
+javadoc/
+src/hal/parser/
+
+*.class
+

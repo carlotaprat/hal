@@ -10,6 +10,15 @@ tokens
     BLOCK;
 }
 
+@header
+{
+    package hal.parser;
+}
+
+@lexer::header {
+    package hal.parser;
+}
+
 @lexer::members
 {
     public static final int MAX_INDENTS = 100;
