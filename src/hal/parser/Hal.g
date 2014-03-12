@@ -33,6 +33,20 @@ tokens
     int[] indentStack = new int[MAX_INDENTS];
     java.util.Queue<Token> tokens = new java.util.LinkedList<Token>();
 
+    {
+        // Compute first line indentation manually
+        int i = 1;
+
+        while(input.LA(i) == ' ')
+            i++;
+
+        if(i > 1)
+        {
+            jump(Indent);
+            indentStack[indentLevel] = i-1;
+        }
+    }
+
     @Override
     public void emit(Token t)
     {
@@ -81,7 +95,6 @@ tokens
             indentLevel--;
         }
 
-        indentLevel += (ttype == Dedent ? -1 : 1);
         emit(new CommonToken(ttype, name + " (level=" + indentLevel + ")"));
     }
 }
