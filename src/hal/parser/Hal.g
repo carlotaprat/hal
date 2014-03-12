@@ -7,7 +7,11 @@ options
 
 tokens
 {
+    PARAMS;
     BLOCK;
+    FUNCDEF;
+    FUNCALL;
+    ARGS;
     IF_STMT;
 }
 
@@ -24,6 +28,7 @@ tokens
 {
     public static final int MAX_INDENTS = 100;
     private int indentLevel = 0;
+    private boolean firstLine = true;
     int[] indentStack = new int[MAX_INDENTS];
     java.util.Queue<Token> tokens = new java.util.LinkedList<Token>();
 
@@ -83,7 +88,8 @@ block_atoms
 
 block_atom
     :   if_statement
-    |   Id
+    |   fundef
+    |   funcall
     |   block
     ;
 
@@ -96,15 +102,41 @@ if_body
     ;
 
 if_extension
-    :   ELIF if_body -> ^(IF_STMT if_body)
+    :   ELIF if_body -> ^(BLOCK ^(IF_STMT if_body))
     |   ELSE! COLON! block
     ;
+
+fundef
+    :   DEF Id params COLON block -> ^(FUNCDEF Id params block)
+    ;
+
+// The list of parameters grouped in a subtree (it can be empty)
+params
+    : ('(' paramlist? ')' | paramlist?) -> ^(PARAMS paramlist?)
+    ;
+
+// Parameters are separated by commas
+paramlist
+    : Id (','! Id)*
+    ;
+
+funcall
+    : Id params -> ^(FUNCALL Id params)
+    ;
+
+// args
+//     : ( '(' paramlist? ')' | paramlist?) -> ^(ARGS paramlist?)
+//     ;
+
+// expr_list
+//     : test (','! test)*
+//     ;
 
 test
     :   Id
     ;
 
-NewLine
+NEWLINE
     @init
     {
         int n = 0;
@@ -141,6 +173,7 @@ IF      : 'if';
 ELIF    : 'elif';
 ELSE    : 'else';
 COLON   : ':' ;
+DEF     : 'def';
 
 Id
     : ('a'..'z' | 'A'..'Z' | '0'..'9')+
