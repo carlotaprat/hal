@@ -2,10 +2,10 @@ def f(var):
     print x
     print y
 
-def f var1, var2 :
+def f var1, var2:
     if f:
        print x
-       print y; exit 2;
+       print 1, 2, 3 ; exit 1
     elif k:
        call me
     print x

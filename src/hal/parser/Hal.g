@@ -40,7 +40,10 @@ tokens
         while(input.LA(i) == ' ')
             i++;
 
-        if(i > 1)
+        int next = input.LA(i);
+
+        // Ignore empty lines
+        if(i > 1 && next != '\n' && next != '\r' && next != -1)
         {
             jump(Indent);
             indentStack[indentLevel] = i-1;
@@ -208,8 +211,9 @@ STMTEND : SEMICOLON NEWLINE | NEWLINE+;
 IF      : 'if';
 ELIF    : 'elif';
 ELSE    : 'else';
-COLON   : ':' ;
 DEF     : 'def';
+COLON   : ':' ;
+SEMICOLON : ';';
 
 Id
     : ('a'..'z' | 'A'..'Z' | '0'..'9')+
@@ -221,7 +225,6 @@ SpaceChars
 
 
 fragment NL     : (('\r')? '\n')+;
-fragment SEMICOLON : ';';
 fragment SP     : (' ' | '\t')+;
 fragment Indent : ;
 fragment Dedent : ;
