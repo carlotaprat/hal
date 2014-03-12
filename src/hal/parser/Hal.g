@@ -7,6 +7,7 @@ options
 
 tokens
 {
+    PROGRAM;
     PARAMS;
     BLOCK;
     FUNCDEF;
@@ -31,17 +32,15 @@ tokens
     private boolean firstLine = true;
     int[] indentStack = new int[MAX_INDENTS];
     java.util.Queue<Token> tokens = new java.util.LinkedList<Token>();
-
-    {
-        // Initial block indentation
-        jump(Indent);
-    }
+    private boolean end = false;
 
     @Override
     public void emit(Token t)
     {
         state.token = t;
         tokens.offer(t);
+
+        //System.err.println("=> " + t);
     }
 
     @Override
@@ -57,13 +56,15 @@ tokens
                 jump(Dedent);
                 return nextToken();
             }
-
-            return Token.EOF_TOKEN;
+            
+            // End file with new line
+            emit(new CommonToken(NEWLINE, ""));
+            emit(Token.EOF_TOKEN);
         }
 
         Token t = tokens.poll();
 
-        System.err.println(t);
+        System.err.println("<= " + t);
         return t;
     }
 
@@ -75,22 +76,29 @@ tokens
 }
 
 parse
-    : block EOF -> block
+    :   (NEWLINE | stmt)* -> ^(PROGRAM stmt*)
+    ;
+
+stmt
+    :   simple_stmt
+    |   compound_stmt   
+    ;
+
+simple_stmt
+    :   small_stmt (options {greedy=true;}:SEMICOLON! small_stmt)* (SEMICOLON!)? NEWLINE!
     ;
 
 block
-    : Indent block_atoms Dedent -> ^(BLOCK block_atoms)
+    : NEWLINE Indent (stmt)+ Dedent -> ^(BLOCK (stmt)+)
     ;
 
-block_atoms
-    :   block_atom+
+small_stmt
+    :   funcall
     ;
 
-block_atom
+compound_stmt
     :   if_statement
     |   fundef
-    |   funcall
-    |   block
     ;
 
 if_statement
@@ -143,6 +151,8 @@ NEWLINE
     }
     : NL (' ' {n++;} | '\t' {n += 8; n -= (n \% 8); })*
     {
+        emit(new CommonToken(NEWLINE, ""));
+        System.err.println(Integer.toString(n));
         int next = input.LA(1);
         int currentIndent = indentStack[indentLevel];
 
@@ -169,6 +179,8 @@ NEWLINE
     }
     ;
 
+STMTEND : SEMICOLON NEWLINE | NEWLINE+;
+
 IF      : 'if';
 ELIF    : 'elif';
 ELSE    : 'else';
@@ -184,7 +196,8 @@ SpaceChars
     ;
 
 
-fragment NL     : '\r'? '\n' | '\r';
+fragment NL     : (('\r')? '\n')+;
+fragment SEMICOLON : ';';
 fragment SP     : (' ' | '\t')+;
 fragment Indent : ;
 fragment Dedent : ;

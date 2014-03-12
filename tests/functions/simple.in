@@ -1,9 +1,12 @@
 def f(var):
     print x
+    print y
+
 
 def f var1, var2 :
     if f:
        print x
+       print y; exit 2;
     elif k:
        call me
     print x
