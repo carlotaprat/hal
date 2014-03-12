@@ -32,7 +32,6 @@ tokens
     private boolean firstLine = true;
     int[] indentStack = new int[MAX_INDENTS];
     java.util.Queue<Token> tokens = new java.util.LinkedList<Token>();
-    private boolean end = false;
 
     @Override
     public void emit(Token t)
@@ -70,13 +69,25 @@ tokens
 
     private void jump(int ttype)
     {
+        String name;
+        if(ttype == Indent)
+        {
+            name = "Indentation";
+            indentLevel++;
+        }
+        else
+        {
+            name = "Dedentation";
+            indentLevel--;
+        }
+
         indentLevel += (ttype == Dedent ? -1 : 1);
-        emit(new CommonToken(ttype, "level=" + indentLevel));
+        emit(new CommonToken(ttype, name + " (level=" + indentLevel + ")"));
     }
 }
 
 parse
-    :   (NEWLINE | stmt)* -> ^(PROGRAM stmt*)
+    :   (NEWLINE | stmt)* EOF -> ^(PROGRAM stmt*)
     ;
 
 stmt
@@ -152,12 +163,12 @@ NEWLINE
     : NL (' ' {n++;} | '\t' {n += 8; n -= (n \% 8); })*
     {
         emit(new CommonToken(NEWLINE, ""));
-        System.err.println(Integer.toString(n));
+
         int next = input.LA(1);
         int currentIndent = indentStack[indentLevel];
 
         // Skip if same indentation or empty line
-        if(n == currentIndent || next == '\r' || next == '\n' || next == -1)
+        if(n == currentIndent)
         {
             skip();
         }
