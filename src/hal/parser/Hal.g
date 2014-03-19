@@ -7,10 +7,9 @@ options
 
 tokens
 {
-    PROGRAM;
     PARAMS;
     BLOCK;
-    FUNCDEF;
+    FUNDEF;
     FUNCALL;
     ARGS;
     IF_STMT;
@@ -103,7 +102,7 @@ tokens
 }
 
 parse
-    :   (NEWLINE | stmt)* EOF -> ^(PROGRAM stmt*)
+    :   (NEWLINE | stmt)* EOF -> ^(BLOCK stmt*)
     ;
 
 stmt
@@ -113,10 +112,6 @@ stmt
 
 simple_stmt
     :   small_stmt (options {greedy=true;}:SEMICOLON! small_stmt)* (SEMICOLON!)? NEWLINE!
-    ;
-
-block
-    : NEWLINE Indent (stmt)+ Dedent -> ^(BLOCK (stmt)+)
     ;
 
 small_stmt
@@ -133,16 +128,25 @@ if_statement
     ;
 
 if_body
-    :   test COLON! block if_extension?
+    :   test COLON! multiline_block if_extension?
     ;
 
 if_extension
     :   ELIF if_body -> ^(BLOCK ^(IF_STMT if_body))
-    |   ELSE! COLON! block
+    |   ELSE! COLON! multiline_block
+    ;
+
+block
+    :   simple_stmt -> ^(BLOCK simple_stmt)
+    |   multiline_block
+    ;
+
+multiline_block
+    :   NEWLINE Indent (stmt)+ Dedent -> ^(BLOCK (stmt)+)
     ;
 
 fundef
-    :   DEF Id params COLON block -> ^(FUNCDEF Id params block)
+    :   DEF Id params COLON block -> ^(FUNDEF Id params block)
     ;
 
 // The list of parameters grouped in a subtree (it can be empty)
