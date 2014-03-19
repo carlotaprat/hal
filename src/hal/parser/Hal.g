@@ -125,6 +125,7 @@ compound_stmt
 
 if_statement
     :   IF if_body -> ^(IF_STMT if_body)
+    |   small_stmt IF test (ELSE small_stmt)? NEWLINE -> ^(IF_STMT test ^(BLOCK small_stmt) ^(BLOCK small_stmt)?)
     ;
 
 if_body

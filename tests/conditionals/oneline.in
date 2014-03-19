@@ -1,6 +1,9 @@
 def foo:
     if True: print x
+    elif y: print l
     else: print y
 
 if True:
     pass
+
+print x if True else print y
