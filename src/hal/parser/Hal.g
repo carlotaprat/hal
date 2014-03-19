@@ -107,7 +107,7 @@ parse
 
 stmt
     :   simple_stmt
-    |   compound_stmt   
+    |   compound_stmt
     ;
 
 simple_stmt
@@ -128,12 +128,12 @@ if_statement
     ;
 
 if_body
-    :   test COLON! multiline_block if_extension?
+    :   test COLON! block if_extension?
     ;
 
 if_extension
     :   ELIF if_body -> ^(BLOCK ^(IF_STMT if_body))
-    |   ELSE! COLON! multiline_block
+    |   ELSE! COLON! block
     ;
 
 block

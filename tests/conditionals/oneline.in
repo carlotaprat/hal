@@ -1,0 +1,6 @@
+def foo:
+    if True: print x
+    else: print y
+
+if True:
+    pass
