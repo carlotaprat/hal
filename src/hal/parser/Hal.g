@@ -117,7 +117,7 @@ simple_stmt
             |   IF {conditional=true;} test (ELSE s2=small_stmt)?
         )
         NEWLINE
-        -> {conditional}? ^(IF_STMT ^(BLOCK $s1) ^(BLOCK $s2))
+        -> {conditional}? ^(IF_STMT test ^(BLOCK $s1) ^(BLOCK $s2))
         -> small_stmt+
     ;
 

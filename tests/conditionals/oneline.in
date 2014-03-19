@@ -6,5 +6,4 @@ def foo:
 if True:
     pass;
 
-print x if True else print y
 print x, y, mult 3, 4 if foobar else print 2
