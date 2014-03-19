@@ -55,7 +55,7 @@ tokens
         state.token = t;
         tokens.offer(t);
 
-        //System.err.println("=> " + t);
+        System.err.println("=> " + t);
     }
 
     @Override
@@ -111,7 +111,14 @@ stmt
     ;
 
 simple_stmt
-    :   small_stmt (options {greedy=true;}:SEMICOLON! small_stmt)* (SEMICOLON!)? NEWLINE!
+    @init{boolean conditional = false;}
+    :   s1=small_stmt (
+                (options {greedy=true;}:SEMICOLON small_stmt)* SEMICOLON?
+            |   IF {conditional=true;} test (ELSE s2=small_stmt)?
+        )
+        NEWLINE
+        -> {conditional}? ^(IF_STMT ^(BLOCK $s1) ^(BLOCK $s2))
+        -> small_stmt+
     ;
 
 small_stmt
@@ -125,7 +132,6 @@ compound_stmt
 
 if_statement
     :   IF if_body -> ^(IF_STMT if_body)
-    |   small_stmt IF test (ELSE small_stmt)? NEWLINE -> ^(IF_STMT test ^(BLOCK small_stmt) ^(BLOCK small_stmt)?)
     ;
 
 if_body
@@ -147,33 +153,37 @@ multiline_block
     ;
 
 fundef
-    :   DEF Id params COLON block -> ^(FUNDEF Id params block)
+    :   DEF ID params COLON block -> ^(FUNDEF ID params block)
     ;
 
 // The list of parameters grouped in a subtree (it can be empty)
 params
-    : ('(' paramlist? ')' | paramlist?) -> ^(PARAMS paramlist?)
+    :   ('(' paramlist? ')' | paramlist?) -> ^(PARAMS paramlist?)
     ;
 
 // Parameters are separated by commas
 paramlist
-    : Id (','! Id)*
+    :   ID (','! ID)*
     ;
 
 funcall
-    : Id params -> ^(FUNCALL Id params)
+    :   ID args -> ^(FUNCALL ID args)
     ;
 
-// args
-//     : ( '(' paramlist? ')' | paramlist?) -> ^(ARGS paramlist?)
-//     ;
+args
+    :   arglist? -> ^(ARGS arglist?)
+    ;
+
+arglist
+    :   funcall (options {greedy=true;}: ','! funcall)*
+    ;
 
 // expr_list
 //     : test (','! test)*
 //     ;
 
 test
-    :   Id
+    :   ID
     ;
 
 NEWLINE
@@ -183,7 +193,7 @@ NEWLINE
     }
     : NL (' ' {n++;} | '\t' {n += 8; n -= (n \% 8); })*
     {
-        emit(new CommonToken(NEWLINE, ""));
+        emit(new CommonToken(NEWLINE, "\\n"));
 
         int next = input.LA(1);
         int currentIndent = indentStack[indentLevel];
@@ -211,8 +221,6 @@ NEWLINE
     }
     ;
 
-STMTEND : SEMICOLON NEWLINE | NEWLINE+;
-
 IF      : 'if';
 ELIF    : 'elif';
 ELSE    : 'else';
@@ -220,7 +228,7 @@ DEF     : 'def';
 COLON   : ':' ;
 SEMICOLON : ';';
 
-Id
+ID
     : ('a'..'z' | 'A'..'Z' | '0'..'9')+
     ;
 
