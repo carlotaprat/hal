@@ -259,14 +259,17 @@ RPAREN  : ')';
 fragment DIGIT : ('0'..'9');
 fragment LOWER : ('a'..'z');
 fragment UPPER : ('A'..'Z');
+fragment LETTER: (LOWER|UPPER);
 
-ID  : (LOWER|UPPER|'_') (LOWER|UPPER|'_'|DIGIT)*;
+ID  : (LETTER|'_') (LETTER|'_'|DIGIT)*;
 INT : (PLUS|MINUS)?(DIGIT)+;
 
 
 SpaceChars
     : SP {skip();}
     ;
+
+Comments: ('#' ~('\n'|'\r')* NL) {skip();};
 
 NEWLINE
     @init
