@@ -190,31 +190,32 @@ arglist
     ;
 
 // Assignment
-assign	:	ID eq=EQUAL expr -> ^(ASSIGN[$eq,":="] ID expr)
-        ;
+assign
+    :	ID eq=EQUAL expr -> ^(ASSIGN[$eq,":="] ID expr)
+    ;
 
 expr
-    :   boolterm (OR^ boolterm)*
+    :   boolterm (options {greedy=true;}: OR^ boolterm)*
     ;
 
 boolterm
-    :   boolfact (AND^ boolfact)*
+    :   boolfact (options {greedy=true;}: AND^ boolfact)*
     ;
 
 boolfact
-    :   num_expr ((EQUAL^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) num_expr)?
+    :   num_expr (options {greedy=true;}: (EQUAL^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) num_expr)?
     ;
 
 num_expr
-    :   term ( (PLUS^ | MINUS^) term)*
+    :   term (options {greedy=true;}: (PLUS^ | MINUS^) term)*
     ;
 
 term
-    :   factor ( (MUL^ | DIV^ | MOD^) factor)*
+    :   factor (options {greedy=true;}: (MUL^ | DIV^ | MOD^) factor)*
     ;
 
 factor
-    :   (NOT^ | PLUS^ | MINUS^)? atom
+    :   (NOT^)? atom
     ;
 
 atom
@@ -255,11 +256,12 @@ SEMICOLON : ';';
 LPAREN  : '(';
 RPAREN  : ')';
 
-DIGIT : ('0'..'9');
-LOWER : ('a'..'z');
-UPPER : ('A'..'Z');
+fragment DIGIT : ('0'..'9');
+fragment LOWER : ('a'..'z');
+fragment UPPER : ('A'..'Z');
+
 ID  : (LOWER|UPPER|'_') (LOWER|UPPER|'_'|DIGIT)*;
-INT : (DIGIT)+;
+INT : (PLUS|MINUS)?(DIGIT)+;
 
 
 SpaceChars
