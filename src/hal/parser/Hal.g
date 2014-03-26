@@ -12,7 +12,9 @@ tokens
     FUNDEF;
     FUNCALL;
     ARGS;
-    IF_STMT;
+    ITE_STMT;
+    ASSIGN;
+    BOOLEAN;
 }
 
 @header
@@ -24,6 +26,9 @@ tokens
     package hal.parser;
 }
 
+/////////////////////////
+// INDENTATION RELATED //
+/////////////////////////
 @lexer::members
 {
     public static final int MAX_INDENTS = 100;
@@ -71,7 +76,7 @@ tokens
                 jump(Dedent);
                 return nextToken();
             }
-            
+
             // End file with new line
             emit(new CommonToken(NEWLINE, ""));
             emit(Token.EOF_TOKEN);
@@ -101,6 +106,11 @@ tokens
     }
 }
 
+// END INDENTATION RELATED
+
+
+// GRAMMAR
+
 parse
     :   (NEWLINE | stmt)* EOF -> ^(BLOCK stmt*)
     ;
@@ -114,32 +124,33 @@ simple_stmt
     @init{boolean conditional = false;}
     :   s1=small_stmt (
                 (options {greedy=true;}:SEMICOLON small_stmt)* SEMICOLON?
-            |   IF {conditional=true;} test (ELSE s2=small_stmt)?
+            |   IF {conditional=true;} expr (ELSE s2=small_stmt)?
         )
         NEWLINE
-        -> {conditional}? ^(IF_STMT test ^(BLOCK $s1) ^(BLOCK $s2))
+        -> {conditional}? ^(ITE_STMT expr ^(BLOCK $s1) ^(BLOCK $s2))
         -> small_stmt+
     ;
 
 small_stmt
-    :   funcall
+    : assign
+    | funcall
     ;
 
 compound_stmt
-    :   if_statement
+    :   ite_statement
     |   fundef
     ;
 
-if_statement
-    :   IF if_body -> ^(IF_STMT if_body)
+ite_statement
+    :   IF if_body -> ^(ITE_STMT if_body)
     ;
 
 if_body
-    :   test COLON! block if_extension?
+    :   expr COLON! block if_extension?
     ;
 
 if_extension
-    :   ELIF if_body -> ^(BLOCK ^(IF_STMT if_body))
+    :   ELIF if_body -> ^(BLOCK ^(ITE_STMT if_body))
     |   ELSE! COLON! block
     ;
 
@@ -158,7 +169,7 @@ fundef
 
 // The list of parameters grouped in a subtree (it can be empty)
 params
-    :   ('(' paramlist? ')' | paramlist?) -> ^(PARAMS paramlist?)
+    :   paramlist? -> ^(PARAMS paramlist?)
     ;
 
 // Parameters are separated by commas
@@ -175,15 +186,84 @@ args
     ;
 
 arglist
-    :   funcall (options {greedy=true;}: ','! funcall)*
+    :   expr (options {greedy=true;}: ','! expr)*
     ;
 
-// expr_list
-//     : test (','! test)*
-//     ;
+// Assignment
+assign	:	ID eq=EQUAL expr -> ^(ASSIGN[$eq,":="] ID expr)
+        ;
 
-test
-    :   ID
+expr
+    :   boolterm (OR^ boolterm)*
+    ;
+
+boolterm
+    :   boolfact (AND^ boolfact)*
+    ;
+
+boolfact
+    :   num_expr ((EQUAL^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) num_expr)?
+    ;
+
+num_expr
+    :   term ( (PLUS^ | MINUS^) term)*
+    ;
+
+term
+    :   factor ( (MUL^ | DIV^ | MOD^) factor)*
+    ;
+
+factor
+    :   (NOT^ | PLUS^ | MINUS^)? atom
+    ;
+
+atom
+    :   INT
+    |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
+    |   funcall // An ID can be considered a "funcall"
+    |   LPAREN! expr RPAREN!
+    ;
+
+
+// LEXICAL RULES
+
+// OPERATORS
+EQUAL	: '=' ;
+NOT_EQUAL: '!=' ;
+LT	    : '<' ;
+LE	    : '<=';
+GT	    : '>';
+GE	    : '>=';
+PLUS	: '+' ;
+MINUS	: '-' ;
+MUL	    : '*';
+DIV	    : '/';
+MOD	    : '%' ;
+// KEYWORDS
+NOT	    : 'not';
+AND	    : 'and' ;
+OR	    : 'or' ;
+TRUE    : 'true';
+FALSE   : 'false';
+
+IF      : 'if';
+ELIF    : 'elif';
+ELSE    : 'else';
+DEF     : 'def';
+COLON   : ':' ;
+SEMICOLON : ';';
+LPAREN  : '(';
+RPAREN  : ')';
+
+DIGIT : ('0'..'9');
+LOWER : ('a'..'z');
+UPPER : ('A'..'Z');
+ID  : (LOWER|UPPER|'_') (LOWER|UPPER|'_'|DIGIT)*;
+INT : (DIGIT)+;
+
+
+SpaceChars
+    : SP {skip();}
     ;
 
 NEWLINE
@@ -220,22 +300,6 @@ NEWLINE
         }
     }
     ;
-
-IF      : 'if';
-ELIF    : 'elif';
-ELSE    : 'else';
-DEF     : 'def';
-COLON   : ':' ;
-SEMICOLON : ';';
-
-ID
-    : ('a'..'z' | 'A'..'Z' | '0'..'9')+
-    ;
-
-SpaceChars
-    : SP {skip();}
-    ;
-
 
 fragment NL     : (('\r')? '\n')+;
 fragment SP     : (' ' | '\t')+;
