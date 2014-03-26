@@ -1,0 +1,78 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="BLOCK"];
+  n1 [label="FUNDEF"];
+  n1 [label="FUNDEF"];
+  n2 [label="foo"];
+  n3 [label="PARAMS"];
+  n4 [label="BLOCK"];
+  n4 [label="BLOCK"];
+  n5 [label="FUNCALL"];
+  n5 [label="FUNCALL"];
+  n6 [label="print"];
+  n7 [label="ARGS"];
+  n7 [label="ARGS"];
+  n8 [label="FUNCALL"];
+  n8 [label="FUNCALL"];
+  n9 [label="x"];
+  n10 [label="ARGS"];
+  n11 [label="FUNCALL"];
+  n11 [label="FUNCALL"];
+  n12 [label="return"];
+  n13 [label="ARGS"];
+  n13 [label="ARGS"];
+  n14 [label="FUNCALL"];
+  n14 [label="FUNCALL"];
+  n15 [label="bar"];
+  n16 [label="ARGS"];
+  n17 [label="FUNDEF"];
+  n17 [label="FUNDEF"];
+  n18 [label="bar"];
+  n19 [label="PARAMS"];
+  n20 [label="BLOCK"];
+  n20 [label="BLOCK"];
+  n21 [label="FUNCALL"];
+  n21 [label="FUNCALL"];
+  n22 [label="print"];
+  n23 [label="ARGS"];
+  n23 [label="ARGS"];
+  n24 [label="FUNCALL"];
+  n24 [label="FUNCALL"];
+  n25 [label="y"];
+  n26 [label="ARGS"];
+
+  n0 -> n1 // "BLOCK" -> "FUNDEF"
+  n1 -> n2 // "FUNDEF" -> "foo"
+  n1 -> n3 // "FUNDEF" -> "PARAMS"
+  n1 -> n4 // "FUNDEF" -> "BLOCK"
+  n4 -> n5 // "BLOCK" -> "FUNCALL"
+  n5 -> n6 // "FUNCALL" -> "print"
+  n5 -> n7 // "FUNCALL" -> "ARGS"
+  n7 -> n8 // "ARGS" -> "FUNCALL"
+  n8 -> n9 // "FUNCALL" -> "x"
+  n8 -> n10 // "FUNCALL" -> "ARGS"
+  n4 -> n11 // "BLOCK" -> "FUNCALL"
+  n11 -> n12 // "FUNCALL" -> "return"
+  n11 -> n13 // "FUNCALL" -> "ARGS"
+  n13 -> n14 // "ARGS" -> "FUNCALL"
+  n14 -> n15 // "FUNCALL" -> "bar"
+  n14 -> n16 // "FUNCALL" -> "ARGS"
+  n0 -> n17 // "BLOCK" -> "FUNDEF"
+  n17 -> n18 // "FUNDEF" -> "bar"
+  n17 -> n19 // "FUNDEF" -> "PARAMS"
+  n17 -> n20 // "FUNDEF" -> "BLOCK"
+  n20 -> n21 // "BLOCK" -> "FUNCALL"
+  n21 -> n22 // "FUNCALL" -> "print"
+  n21 -> n23 // "FUNCALL" -> "ARGS"
+  n23 -> n24 // "ARGS" -> "FUNCALL"
+  n24 -> n25 // "FUNCALL" -> "y"
+  n24 -> n26 // "FUNCALL" -> "ARGS"
+
+}
+

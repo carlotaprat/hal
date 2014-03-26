@@ -1,6 +1,3 @@
 def foo: print x; return bar
 
-def bar:
-  print y
-
-print x
+def bar: print y

@@ -1,18 +1,13 @@
-def f(var):
+# this is a comment
+
+def f: # this is also a comment
+    pass x
+
+def f var:
     print x
     print y
 
 def f var1, var2:
-    if f:
-       print x
-       print 1, 2, 3 ; exit 1
-    elif k:
-       call me
-    print x
-
-def f:
-    pass x
-
-f(x, y)
-f y
-f
+    here goes
+    a full
+    block

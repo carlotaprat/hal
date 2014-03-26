@@ -1,0 +1,133 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="BLOCK"];
+  n1 [label="FUNDEF"];
+  n1 [label="FUNDEF"];
+  n2 [label="f"];
+  n3 [label="PARAMS"];
+  n4 [label="BLOCK"];
+  n4 [label="BLOCK"];
+  n5 [label="FUNCALL"];
+  n5 [label="FUNCALL"];
+  n6 [label="pass"];
+  n7 [label="ARGS"];
+  n7 [label="ARGS"];
+  n8 [label="FUNCALL"];
+  n8 [label="FUNCALL"];
+  n9 [label="x"];
+  n10 [label="ARGS"];
+  n11 [label="FUNDEF"];
+  n11 [label="FUNDEF"];
+  n12 [label="f"];
+  n13 [label="PARAMS"];
+  n13 [label="PARAMS"];
+  n14 [label="var"];
+  n15 [label="BLOCK"];
+  n15 [label="BLOCK"];
+  n16 [label="FUNCALL"];
+  n16 [label="FUNCALL"];
+  n17 [label="print"];
+  n18 [label="ARGS"];
+  n18 [label="ARGS"];
+  n19 [label="FUNCALL"];
+  n19 [label="FUNCALL"];
+  n20 [label="x"];
+  n21 [label="ARGS"];
+  n22 [label="FUNCALL"];
+  n22 [label="FUNCALL"];
+  n23 [label="print"];
+  n24 [label="ARGS"];
+  n24 [label="ARGS"];
+  n25 [label="FUNCALL"];
+  n25 [label="FUNCALL"];
+  n26 [label="y"];
+  n27 [label="ARGS"];
+  n28 [label="FUNDEF"];
+  n28 [label="FUNDEF"];
+  n29 [label="f"];
+  n30 [label="PARAMS"];
+  n30 [label="PARAMS"];
+  n31 [label="var1"];
+  n32 [label="var2"];
+  n33 [label="BLOCK"];
+  n33 [label="BLOCK"];
+  n34 [label="FUNCALL"];
+  n34 [label="FUNCALL"];
+  n35 [label="here"];
+  n36 [label="ARGS"];
+  n36 [label="ARGS"];
+  n37 [label="FUNCALL"];
+  n37 [label="FUNCALL"];
+  n38 [label="goes"];
+  n39 [label="ARGS"];
+  n40 [label="FUNCALL"];
+  n40 [label="FUNCALL"];
+  n41 [label="a"];
+  n42 [label="ARGS"];
+  n42 [label="ARGS"];
+  n43 [label="FUNCALL"];
+  n43 [label="FUNCALL"];
+  n44 [label="full"];
+  n45 [label="ARGS"];
+  n46 [label="FUNCALL"];
+  n46 [label="FUNCALL"];
+  n47 [label="block"];
+  n48 [label="ARGS"];
+
+  n0 -> n1 // "BLOCK" -> "FUNDEF"
+  n1 -> n2 // "FUNDEF" -> "f"
+  n1 -> n3 // "FUNDEF" -> "PARAMS"
+  n1 -> n4 // "FUNDEF" -> "BLOCK"
+  n4 -> n5 // "BLOCK" -> "FUNCALL"
+  n5 -> n6 // "FUNCALL" -> "pass"
+  n5 -> n7 // "FUNCALL" -> "ARGS"
+  n7 -> n8 // "ARGS" -> "FUNCALL"
+  n8 -> n9 // "FUNCALL" -> "x"
+  n8 -> n10 // "FUNCALL" -> "ARGS"
+  n0 -> n11 // "BLOCK" -> "FUNDEF"
+  n11 -> n12 // "FUNDEF" -> "f"
+  n11 -> n13 // "FUNDEF" -> "PARAMS"
+  n13 -> n14 // "PARAMS" -> "var"
+  n11 -> n15 // "FUNDEF" -> "BLOCK"
+  n15 -> n16 // "BLOCK" -> "FUNCALL"
+  n16 -> n17 // "FUNCALL" -> "print"
+  n16 -> n18 // "FUNCALL" -> "ARGS"
+  n18 -> n19 // "ARGS" -> "FUNCALL"
+  n19 -> n20 // "FUNCALL" -> "x"
+  n19 -> n21 // "FUNCALL" -> "ARGS"
+  n15 -> n22 // "BLOCK" -> "FUNCALL"
+  n22 -> n23 // "FUNCALL" -> "print"
+  n22 -> n24 // "FUNCALL" -> "ARGS"
+  n24 -> n25 // "ARGS" -> "FUNCALL"
+  n25 -> n26 // "FUNCALL" -> "y"
+  n25 -> n27 // "FUNCALL" -> "ARGS"
+  n0 -> n28 // "BLOCK" -> "FUNDEF"
+  n28 -> n29 // "FUNDEF" -> "f"
+  n28 -> n30 // "FUNDEF" -> "PARAMS"
+  n30 -> n31 // "PARAMS" -> "var1"
+  n30 -> n32 // "PARAMS" -> "var2"
+  n28 -> n33 // "FUNDEF" -> "BLOCK"
+  n33 -> n34 // "BLOCK" -> "FUNCALL"
+  n34 -> n35 // "FUNCALL" -> "here"
+  n34 -> n36 // "FUNCALL" -> "ARGS"
+  n36 -> n37 // "ARGS" -> "FUNCALL"
+  n37 -> n38 // "FUNCALL" -> "goes"
+  n37 -> n39 // "FUNCALL" -> "ARGS"
+  n33 -> n40 // "BLOCK" -> "FUNCALL"
+  n40 -> n41 // "FUNCALL" -> "a"
+  n40 -> n42 // "FUNCALL" -> "ARGS"
+  n42 -> n43 // "ARGS" -> "FUNCALL"
+  n43 -> n44 // "FUNCALL" -> "full"
+  n43 -> n45 // "FUNCALL" -> "ARGS"
+  n33 -> n46 // "BLOCK" -> "FUNCALL"
+  n46 -> n47 // "FUNCALL" -> "block"
+  n46 -> n48 // "FUNCALL" -> "ARGS"
+
+}
+
