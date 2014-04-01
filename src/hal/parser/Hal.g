@@ -156,9 +156,8 @@ if_extension
     |   ELSE! COLON! block
     ;
 
-
 for_statement
-    :  FOR ID IN expr COLON block -> ^(FOR_STMT ID expr block)
+    :  FOR paramlist IN expr COLON block -> ^(FOR_STMT ^(PARAMS paramlist) expr block)
     ;
 
 block
