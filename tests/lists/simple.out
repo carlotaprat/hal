@@ -1,0 +1,85 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="BLOCK"];
+  n1 [label=":="];
+  n1 [label=":="];
+  n2 [label="list"];
+  n3 [label="LIST"];
+  n3 [label="LIST"];
+  n4 [label="FUNCALL"];
+  n4 [label="FUNCALL"];
+  n5 [label="a"];
+  n6 [label="ARGS"];
+  n7 [label="FUNCALL"];
+  n7 [label="FUNCALL"];
+  n8 [label="b"];
+  n9 [label="ARGS"];
+  n10 [label="FUNCALL"];
+  n10 [label="FUNCALL"];
+  n11 [label="c"];
+  n12 [label="ARGS"];
+  n13 [label="FUNCALL"];
+  n13 [label="FUNCALL"];
+  n14 [label="d"];
+  n15 [label="ARGS"];
+  n16 [label="+"];
+  n16 [label="+"];
+  n17 [label="3"];
+  n18 [label="2"];
+  n19 [label="FUNCALL"];
+  n19 [label="FUNCALL"];
+  n20 [label="f"];
+  n21 [label="ARGS"];
+  n21 [label="ARGS"];
+  n22 [label="FUNCALL"];
+  n22 [label="FUNCALL"];
+  n23 [label="a"];
+  n24 [label="ARGS"];
+  n25 [label="FUNCALL"];
+  n25 [label="FUNCALL"];
+  n26 [label="b"];
+  n27 [label="ARGS"];
+  n28 [label="FUNCALL"];
+  n28 [label="FUNCALL"];
+  n29 [label="c"];
+  n30 [label="ARGS"];
+
+  n0 -> n1 // "BLOCK" -> ":="
+  n1 -> n2 // ":=" -> "list"
+  n1 -> n3 // ":=" -> "LIST"
+  n3 -> n4 // "LIST" -> "FUNCALL"
+  n4 -> n5 // "FUNCALL" -> "a"
+  n4 -> n6 // "FUNCALL" -> "ARGS"
+  n3 -> n7 // "LIST" -> "FUNCALL"
+  n7 -> n8 // "FUNCALL" -> "b"
+  n7 -> n9 // "FUNCALL" -> "ARGS"
+  n3 -> n10 // "LIST" -> "FUNCALL"
+  n10 -> n11 // "FUNCALL" -> "c"
+  n10 -> n12 // "FUNCALL" -> "ARGS"
+  n3 -> n13 // "LIST" -> "FUNCALL"
+  n13 -> n14 // "FUNCALL" -> "d"
+  n13 -> n15 // "FUNCALL" -> "ARGS"
+  n3 -> n16 // "LIST" -> "+"
+  n16 -> n17 // "+" -> "3"
+  n16 -> n18 // "+" -> "2"
+  n3 -> n19 // "LIST" -> "FUNCALL"
+  n19 -> n20 // "FUNCALL" -> "f"
+  n19 -> n21 // "FUNCALL" -> "ARGS"
+  n21 -> n22 // "ARGS" -> "FUNCALL"
+  n22 -> n23 // "FUNCALL" -> "a"
+  n22 -> n24 // "FUNCALL" -> "ARGS"
+  n21 -> n25 // "ARGS" -> "FUNCALL"
+  n25 -> n26 // "FUNCALL" -> "b"
+  n25 -> n27 // "FUNCALL" -> "ARGS"
+  n21 -> n28 // "ARGS" -> "FUNCALL"
+  n28 -> n29 // "FUNCALL" -> "c"
+  n28 -> n30 // "FUNCALL" -> "ARGS"
+
+}
+

@@ -5,3 +5,5 @@ src/hal/parser/
 
 *.class
 out.pdf
+out.dot
+

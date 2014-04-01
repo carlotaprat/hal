@@ -17,6 +17,7 @@ tokens
     WHILE_STMT;
     ASSIGN;
     BOOLEAN;
+    LIST;
 }
 
 @header
@@ -191,6 +192,7 @@ paramlist
 
 funcall
     :   ID args -> ^(FUNCALL ID args)
+    |   ID_NEGATIVE args -> ^(MINUS ZERO ^(FUNCALL ID_NEGATIVE args))
     ;
 
 args
@@ -233,10 +235,15 @@ factor
 atom
     :   INT
     |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
+    |   list
     |   funcall // An ID can be considered a "funcall"
     |   LPAREN! expr RPAREN!
+    |   MINUS_LPAREN expr RPAREN -> ^(MINUS ZERO expr)
     ;
 
+list
+    :  LBRACK (expr (',' expr)*)? RBRACK -> ^(LIST expr*)
+    ;
 
 // LEXICAL RULES
 
@@ -259,7 +266,6 @@ AND	    : 'and' ;
 OR	    : 'or' ;
 TRUE    : 'true';
 FALSE   : 'false';
-
 IF      : 'if';
 ELIF    : 'elif';
 ELSE    : 'else';
@@ -267,18 +273,36 @@ FOR     : 'for';
 WHILE   : 'while';
 IN      : 'in';
 DEF     : 'def';
+// SPECIAL SYMBOLS
 COLON   : ':' ;
 SEMICOLON : ';';
 LPAREN  : '(';
 RPAREN  : ')';
+LBRACK  : '[';
+RBRACK  : ']';
+// COMPOUND SYMBOLS
+MINUS_LPAREN : MINUS LPAREN;
 
+fragment ZERO  : '0';
 fragment DIGIT : ('0'..'9');
 fragment LOWER : ('a'..'z');
 fragment UPPER : ('A'..'Z');
 fragment LETTER: (LOWER|UPPER);
 
-ID  : (LETTER|'_') (LETTER|'_'|DIGIT)*;
-INT : (PLUS|MINUS)?(DIGIT)+;
+// Identifiers
+ID  : (LETTER|'_') (LETTER|'_'|DIGIT)* ('!'|'?')?;
+ID_NEGATIVE : '-' id=ID {setText($id.text);};
+
+// Integers
+fragment INT_FRAG : (PLUS|MINUS)? (DIGIT)+;
+
+INT returns [int value]
+    : a=INT_FRAG {$value = Integer.parseInt($a.text);} (
+        PLUS  a=INT_FRAG {$value += Integer.parseInt($a.text);}
+    |   MINUS a=INT_FRAG {$value -= Integer.parseInt($a.text);}
+    )*
+    {setText(Integer.toString($value));}
+    ;
 
 
 SpaceChars
