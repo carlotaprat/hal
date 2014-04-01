@@ -7,8 +7,8 @@ digraph {
 	edge [arrowsize=.5, color="black", style="bold"]
 
   n0 [label="BLOCK"];
-  n1 [label="ITE_STMT"];
-  n1 [label="ITE_STMT"];
+  n1 [label="IF_STMT"];
+  n1 [label="IF_STMT"];
   n2 [label="FUNCALL"];
   n2 [label="FUNCALL"];
   n3 [label="True"];
@@ -21,8 +21,8 @@ digraph {
   n8 [label="ARGS"];
   n8 [label="ARGS"];
   n9 [label="1"];
-  n10 [label="ITE_STMT"];
-  n10 [label="ITE_STMT"];
+  n10 [label="IF_STMT"];
+  n10 [label="IF_STMT"];
   n11 [label="FUNCALL"];
   n11 [label="FUNCALL"];
   n12 [label="True"];
@@ -37,8 +37,8 @@ digraph {
   n18 [label="4"];
   n19 [label="BLOCK"];
   n19 [label="BLOCK"];
-  n20 [label="ITE_STMT"];
-  n20 [label="ITE_STMT"];
+  n20 [label="IF_STMT"];
+  n20 [label="IF_STMT"];
   n21 [label="FUNCALL"];
   n21 [label="FUNCALL"];
   n22 [label="x"];
@@ -53,8 +53,8 @@ digraph {
   n28 [label="2"];
   n29 [label="BLOCK"];
   n29 [label="BLOCK"];
-  n30 [label="ITE_STMT"];
-  n30 [label="ITE_STMT"];
+  n30 [label="IF_STMT"];
+  n30 [label="IF_STMT"];
   n31 [label="FUNCALL"];
   n31 [label="FUNCALL"];
   n32 [label="y"];
@@ -76,45 +76,45 @@ digraph {
   n42 [label="ARGS"];
   n43 [label="4"];
 
-  n0 -> n1 // "BLOCK" -> "ITE_STMT"
-  n1 -> n2 // "ITE_STMT" -> "FUNCALL"
+  n0 -> n1 // "BLOCK" -> "IF_STMT"
+  n1 -> n2 // "IF_STMT" -> "FUNCALL"
   n2 -> n3 // "FUNCALL" -> "True"
   n2 -> n4 // "FUNCALL" -> "ARGS"
-  n1 -> n5 // "ITE_STMT" -> "BLOCK"
+  n1 -> n5 // "IF_STMT" -> "BLOCK"
   n5 -> n6 // "BLOCK" -> "FUNCALL"
   n6 -> n7 // "FUNCALL" -> "print"
   n6 -> n8 // "FUNCALL" -> "ARGS"
   n8 -> n9 // "ARGS" -> "1"
-  n0 -> n10 // "BLOCK" -> "ITE_STMT"
-  n10 -> n11 // "ITE_STMT" -> "FUNCALL"
+  n0 -> n10 // "BLOCK" -> "IF_STMT"
+  n10 -> n11 // "IF_STMT" -> "FUNCALL"
   n11 -> n12 // "FUNCALL" -> "True"
   n11 -> n13 // "FUNCALL" -> "ARGS"
-  n10 -> n14 // "ITE_STMT" -> "BLOCK"
+  n10 -> n14 // "IF_STMT" -> "BLOCK"
   n14 -> n15 // "BLOCK" -> "FUNCALL"
   n15 -> n16 // "FUNCALL" -> "print"
   n15 -> n17 // "FUNCALL" -> "ARGS"
   n17 -> n18 // "ARGS" -> "4"
-  n10 -> n19 // "ITE_STMT" -> "BLOCK"
-  n19 -> n20 // "BLOCK" -> "ITE_STMT"
-  n20 -> n21 // "ITE_STMT" -> "FUNCALL"
+  n10 -> n19 // "IF_STMT" -> "BLOCK"
+  n19 -> n20 // "BLOCK" -> "IF_STMT"
+  n20 -> n21 // "IF_STMT" -> "FUNCALL"
   n21 -> n22 // "FUNCALL" -> "x"
   n21 -> n23 // "FUNCALL" -> "ARGS"
-  n20 -> n24 // "ITE_STMT" -> "BLOCK"
+  n20 -> n24 // "IF_STMT" -> "BLOCK"
   n24 -> n25 // "BLOCK" -> "FUNCALL"
   n25 -> n26 // "FUNCALL" -> "print"
   n25 -> n27 // "FUNCALL" -> "ARGS"
   n27 -> n28 // "ARGS" -> "2"
-  n20 -> n29 // "ITE_STMT" -> "BLOCK"
-  n29 -> n30 // "BLOCK" -> "ITE_STMT"
-  n30 -> n31 // "ITE_STMT" -> "FUNCALL"
+  n20 -> n29 // "IF_STMT" -> "BLOCK"
+  n29 -> n30 // "BLOCK" -> "IF_STMT"
+  n30 -> n31 // "IF_STMT" -> "FUNCALL"
   n31 -> n32 // "FUNCALL" -> "y"
   n31 -> n33 // "FUNCALL" -> "ARGS"
-  n30 -> n34 // "ITE_STMT" -> "BLOCK"
+  n30 -> n34 // "IF_STMT" -> "BLOCK"
   n34 -> n35 // "BLOCK" -> "FUNCALL"
   n35 -> n36 // "FUNCALL" -> "print"
   n35 -> n37 // "FUNCALL" -> "ARGS"
   n37 -> n38 // "ARGS" -> "3"
-  n30 -> n39 // "ITE_STMT" -> "BLOCK"
+  n30 -> n39 // "IF_STMT" -> "BLOCK"
   n39 -> n40 // "BLOCK" -> "FUNCALL"
   n40 -> n41 // "FUNCALL" -> "print"
   n40 -> n42 // "FUNCALL" -> "ARGS"

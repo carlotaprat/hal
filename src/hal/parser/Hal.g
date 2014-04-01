@@ -12,8 +12,9 @@ tokens
     FUNDEF;
     FUNCALL;
     ARGS;
-    ITE_STMT;
+    IF_STMT;
     FOR_STMT;
+    WHILE_STMT;
     ASSIGN;
     BOOLEAN;
 }
@@ -128,7 +129,7 @@ simple_stmt
             |   IF {conditional=true;} expr (ELSE s2=small_stmt)?
         )
         NEWLINE
-        -> {conditional}? ^(ITE_STMT expr ^(BLOCK $s1) ^(BLOCK $s2))
+        -> {conditional}? ^(IF_STMT expr ^(BLOCK $s1) ^(BLOCK $s2))
         -> small_stmt+
     ;
 
@@ -138,13 +139,14 @@ small_stmt
     ;
 
 compound_stmt
-    :   ite_statement
-    |   for_statement
+    :   if_stmt
+    |   for_stmt
+    |   while_stmt
     |   fundef
     ;
 
-ite_statement
-    :   IF if_body -> ^(ITE_STMT if_body)
+if_stmt
+    :   IF if_body -> ^(IF_STMT if_body)
     ;
 
 if_body
@@ -152,12 +154,16 @@ if_body
     ;
 
 if_extension
-    :   ELIF if_body -> ^(BLOCK ^(ITE_STMT if_body))
+    :   ELIF if_body -> ^(BLOCK ^(IF_STMT if_body))
     |   ELSE! COLON! block
     ;
 
-for_statement
+for_stmt
     :  FOR paramlist IN expr COLON block -> ^(FOR_STMT ^(PARAMS paramlist) expr block)
+    ;
+
+while_stmt
+    :  WHILE expr COLON block -> ^(WHILE_STMT expr block)
     ;
 
 block
@@ -178,7 +184,7 @@ params
     :   paramlist? -> ^(PARAMS paramlist?)
     ;
 
-// Parameters are separated by commas
+// Parameters are separated by commaske
 paramlist
     :   ID (','! ID)*
     ;
@@ -209,7 +215,7 @@ boolterm
     ;
 
 boolfact
-    :   num_expr (options {greedy=true;}: (EQUAL^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) num_expr)?
+    :   num_expr (options {greedy=true;}: (DOUBLE_EQUAL^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) num_expr)?
     ;
 
 num_expr
@@ -236,6 +242,7 @@ atom
 
 // OPERATORS
 EQUAL	: '=' ;
+DOUBLE_EQUAL : '==';
 NOT_EQUAL: '!=' ;
 LT	    : '<' ;
 LE	    : '<=';
@@ -257,6 +264,7 @@ IF      : 'if';
 ELIF    : 'elif';
 ELSE    : 'else';
 FOR     : 'for';
+WHILE   : 'while';
 IN      : 'in';
 DEF     : 'def';
 COLON   : ':' ;
