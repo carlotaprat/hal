@@ -13,6 +13,7 @@ tokens
     FUNCALL;
     ARGS;
     ITE_STMT;
+    FOR_STMT;
     ASSIGN;
     BOOLEAN;
 }
@@ -138,6 +139,7 @@ small_stmt
 
 compound_stmt
     :   ite_statement
+    |   for_statement
     |   fundef
     ;
 
@@ -152,6 +154,11 @@ if_body
 if_extension
     :   ELIF if_body -> ^(BLOCK ^(ITE_STMT if_body))
     |   ELSE! COLON! block
+    ;
+
+
+for_statement
+    :  FOR ID IN expr COLON block -> ^(FOR_STMT ID expr block)
     ;
 
 block
@@ -250,6 +257,8 @@ FALSE   : 'false';
 IF      : 'if';
 ELIF    : 'elif';
 ELSE    : 'else';
+FOR     : 'for';
+IN      : 'in';
 DEF     : 'def';
 COLON   : ':' ;
 SEMICOLON : ';';
