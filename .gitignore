@@ -4,6 +4,8 @@ javadoc/
 src/hal/parser/
 
 *.class
-out.pdf
+*.pdf
 out.dot
 
+*.aux
+*.log

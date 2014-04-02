@@ -29,51 +29,43 @@ tokens
     package hal.parser;
 }
 
-/////////////////////////
-// INDENTATION RELATED //
-/////////////////////////
+// INDENTATION
 @lexer::members
 {
     public static final int MAX_INDENTS = 100;
     private int indentLevel = 0;
     private boolean firstLine = true;
     int[] indentStack = new int[MAX_INDENTS];
-    java.util.Queue<Token> tokens = new java.util.LinkedList<Token>();
+    java.util.Queue<Token> tokens =
+        new java.util.LinkedList<Token>();
 
     {
         // Compute first line indentation manually
         int i = 1;
-
-        while(input.LA(i) == ' ')
-            i++;
+        while(input.LA(i) == ' ') i++;
 
         int next = input.LA(i);
 
         // Ignore empty lines
-        if(i > 1 && next != '\n' && next != '\r' && next != -1)
-        {
+        if(i > 1 && next != '\n' && next != '\r' && next != -1) {
             jump(Indent);
             indentStack[indentLevel] = i-1;
         }
     }
 
     @Override
-    public void emit(Token t)
-    {
+    public void emit(Token t) {
         state.token = t;
         tokens.offer(t);
     }
 
     @Override
-    public Token nextToken()
-    {
+    public Token nextToken() {
         super.nextToken();
 
-        if(tokens.isEmpty())
-        {
+        if(tokens.isEmpty()) {
             // Undo all indentation
-            if(indentLevel > 0)
-            {
+            if(indentLevel > 0) {
                 jump(Dedent);
                 return nextToken();
             }
@@ -82,31 +74,25 @@ tokens
             emit(new CommonToken(NEWLINE, ""));
             emit(Token.EOF_TOKEN);
         }
-
         Token t = tokens.poll();
-
         return t;
     }
 
-    private void jump(int ttype)
-    {
+
+    private void jump(int ttype) {
         String name;
-        if(ttype == Indent)
-        {
+        if(ttype == Indent) {
             name = "Indentation";
             indentLevel++;
         }
-        else
-        {
+        else {
             name = "Dedentation";
             indentLevel--;
         }
-
-        emit(new CommonToken(ttype, name + " (level=" + indentLevel + ")"));
+        emit(new CommonToken(ttype, name));
     }
 }
-
-// END INDENTATION RELATED
+// END INDENTATION
 
 @parser::members {
   public boolean space(TokenStream input) {
@@ -126,7 +112,7 @@ tokens
 
 // GRAMMAR
 
-parse
+prog
     :   (NEWLINE | stmt)* EOF -> ^(BLOCK stmt*)
     ;
 
@@ -172,7 +158,8 @@ if_extension
     ;
 
 for_stmt
-    :  FOR paramlist IN expr COLON block -> ^(FOR_STMT ^(PARAMS paramlist) expr block)
+    :  FOR paramlist IN expr COLON block
+        -> ^(FOR_STMT ^(PARAMS paramlist) expr block)
     ;
 
 while_stmt
@@ -192,12 +179,10 @@ fundef
     :   DEF ID params COLON block -> ^(FUNDEF ID params block)
     ;
 
-// The list of parameters grouped in a subtree (it can be empty)
 params
     :   paramlist? -> ^(PARAMS paramlist?)
     ;
 
-// Parameters are separated by commaske
 paramlist
     :   ID (','! ID)*
     ;
@@ -211,9 +196,11 @@ args
     ;
 
 arglist
-    :   {space(input) && (!input.LT(1).getText().equals("-") || directlyFollows(input.LT(1), input.LT(2)))}?
+    :   {space(input) && (!input.LT(1).getText().equals("-") ||
+                directlyFollows(input.LT(1), input.LT(2)))}?
         expr (options {greedy=true;}: ','! expr)*
     ;
+
 
 // Assignment
 assign
@@ -229,7 +216,8 @@ boolterm
     ;
 
 boolfact
-    :   num_expr (options {greedy=true;}: (DOUBLE_EQUAL^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) num_expr)?
+    :   num_expr (options {greedy=true;}:
+            (DOUBLE_EQUAL^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) num_expr)?
     ;
 
 num_expr
@@ -250,7 +238,7 @@ atom
     :   INT
     |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
     |   list
-    |   funcall // An ID can be considered a "funcall"
+    |   funcall // An ID can be considered a "funcall" with 0 args
     |   LPAREN! expr RPAREN!
     ;
 
@@ -264,19 +252,19 @@ list
 EQUAL	: '=' ;
 DOUBLE_EQUAL : '==';
 NOT_EQUAL: '!=' ;
-LT	    : '<' ;
-LE	    : '<=';
-GT	    : '>';
-GE	    : '>=';
-PLUS	: '+' ;
-MINUS	: '-' ;
-MUL	    : '*';
-DIV	    : '/';
-MOD	    : '%' ;
+LT      : '<' ;
+LE      : '<=';
+GT      : '>';
+GE      : '>=';
+PLUS    : '+' ;
+MINUS   : '-' ;
+MUL     : '*';
+DIV     : '/';
+MOD     : '%' ;
 // KEYWORDS
-NOT	    : 'not';
-AND	    : 'and' ;
-OR	    : 'or' ;
+NOT     : 'not';
+AND     : 'and' ;
+OR      : 'or' ;
 TRUE    : 'true';
 FALSE   : 'false';
 IF      : 'if';

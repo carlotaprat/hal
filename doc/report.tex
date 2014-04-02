@@ -1,0 +1,148 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[catalan]{babel}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\newcommand{\assignatura}{Compiladors}
+\newcommand{\titol}{Hal}
+
+\newcommand{\Pautor}{Héctor Ramón Jiménez}
+\newcommand{\Sautor}{Alvaro Espuña Buxó}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+\newcommand{\asl}{{\tt Asl}}
+\newcommand{\hal}{{\tt Hal}}
+
+\lstdefinestyle{antlr}{
+    basicstyle=\footnotesize\ttfamily,
+    language=Java,
+    moredelim=[s][\color{green!50!black}\ttfamily]{'}{'},% single quotes in green
+    moredelim=*[s][\bf]{options}{\}},
+    emph=[1]{lexer,header,parser},
+    emphstyle=[1]{\color{green!70!black}\ttfamily},
+    commentstyle={\color{gray}\itshape},%                  gray italics for comments
+    alsoletter={:,|,;},%
+    morekeywords={:,|,;},%                                 define the special characters
+    keywordstyle={\color{black}\bf},%                         and format them in black
+}
+
+\lstset{
+    basicstyle=\footnotesize\ttfamily,
+    comment=[l]\#,
+    emph=[1]{for,in,while,if,def,elif,else},
+    emphstyle=[1]{\color{green!50!black}\ttfamily},
+    emph=[2]{true,false},
+    emphstyle=[2]{\color{blue!70!black}\ttfamily},
+    commentstyle={\color{gray}\itshape},
+    keywordstyle={\color{black}\bf},%                         and format them in black
+}
+
+
+\begin{document}
+
+\begin{titlepage}
+  \begin{center}
+    \textsc{\Large \assignatura}\\[0.5cm]
+    \HRule \\[0.4cm]
+     { \huge \bfseries \titol \\[0.4cm] }
+    \HRule \\[0.8cm]
+    \begin{minipage}{0.4\textwidth}
+      \begin{flushleft}
+        \large \Pautor
+      \end{flushleft}
+    \end{minipage}
+    \begin{minipage}{0.4\textwidth}
+      \begin{flushright}
+        \large \Sautor
+      \end{flushright}
+    \end{minipage}
+
+    \vfill
+    {\large \today} \\[0.3cm]
+    {\large Facultat d'Informàtica de Barcelona}
+  \end{center}
+\end{titlepage}
+\newpage\null\thispagestyle{empty}\newpage
+
+\section{Gramàtica}
+
+Per gestionar la indentació, dins la gramàtica utilitzem una
+pila que manté el nombre d'espais esperats per la linia actual:
+
+\lstinputlisting[style=antlr, firstline=33, lastline=94]{../src/hal/parser/Hal.g}
+
+\noindent Per la sintaxi ens em basat en llenguatges com Ruby, Smalltalk, Python
+i Haskell. Volem que el llenguatge sigui còmode d'escriure, encara que
+la gramàtica sembli una mica més complicada:
+
+\lstinputlisting[style=antlr, firstline=115, lastline=246]{../src/hal/parser/Hal.g}
+
+\noindent La part dels tokens és la següent:
+
+\lstinputlisting[style=antlr, firstline=251]{../src/hal/parser/Hal.g}
+
+\section{Exemples}
+Exemples que són parsejats correctament ara:
+
+\begin{lstlisting}{hal}
+# definicions de funcions
+def f1! l:
+    def f2 x,y:
+        for x,y in l:
+            print y
+    return f2
+
+
+# if
+# en una sola linia
+if is_printable? a: do_something; print a;
+print a if is_prinatble? a else print b
+
+# en multiples linies
+if true:
+   do_a
+elif false:
+   do_b
+else:
+   do_c
+
+# while
+while boolea:
+    if i == 0:
+        p
+
+# llistes
+l = [1, 3 * 5, e + 15, f]
+
+# crides de funcions
+f1 f2 a,k # => (f1 (f2 a k))
+f1 (f2 a),k # => (f1 (f2 a) k)
+\end{lstlisting}
+
+
+\section{Breu descripció dels següents passos}
+El següent pas és, principalment, construir un evaluador de l'arbre sintàctic.
+En ell haurem de tenir en compte coses com els \emph{scopes} de les variables
+i la taula de símbols per a les funcions. Ens podem basar una mica en l'\asl.
+
+Una particularitat és que hem considerat que els identificadors
+pertanyin tots a crides de funcions, considerant les \emph{variables}
+casos particulars de funcions amb 0 arguments, i que retornen el valor
+assignat. Creiem que el fet que tot és comporti com crides a funcions ens permetrà
+fer un evaluador més senzill, perquè serà més homogeni.
+
+A \hal{} volem donar-li força importància a les funcions, per
+facilitar la generació de \emph{DSL}s. Hi haurà altres tipus de dades
+bàsics (numèrics, llistes,...), volem centrar-nos en el tipus {\tt
+  Function}.  Volem suportar \emph{currying} i funcions de primer
+ordre, per tant, haurem de tenir una classe {\tt Function} força
+potent.
+
+També voldriem implementar classes. Per encapsular conjunts de
+funcions. Es cridarien amb la notació del {\tt .} (p.e. {\tt classe.f
+  param1, param2}). Si arribéssim a suportar herència segurament seria
+només simple, per facilitar l'ordre de resolució de mètodes.
+
+\end{document}
