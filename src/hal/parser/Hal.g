@@ -34,7 +34,6 @@ tokens
 {
     public static final int MAX_INDENTS = 100;
     private int indentLevel = 0;
-    private boolean firstLine = true;
     int[] indentStack = new int[MAX_INDENTS];
     java.util.Queue<Token> tokens =
         new java.util.LinkedList<Token>();
@@ -230,7 +229,7 @@ term
 
 factor
     :   NOT^ atom
-    |   MINUS^ atom
+    |   MINUS atom -> ^(MINUS["NEGATE"] atom)
     |   atom
     ;
 
@@ -282,10 +281,13 @@ RPAREN  : ')';
 LBRACK  : '[';
 RBRACK  : ']';
 
+// Useful fragments
 fragment DIGIT : ('0'..'9');
 fragment LOWER : ('a'..'z');
 fragment UPPER : ('A'..'Z');
 fragment LETTER: (LOWER|UPPER);
+fragment NL     : (('\r')? '\n')+;
+fragment SP     : (' ' | '\t')+;
 
 // Identifiers
 ID  : (LETTER|'_') (LETTER|'_'|DIGIT)* ('!'|'?')?;
@@ -293,12 +295,11 @@ ID  : (LETTER|'_') (LETTER|'_'|DIGIT)* ('!'|'?')?;
 // Integers
 INT : (DIGIT)+;
 
-
-SpaceChars
+WS
     : SP {skip();}
     ;
 
-Comments: ('#' ~('\n'|'\r')* NL) {skip();};
+COMMENT: '#' ~('\n'|'\r')* {skip();};
 
 NEWLINE
     @init
@@ -313,7 +314,7 @@ NEWLINE
         int currentIndent = indentStack[indentLevel];
 
         // Skip if same indentation or empty line
-        if(n == currentIndent)
+        if(n == currentIndent || next == '\n' || next == '\r' || next == -1)
         {
             skip();
         }
@@ -335,7 +336,5 @@ NEWLINE
     }
     ;
 
-fragment NL     : (('\r')? '\n')+;
-fragment SP     : (' ' | '\t')+;
 fragment Indent : ;
 fragment Dedent : ;

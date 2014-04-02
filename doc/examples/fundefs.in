@@ -1,0 +1,5 @@
+def f1! l:
+    def f2 a:
+        for x,y in a:
+            print y
+    f2 l

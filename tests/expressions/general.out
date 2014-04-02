@@ -23,8 +23,8 @@ digraph {
   n10 [label=":="];
   n10 [label=":="];
   n11 [label="b"];
-  n12 [label="-"];
-  n12 [label="-"];
+  n12 [label="NEGATE"];
+  n12 [label="NEGATE"];
   n13 [label="FUNCALL"];
   n13 [label="FUNCALL"];
   n14 [label="a"];
@@ -32,8 +32,8 @@ digraph {
   n16 [label=":="];
   n16 [label=":="];
   n17 [label="b"];
-  n18 [label="-"];
-  n18 [label="-"];
+  n18 [label="NEGATE"];
+  n18 [label="NEGATE"];
   n19 [label="FUNCALL"];
   n19 [label="FUNCALL"];
   n20 [label="a"];
@@ -41,8 +41,8 @@ digraph {
   n22 [label=":="];
   n22 [label=":="];
   n23 [label="f"];
-  n24 [label="-"];
-  n24 [label="-"];
+  n24 [label="NEGATE"];
+  n24 [label="NEGATE"];
   n25 [label="FUNCALL"];
   n25 [label="FUNCALL"];
   n26 [label="f"];
@@ -83,8 +83,8 @@ digraph {
   n50 [label="a"];
   n51 [label="ARGS"];
   n51 [label="ARGS"];
-  n52 [label="-"];
-  n52 [label="-"];
+  n52 [label="NEGATE"];
+  n52 [label="NEGATE"];
   n53 [label="FUNCALL"];
   n53 [label="FUNCALL"];
   n54 [label="b"];
@@ -131,14 +131,14 @@ digraph {
   n82 [label="d"];
   n83 [label="ARGS"];
   n83 [label="ARGS"];
-  n84 [label="-"];
-  n84 [label="-"];
+  n84 [label="NEGATE"];
+  n84 [label="NEGATE"];
   n85 [label="FUNCALL"];
   n85 [label="FUNCALL"];
   n86 [label="e"];
   n87 [label="ARGS"];
-  n88 [label="-"];
-  n88 [label="-"];
+  n88 [label="NEGATE"];
+  n88 [label="NEGATE"];
   n89 [label="FUNCALL"];
   n89 [label="FUNCALL"];
   n90 [label="f"];
@@ -155,20 +155,20 @@ digraph {
   n3 -> n9 // "-" -> "2"
   n0 -> n10 // "BLOCK" -> ":="
   n10 -> n11 // ":=" -> "b"
-  n10 -> n12 // ":=" -> "-"
-  n12 -> n13 // "-" -> "FUNCALL"
+  n10 -> n12 // ":=" -> "NEGATE"
+  n12 -> n13 // "NEGATE" -> "FUNCALL"
   n13 -> n14 // "FUNCALL" -> "a"
   n13 -> n15 // "FUNCALL" -> "ARGS"
   n0 -> n16 // "BLOCK" -> ":="
   n16 -> n17 // ":=" -> "b"
-  n16 -> n18 // ":=" -> "-"
-  n18 -> n19 // "-" -> "FUNCALL"
+  n16 -> n18 // ":=" -> "NEGATE"
+  n18 -> n19 // "NEGATE" -> "FUNCALL"
   n19 -> n20 // "FUNCALL" -> "a"
   n19 -> n21 // "FUNCALL" -> "ARGS"
   n0 -> n22 // "BLOCK" -> ":="
   n22 -> n23 // ":=" -> "f"
-  n22 -> n24 // ":=" -> "-"
-  n24 -> n25 // "-" -> "FUNCALL"
+  n22 -> n24 // ":=" -> "NEGATE"
+  n24 -> n25 // "NEGATE" -> "FUNCALL"
   n25 -> n26 // "FUNCALL" -> "f"
   n25 -> n27 // "FUNCALL" -> "ARGS"
   n27 -> n28 // "ARGS" -> "2"
@@ -195,8 +195,8 @@ digraph {
   n47 -> n49 // ":=" -> "FUNCALL"
   n49 -> n50 // "FUNCALL" -> "a"
   n49 -> n51 // "FUNCALL" -> "ARGS"
-  n51 -> n52 // "ARGS" -> "-"
-  n52 -> n53 // "-" -> "FUNCALL"
+  n51 -> n52 // "ARGS" -> "NEGATE"
+  n52 -> n53 // "NEGATE" -> "FUNCALL"
   n53 -> n54 // "FUNCALL" -> "b"
   n53 -> n55 // "FUNCALL" -> "ARGS"
   n0 -> n56 // "BLOCK" -> ":="
@@ -227,12 +227,12 @@ digraph {
   n79 -> n81 // "-" -> "FUNCALL"
   n81 -> n82 // "FUNCALL" -> "d"
   n81 -> n83 // "FUNCALL" -> "ARGS"
-  n83 -> n84 // "ARGS" -> "-"
-  n84 -> n85 // "-" -> "FUNCALL"
+  n83 -> n84 // "ARGS" -> "NEGATE"
+  n84 -> n85 // "NEGATE" -> "FUNCALL"
   n85 -> n86 // "FUNCALL" -> "e"
   n85 -> n87 // "FUNCALL" -> "ARGS"
-  n83 -> n88 // "ARGS" -> "-"
-  n88 -> n89 // "-" -> "FUNCALL"
+  n83 -> n88 // "ARGS" -> "NEGATE"
+  n88 -> n89 // "NEGATE" -> "FUNCALL"
   n89 -> n90 // "FUNCALL" -> "f"
   n89 -> n91 // "FUNCALL" -> "ARGS"
 

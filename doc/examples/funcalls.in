@@ -1,0 +1,8 @@
+f1 f2 a,k
+f1 (f2 a),k
+
+# la separacio entre tokens es significativa
+# en el cas de la negacio
+f-3
+f -3
+f - 3

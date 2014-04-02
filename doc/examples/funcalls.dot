@@ -1,0 +1,110 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="BLOCK"];
+  n1 [label="FUNCALL"];
+  n1 [label="FUNCALL"];
+  n2 [label="f1"];
+  n3 [label="ARGS"];
+  n3 [label="ARGS"];
+  n4 [label="FUNCALL"];
+  n4 [label="FUNCALL"];
+  n5 [label="f2"];
+  n6 [label="ARGS"];
+  n6 [label="ARGS"];
+  n7 [label="FUNCALL"];
+  n7 [label="FUNCALL"];
+  n8 [label="a"];
+  n9 [label="ARGS"];
+  n10 [label="FUNCALL"];
+  n10 [label="FUNCALL"];
+  n11 [label="k"];
+  n12 [label="ARGS"];
+  n13 [label="FUNCALL"];
+  n13 [label="FUNCALL"];
+  n14 [label="f1"];
+  n15 [label="ARGS"];
+  n15 [label="ARGS"];
+  n16 [label="FUNCALL"];
+  n16 [label="FUNCALL"];
+  n17 [label="f2"];
+  n18 [label="ARGS"];
+  n18 [label="ARGS"];
+  n19 [label="FUNCALL"];
+  n19 [label="FUNCALL"];
+  n20 [label="a"];
+  n21 [label="ARGS"];
+  n22 [label="FUNCALL"];
+  n22 [label="FUNCALL"];
+  n23 [label="k"];
+  n24 [label="ARGS"];
+  n25 [label="-"];
+  n25 [label="-"];
+  n26 [label="FUNCALL"];
+  n26 [label="FUNCALL"];
+  n27 [label="f"];
+  n28 [label="ARGS"];
+  n29 [label="3"];
+  n30 [label="FUNCALL"];
+  n30 [label="FUNCALL"];
+  n31 [label="f"];
+  n32 [label="ARGS"];
+  n32 [label="ARGS"];
+  n33 [label="NEGATE"];
+  n33 [label="NEGATE"];
+  n34 [label="3"];
+  n35 [label="-"];
+  n35 [label="-"];
+  n36 [label="FUNCALL"];
+  n36 [label="FUNCALL"];
+  n37 [label="f"];
+  n38 [label="ARGS"];
+  n39 [label="3"];
+
+  n0 -> n1 // "BLOCK" -> "FUNCALL"
+  n1 -> n2 // "FUNCALL" -> "f1"
+  n1 -> n3 // "FUNCALL" -> "ARGS"
+  n3 -> n4 // "ARGS" -> "FUNCALL"
+  n4 -> n5 // "FUNCALL" -> "f2"
+  n4 -> n6 // "FUNCALL" -> "ARGS"
+  n6 -> n7 // "ARGS" -> "FUNCALL"
+  n7 -> n8 // "FUNCALL" -> "a"
+  n7 -> n9 // "FUNCALL" -> "ARGS"
+  n6 -> n10 // "ARGS" -> "FUNCALL"
+  n10 -> n11 // "FUNCALL" -> "k"
+  n10 -> n12 // "FUNCALL" -> "ARGS"
+  n0 -> n13 // "BLOCK" -> "FUNCALL"
+  n13 -> n14 // "FUNCALL" -> "f1"
+  n13 -> n15 // "FUNCALL" -> "ARGS"
+  n15 -> n16 // "ARGS" -> "FUNCALL"
+  n16 -> n17 // "FUNCALL" -> "f2"
+  n16 -> n18 // "FUNCALL" -> "ARGS"
+  n18 -> n19 // "ARGS" -> "FUNCALL"
+  n19 -> n20 // "FUNCALL" -> "a"
+  n19 -> n21 // "FUNCALL" -> "ARGS"
+  n15 -> n22 // "ARGS" -> "FUNCALL"
+  n22 -> n23 // "FUNCALL" -> "k"
+  n22 -> n24 // "FUNCALL" -> "ARGS"
+  n0 -> n25 // "BLOCK" -> "-"
+  n25 -> n26 // "-" -> "FUNCALL"
+  n26 -> n27 // "FUNCALL" -> "f"
+  n26 -> n28 // "FUNCALL" -> "ARGS"
+  n25 -> n29 // "-" -> "3"
+  n0 -> n30 // "BLOCK" -> "FUNCALL"
+  n30 -> n31 // "FUNCALL" -> "f"
+  n30 -> n32 // "FUNCALL" -> "ARGS"
+  n32 -> n33 // "ARGS" -> "NEGATE"
+  n33 -> n34 // "NEGATE" -> "3"
+  n0 -> n35 // "BLOCK" -> "-"
+  n35 -> n36 // "-" -> "FUNCALL"
+  n36 -> n37 // "FUNCALL" -> "f"
+  n36 -> n38 // "FUNCALL" -> "ARGS"
+  n35 -> n39 // "-" -> "3"
+
+}
+

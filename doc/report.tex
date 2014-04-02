@@ -3,6 +3,8 @@
 \usepackage[catalan]{babel}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{lscape}
 
 \newcommand{\assignatura}{Compiladors}
 \newcommand{\titol}{Hal}
@@ -68,59 +70,72 @@
 
 \section{Gramàtica}
 
-Per gestionar la indentació, dins la gramàtica utilitzem una
-pila que manté el nombre d'espais esperats per la linia actual:
+La nostra idea principal és que la sintaxi del llenguatge sigui molt neta. Per tant, el primer que vam decidir és desfer-nos de les claus `\texttt{\{}' i fer que els blocs fossin definits per la seva propia indentació, com a Python. Per fer-ho, hem ampliat el \texttt{lexer} per tal de que emeti tokens relacionats amb la indentació (\texttt{INDENT} i \texttt{DEDENT}), tot utilitzant una pila que manté el nombre d'espais per cada nivell d'indentació definit:
 
-\lstinputlisting[style=antlr, firstline=33, lastline=94]{../src/hal/parser/Hal.g}
+\lstinputlisting[style=antlr, firstline=33, lastline=93]{../src/hal/parser/Hal.g}
 
-\noindent Per la sintaxi ens em basat en llenguatges com Ruby, Smalltalk, Python
+\noindent La indentació només pot succeïr quan hi ha un salt de línia. Per tant,
+afegim el comportament d'analitzar la indentació al token \texttt{NEWLINE}:
+
+\lstinputlisting[style=antlr, firstline=304, lastline=336]{../src/hal/parser/Hal.g}
+
+\noindent Per la sintaxi ens hem basat en llenguatges com Ruby, Smalltalk, Python
 i Haskell. Volem que el llenguatge sigui còmode d'escriure, encara que
 la gramàtica sembli una mica més complicada:
 
-\lstinputlisting[style=antlr, firstline=115, lastline=246]{../src/hal/parser/Hal.g}
+\lstinputlisting[style=antlr, firstline=114, lastline=247]{../src/hal/parser/Hal.g}
 
 \noindent La part dels tokens és la següent:
 
-\lstinputlisting[style=antlr, firstline=251]{../src/hal/parser/Hal.g}
+\lstinputlisting[style=antlr, firstline=250, lastline=302]{../src/hal/parser/Hal.g}
+
+\clearpage
 
 \section{Exemples}
-Exemples que són parsejats correctament ara:
+\subsection{Condicionals}
+\lstinputlisting{examples/conditionals.in}
+\begin{figure}[h!]
+  \includegraphics[width=1\textwidth]{examples/conditionals.pdf}
+  \caption{Conditionals. AST resultant. Fes zoom per veure la imatge}
+\end{figure}
 
-\begin{lstlisting}{hal}
-# definicions de funcions
-def f1! l:
-    def f2 x,y:
-        for x,y in l:
-            print y
-    return f2
+\clearpage
 
+\subsection{Definició de funcions}
+\lstinputlisting{examples/fundefs.in}
+\begin{figure}[h!]
+  \includegraphics[width=0.9\textwidth]{examples/fundefs.pdf}
+  \caption{Definició de funcions. AST resultant}
+\end{figure}
 
-# if
-# en una sola linia
-if is_printable? a: do_something; print a;
-print a if is_prinatble? a else print b
+\clearpage
 
-# en multiples linies
-if true:
-   do_a
-elif false:
-   do_b
-else:
-   do_c
+\subsection{Crides a funcions}
+\lstinputlisting{examples/funcalls.in}
+\begin{figure}[h!]
+  \includegraphics[width=1\textwidth]{examples/funcalls.pdf}
+  \caption{Crides a funcions. AST resultant}
+\end{figure}
 
-# while
-while boolea:
-    if i == 0:
-        p
+\clearpage
 
-# llistes
-l = [1, 3 * 5, e + 15, f]
+\subsection{Bucles}
+\lstinputlisting{examples/loops.in}
+\begin{figure}[h!]
+  \includegraphics[width=1\textwidth]{examples/loops.pdf}
+  \caption{Bucles. AST resultant}
+\end{figure}
 
-# crides de funcions
-f1 f2 a,k # => (f1 (f2 a k))
-f1 (f2 a),k # => (f1 (f2 a) k)
-\end{lstlisting}
+\clearpage
 
+\subsection{Llistes}
+\lstinputlisting{examples/lists.in}
+\begin{figure}[h!]
+  \includegraphics[width=1\textwidth]{examples/lists.pdf}
+  \caption{Llists. AST resultant}
+\end{figure}
+
+\clearpage
 
 \section{Breu descripció dels següents passos}
 El següent pas és, principalment, construir un evaluador de l'arbre sintàctic.
@@ -141,11 +156,11 @@ ordre, per tant, haurem de tenir una classe {\tt Function} força
 potent.
 
 També voldriem implementar classes. Per encapsular conjunts de
-funcions. Es cridarien amb la notació del {\tt .} (p.e. {\tt classe.f
-  param1, param2}). Si arribéssim a suportar herència segurament seria
+funcions. Es cridarien amb la notació del {\tt .} (p.e. {\tt instancia.metode
+  arg1, arg2}). Si arribéssim a suportar herència segurament seria
 només simple, per facilitar l'ordre de resolució de mètodes.
 
 La idea és que a partir d'una base petita del llenguatge, amb un evaluador
-senzill, sigui possible construir la resta del \hal a sobre.
+senzill, sigui possible construir la resta del \hal{} a sobre.
 
 \end{document}

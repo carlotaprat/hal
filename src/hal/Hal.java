@@ -12,7 +12,7 @@ public class Hal
 
         try
         {
-            CommonTree tree = (CommonTree)parser.parse().getTree();
+            CommonTree tree = (CommonTree)parser.prog().getTree();
             DOTTreeGenerator gen = new DOTTreeGenerator();
             StringTemplate st = gen.toDOT(tree);
             System.out.println(st);
