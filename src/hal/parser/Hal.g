@@ -214,7 +214,8 @@ args
     ;
 
 arglist
-    :   {space(input)}? expr (options {greedy=true;}: ','! expr)*
+    :   {space(input) && (!input.LT(1).getText().equals("-") || directlyFollows(input.LT(1), input.LT(2)))}?
+        expr (options {greedy=true;}: ','! expr)*
     ;
 
 // Assignment

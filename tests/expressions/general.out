@@ -1,0 +1,240 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="BLOCK"];
+  n1 [label=":="];
+  n1 [label=":="];
+  n2 [label="a"];
+  n3 [label="-"];
+  n3 [label="-"];
+  n4 [label="+"];
+  n4 [label="+"];
+  n5 [label="+"];
+  n5 [label="+"];
+  n6 [label="3"];
+  n7 [label="2"];
+  n8 [label="1"];
+  n9 [label="2"];
+  n10 [label=":="];
+  n10 [label=":="];
+  n11 [label="b"];
+  n12 [label="-"];
+  n12 [label="-"];
+  n13 [label="FUNCALL"];
+  n13 [label="FUNCALL"];
+  n14 [label="a"];
+  n15 [label="ARGS"];
+  n16 [label=":="];
+  n16 [label=":="];
+  n17 [label="b"];
+  n18 [label="-"];
+  n18 [label="-"];
+  n19 [label="FUNCALL"];
+  n19 [label="FUNCALL"];
+  n20 [label="a"];
+  n21 [label="ARGS"];
+  n22 [label=":="];
+  n22 [label=":="];
+  n23 [label="f"];
+  n24 [label="-"];
+  n24 [label="-"];
+  n25 [label="FUNCALL"];
+  n25 [label="FUNCALL"];
+  n26 [label="f"];
+  n27 [label="ARGS"];
+  n27 [label="ARGS"];
+  n28 [label="2"];
+  n29 [label=":="];
+  n29 [label=":="];
+  n30 [label="f"];
+  n31 [label="+"];
+  n31 [label="+"];
+  n32 [label="-"];
+  n32 [label="-"];
+  n33 [label="3"];
+  n34 [label="2"];
+  n35 [label="FUNCALL"];
+  n35 [label="FUNCALL"];
+  n36 [label="f"];
+  n37 [label="ARGS"];
+  n38 [label=":="];
+  n38 [label=":="];
+  n39 [label="f"];
+  n40 [label="-"];
+  n40 [label="-"];
+  n41 [label="FUNCALL"];
+  n41 [label="FUNCALL"];
+  n42 [label="a"];
+  n43 [label="ARGS"];
+  n44 [label="FUNCALL"];
+  n44 [label="FUNCALL"];
+  n45 [label="b"];
+  n46 [label="ARGS"];
+  n47 [label=":="];
+  n47 [label=":="];
+  n48 [label="f"];
+  n49 [label="FUNCALL"];
+  n49 [label="FUNCALL"];
+  n50 [label="a"];
+  n51 [label="ARGS"];
+  n51 [label="ARGS"];
+  n52 [label="-"];
+  n52 [label="-"];
+  n53 [label="FUNCALL"];
+  n53 [label="FUNCALL"];
+  n54 [label="b"];
+  n55 [label="ARGS"];
+  n56 [label=":="];
+  n56 [label=":="];
+  n57 [label="f"];
+  n58 [label="-"];
+  n58 [label="-"];
+  n59 [label="FUNCALL"];
+  n59 [label="FUNCALL"];
+  n60 [label="a"];
+  n61 [label="ARGS"];
+  n62 [label="FUNCALL"];
+  n62 [label="FUNCALL"];
+  n63 [label="b"];
+  n64 [label="ARGS"];
+  n65 [label=":="];
+  n65 [label=":="];
+  n66 [label="f"];
+  n67 [label="-"];
+  n67 [label="-"];
+  n68 [label="-"];
+  n68 [label="-"];
+  n69 [label="FUNCALL"];
+  n69 [label="FUNCALL"];
+  n70 [label="a"];
+  n71 [label="ARGS"];
+  n72 [label="FUNCALL"];
+  n72 [label="FUNCALL"];
+  n73 [label="b"];
+  n74 [label="ARGS"];
+  n75 [label="FUNCALL"];
+  n75 [label="FUNCALL"];
+  n76 [label="c"];
+  n77 [label="ARGS"];
+  n77 [label="ARGS"];
+  n78 [label="3"];
+  n79 [label="-"];
+  n79 [label="-"];
+  n80 [label="4"];
+  n81 [label="FUNCALL"];
+  n81 [label="FUNCALL"];
+  n82 [label="d"];
+  n83 [label="ARGS"];
+  n83 [label="ARGS"];
+  n84 [label="-"];
+  n84 [label="-"];
+  n85 [label="FUNCALL"];
+  n85 [label="FUNCALL"];
+  n86 [label="e"];
+  n87 [label="ARGS"];
+  n88 [label="-"];
+  n88 [label="-"];
+  n89 [label="FUNCALL"];
+  n89 [label="FUNCALL"];
+  n90 [label="f"];
+  n91 [label="ARGS"];
+
+  n0 -> n1 // "BLOCK" -> ":="
+  n1 -> n2 // ":=" -> "a"
+  n1 -> n3 // ":=" -> "-"
+  n3 -> n4 // "-" -> "+"
+  n4 -> n5 // "+" -> "+"
+  n5 -> n6 // "+" -> "3"
+  n5 -> n7 // "+" -> "2"
+  n4 -> n8 // "+" -> "1"
+  n3 -> n9 // "-" -> "2"
+  n0 -> n10 // "BLOCK" -> ":="
+  n10 -> n11 // ":=" -> "b"
+  n10 -> n12 // ":=" -> "-"
+  n12 -> n13 // "-" -> "FUNCALL"
+  n13 -> n14 // "FUNCALL" -> "a"
+  n13 -> n15 // "FUNCALL" -> "ARGS"
+  n0 -> n16 // "BLOCK" -> ":="
+  n16 -> n17 // ":=" -> "b"
+  n16 -> n18 // ":=" -> "-"
+  n18 -> n19 // "-" -> "FUNCALL"
+  n19 -> n20 // "FUNCALL" -> "a"
+  n19 -> n21 // "FUNCALL" -> "ARGS"
+  n0 -> n22 // "BLOCK" -> ":="
+  n22 -> n23 // ":=" -> "f"
+  n22 -> n24 // ":=" -> "-"
+  n24 -> n25 // "-" -> "FUNCALL"
+  n25 -> n26 // "FUNCALL" -> "f"
+  n25 -> n27 // "FUNCALL" -> "ARGS"
+  n27 -> n28 // "ARGS" -> "2"
+  n0 -> n29 // "BLOCK" -> ":="
+  n29 -> n30 // ":=" -> "f"
+  n29 -> n31 // ":=" -> "+"
+  n31 -> n32 // "+" -> "-"
+  n32 -> n33 // "-" -> "3"
+  n32 -> n34 // "-" -> "2"
+  n31 -> n35 // "+" -> "FUNCALL"
+  n35 -> n36 // "FUNCALL" -> "f"
+  n35 -> n37 // "FUNCALL" -> "ARGS"
+  n0 -> n38 // "BLOCK" -> ":="
+  n38 -> n39 // ":=" -> "f"
+  n38 -> n40 // ":=" -> "-"
+  n40 -> n41 // "-" -> "FUNCALL"
+  n41 -> n42 // "FUNCALL" -> "a"
+  n41 -> n43 // "FUNCALL" -> "ARGS"
+  n40 -> n44 // "-" -> "FUNCALL"
+  n44 -> n45 // "FUNCALL" -> "b"
+  n44 -> n46 // "FUNCALL" -> "ARGS"
+  n0 -> n47 // "BLOCK" -> ":="
+  n47 -> n48 // ":=" -> "f"
+  n47 -> n49 // ":=" -> "FUNCALL"
+  n49 -> n50 // "FUNCALL" -> "a"
+  n49 -> n51 // "FUNCALL" -> "ARGS"
+  n51 -> n52 // "ARGS" -> "-"
+  n52 -> n53 // "-" -> "FUNCALL"
+  n53 -> n54 // "FUNCALL" -> "b"
+  n53 -> n55 // "FUNCALL" -> "ARGS"
+  n0 -> n56 // "BLOCK" -> ":="
+  n56 -> n57 // ":=" -> "f"
+  n56 -> n58 // ":=" -> "-"
+  n58 -> n59 // "-" -> "FUNCALL"
+  n59 -> n60 // "FUNCALL" -> "a"
+  n59 -> n61 // "FUNCALL" -> "ARGS"
+  n58 -> n62 // "-" -> "FUNCALL"
+  n62 -> n63 // "FUNCALL" -> "b"
+  n62 -> n64 // "FUNCALL" -> "ARGS"
+  n0 -> n65 // "BLOCK" -> ":="
+  n65 -> n66 // ":=" -> "f"
+  n65 -> n67 // ":=" -> "-"
+  n67 -> n68 // "-" -> "-"
+  n68 -> n69 // "-" -> "FUNCALL"
+  n69 -> n70 // "FUNCALL" -> "a"
+  n69 -> n71 // "FUNCALL" -> "ARGS"
+  n68 -> n72 // "-" -> "FUNCALL"
+  n72 -> n73 // "FUNCALL" -> "b"
+  n72 -> n74 // "FUNCALL" -> "ARGS"
+  n67 -> n75 // "-" -> "FUNCALL"
+  n75 -> n76 // "FUNCALL" -> "c"
+  n75 -> n77 // "FUNCALL" -> "ARGS"
+  n77 -> n78 // "ARGS" -> "3"
+  n77 -> n79 // "ARGS" -> "-"
+  n79 -> n80 // "-" -> "4"
+  n79 -> n81 // "-" -> "FUNCALL"
+  n81 -> n82 // "FUNCALL" -> "d"
+  n81 -> n83 // "FUNCALL" -> "ARGS"
+  n83 -> n84 // "ARGS" -> "-"
+  n84 -> n85 // "-" -> "FUNCALL"
+  n85 -> n86 // "FUNCALL" -> "e"
+  n85 -> n87 // "FUNCALL" -> "ARGS"
+  n83 -> n88 // "ARGS" -> "-"
+  n88 -> n89 // "-" -> "FUNCALL"
+  n89 -> n90 // "FUNCALL" -> "f"
+  n89 -> n91 // "FUNCALL" -> "ARGS"
+
+}
+
