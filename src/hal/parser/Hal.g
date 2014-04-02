@@ -307,6 +307,11 @@ ID  : (LETTER|'_') (LETTER|'_'|DIGIT)* ('!'|'?')?;
 // Integers
 INT : (DIGIT)+;
 
+
+SpaceChars
+    : SP {skip();}
+    ;
+
 Comments: ('#' ~('\n'|'\r')* NL) {skip();};
 
 NEWLINE
