@@ -111,6 +111,21 @@ tokens
 
 // END INDENTATION RELATED
 
+@parser::members {
+  public boolean space(TokenStream input) {
+    return !directlyFollows(input.LT(-1), input.LT(1));
+  }
+ 
+  private boolean directlyFollows(Token first, Token second) {
+    CommonToken firstT = (CommonToken) first;
+    CommonToken secondT = (CommonToken) second;
+ 
+    if (firstT.getStopIndex() + 1 != secondT.getStartIndex())
+      return false;
+       
+    return true;
+  }
+}
 
 // GRAMMAR
 
@@ -136,7 +151,7 @@ simple_stmt
 
 small_stmt
     : assign
-    | funcall
+    | expr
     ;
 
 compound_stmt
@@ -192,7 +207,6 @@ paramlist
 
 funcall
     :   ID args -> ^(FUNCALL ID args)
-    |   ID_NEGATIVE args -> ^(MINUS ZERO ^(FUNCALL ID_NEGATIVE args))
     ;
 
 args
@@ -200,7 +214,7 @@ args
     ;
 
 arglist
-    :   expr (options {greedy=true;}: ','! expr)*
+    :   {space(input)}? expr (options {greedy=true;}: ','! expr)*
     ;
 
 // Assignment
@@ -229,7 +243,9 @@ term
     ;
 
 factor
-    :   (NOT^)? atom
+    :   NOT^ atom
+    |   MINUS^ atom
+    |   atom
     ;
 
 atom
@@ -238,7 +254,6 @@ atom
     |   list
     |   funcall // An ID can be considered a "funcall"
     |   LPAREN! expr RPAREN!
-    |   MINUS_LPAREN expr RPAREN -> ^(MINUS ZERO expr)
     ;
 
 list
@@ -280,10 +295,7 @@ LPAREN  : '(';
 RPAREN  : ')';
 LBRACK  : '[';
 RBRACK  : ']';
-// COMPOUND SYMBOLS
-MINUS_LPAREN : MINUS LPAREN;
 
-fragment ZERO  : '0';
 fragment DIGIT : ('0'..'9');
 fragment LOWER : ('a'..'z');
 fragment UPPER : ('A'..'Z');
@@ -291,23 +303,9 @@ fragment LETTER: (LOWER|UPPER);
 
 // Identifiers
 ID  : (LETTER|'_') (LETTER|'_'|DIGIT)* ('!'|'?')?;
-ID_NEGATIVE : '-' id=ID {setText($id.text);};
 
 // Integers
-fragment INT_FRAG : (PLUS|MINUS)? (DIGIT)+;
-
-INT returns [int value]
-    : a=INT_FRAG {$value = Integer.parseInt($a.text);} (
-        PLUS  a=INT_FRAG {$value += Integer.parseInt($a.text);}
-    |   MINUS a=INT_FRAG {$value -= Integer.parseInt($a.text);}
-    )*
-    {setText(Integer.toString($value));}
-    ;
-
-
-SpaceChars
-    : SP {skip();}
-    ;
+INT : (DIGIT)+;
 
 Comments: ('#' ~('\n'|'\r')* NL) {skip();};
 
