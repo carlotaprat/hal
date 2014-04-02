@@ -62,8 +62,6 @@ tokens
     {
         state.token = t;
         tokens.offer(t);
-
-        System.err.println("=> " + t);
     }
 
     @Override
@@ -87,7 +85,6 @@ tokens
 
         Token t = tokens.poll();
 
-        System.err.println("<= " + t);
         return t;
     }
 
@@ -115,14 +112,14 @@ tokens
   public boolean space(TokenStream input) {
     return !directlyFollows(input.LT(-1), input.LT(1));
   }
- 
+
   private boolean directlyFollows(Token first, Token second) {
     CommonToken firstT = (CommonToken) first;
     CommonToken secondT = (CommonToken) second;
- 
+
     if (firstT.getStopIndex() + 1 != secondT.getStartIndex())
       return false;
-       
+
     return true;
   }
 }
