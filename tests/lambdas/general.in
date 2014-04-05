@@ -1,0 +1,12 @@
+do map list as element:
+    do characters element as c: c + str 1
+
+do file test as f: write f, hello
+
+
+do enumerate:
+  do figure:
+    graphics test
+    caption something, fancy
+
+  question nothing

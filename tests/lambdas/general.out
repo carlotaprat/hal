@@ -1,0 +1,215 @@
+digraph {
+
+	ordering=out;
+	ranksep=.4;
+	bgcolor="lightgrey"; node [shape=box, fixedsize=false, fontsize=12, fontname="Helvetica-bold", fontcolor="blue"
+		width=.25, height=.25, color="black", fillcolor="white", style="filled, solid, bold"];
+	edge [arrowsize=.5, color="black", style="bold"]
+
+  n0 [label="BLOCK"];
+  n1 [label="FUNCALL"];
+  n1 [label="FUNCALL"];
+  n2 [label="map"];
+  n3 [label="ARGS"];
+  n3 [label="ARGS"];
+  n4 [label="FUNCALL"];
+  n4 [label="FUNCALL"];
+  n5 [label="list"];
+  n6 [label="ARGS"];
+  n7 [label="LAMBDA"];
+  n7 [label="LAMBDA"];
+  n8 [label="PARAMS"];
+  n8 [label="PARAMS"];
+  n9 [label="element"];
+  n10 [label="BLOCK"];
+  n10 [label="BLOCK"];
+  n11 [label="FUNCALL"];
+  n11 [label="FUNCALL"];
+  n12 [label="characters"];
+  n13 [label="ARGS"];
+  n13 [label="ARGS"];
+  n14 [label="FUNCALL"];
+  n14 [label="FUNCALL"];
+  n15 [label="element"];
+  n16 [label="ARGS"];
+  n17 [label="LAMBDA"];
+  n17 [label="LAMBDA"];
+  n18 [label="PARAMS"];
+  n18 [label="PARAMS"];
+  n19 [label="c"];
+  n20 [label="BLOCK"];
+  n20 [label="BLOCK"];
+  n21 [label="+"];
+  n21 [label="+"];
+  n22 [label="FUNCALL"];
+  n22 [label="FUNCALL"];
+  n23 [label="c"];
+  n24 [label="ARGS"];
+  n25 [label="FUNCALL"];
+  n25 [label="FUNCALL"];
+  n26 [label="str"];
+  n27 [label="ARGS"];
+  n27 [label="ARGS"];
+  n28 [label="1"];
+  n29 [label="FUNCALL"];
+  n29 [label="FUNCALL"];
+  n30 [label="file"];
+  n31 [label="ARGS"];
+  n31 [label="ARGS"];
+  n32 [label="FUNCALL"];
+  n32 [label="FUNCALL"];
+  n33 [label="test"];
+  n34 [label="ARGS"];
+  n35 [label="LAMBDA"];
+  n35 [label="LAMBDA"];
+  n36 [label="PARAMS"];
+  n36 [label="PARAMS"];
+  n37 [label="f"];
+  n38 [label="BLOCK"];
+  n38 [label="BLOCK"];
+  n39 [label="FUNCALL"];
+  n39 [label="FUNCALL"];
+  n40 [label="write"];
+  n41 [label="ARGS"];
+  n41 [label="ARGS"];
+  n42 [label="FUNCALL"];
+  n42 [label="FUNCALL"];
+  n43 [label="f"];
+  n44 [label="ARGS"];
+  n45 [label="FUNCALL"];
+  n45 [label="FUNCALL"];
+  n46 [label="hello"];
+  n47 [label="ARGS"];
+  n48 [label="FUNCALL"];
+  n48 [label="FUNCALL"];
+  n49 [label="enumerate"];
+  n50 [label="ARGS"];
+  n51 [label="LAMBDA"];
+  n51 [label="LAMBDA"];
+  n52 [label="PARAMS"];
+  n53 [label="BLOCK"];
+  n53 [label="BLOCK"];
+  n54 [label="FUNCALL"];
+  n54 [label="FUNCALL"];
+  n55 [label="figure"];
+  n56 [label="ARGS"];
+  n57 [label="LAMBDA"];
+  n57 [label="LAMBDA"];
+  n58 [label="PARAMS"];
+  n59 [label="BLOCK"];
+  n59 [label="BLOCK"];
+  n60 [label="FUNCALL"];
+  n60 [label="FUNCALL"];
+  n61 [label="graphics"];
+  n62 [label="ARGS"];
+  n62 [label="ARGS"];
+  n63 [label="FUNCALL"];
+  n63 [label="FUNCALL"];
+  n64 [label="test"];
+  n65 [label="ARGS"];
+  n66 [label="FUNCALL"];
+  n66 [label="FUNCALL"];
+  n67 [label="caption"];
+  n68 [label="ARGS"];
+  n68 [label="ARGS"];
+  n69 [label="FUNCALL"];
+  n69 [label="FUNCALL"];
+  n70 [label="something"];
+  n71 [label="ARGS"];
+  n72 [label="FUNCALL"];
+  n72 [label="FUNCALL"];
+  n73 [label="fancy"];
+  n74 [label="ARGS"];
+  n75 [label="FUNCALL"];
+  n75 [label="FUNCALL"];
+  n76 [label="question"];
+  n77 [label="ARGS"];
+  n77 [label="ARGS"];
+  n78 [label="FUNCALL"];
+  n78 [label="FUNCALL"];
+  n79 [label="nothing"];
+  n80 [label="ARGS"];
+
+  n0 -> n1 // "BLOCK" -> "FUNCALL"
+  n1 -> n2 // "FUNCALL" -> "map"
+  n1 -> n3 // "FUNCALL" -> "ARGS"
+  n3 -> n4 // "ARGS" -> "FUNCALL"
+  n4 -> n5 // "FUNCALL" -> "list"
+  n4 -> n6 // "FUNCALL" -> "ARGS"
+  n1 -> n7 // "FUNCALL" -> "LAMBDA"
+  n7 -> n8 // "LAMBDA" -> "PARAMS"
+  n8 -> n9 // "PARAMS" -> "element"
+  n7 -> n10 // "LAMBDA" -> "BLOCK"
+  n10 -> n11 // "BLOCK" -> "FUNCALL"
+  n11 -> n12 // "FUNCALL" -> "characters"
+  n11 -> n13 // "FUNCALL" -> "ARGS"
+  n13 -> n14 // "ARGS" -> "FUNCALL"
+  n14 -> n15 // "FUNCALL" -> "element"
+  n14 -> n16 // "FUNCALL" -> "ARGS"
+  n11 -> n17 // "FUNCALL" -> "LAMBDA"
+  n17 -> n18 // "LAMBDA" -> "PARAMS"
+  n18 -> n19 // "PARAMS" -> "c"
+  n17 -> n20 // "LAMBDA" -> "BLOCK"
+  n20 -> n21 // "BLOCK" -> "+"
+  n21 -> n22 // "+" -> "FUNCALL"
+  n22 -> n23 // "FUNCALL" -> "c"
+  n22 -> n24 // "FUNCALL" -> "ARGS"
+  n21 -> n25 // "+" -> "FUNCALL"
+  n25 -> n26 // "FUNCALL" -> "str"
+  n25 -> n27 // "FUNCALL" -> "ARGS"
+  n27 -> n28 // "ARGS" -> "1"
+  n0 -> n29 // "BLOCK" -> "FUNCALL"
+  n29 -> n30 // "FUNCALL" -> "file"
+  n29 -> n31 // "FUNCALL" -> "ARGS"
+  n31 -> n32 // "ARGS" -> "FUNCALL"
+  n32 -> n33 // "FUNCALL" -> "test"
+  n32 -> n34 // "FUNCALL" -> "ARGS"
+  n29 -> n35 // "FUNCALL" -> "LAMBDA"
+  n35 -> n36 // "LAMBDA" -> "PARAMS"
+  n36 -> n37 // "PARAMS" -> "f"
+  n35 -> n38 // "LAMBDA" -> "BLOCK"
+  n38 -> n39 // "BLOCK" -> "FUNCALL"
+  n39 -> n40 // "FUNCALL" -> "write"
+  n39 -> n41 // "FUNCALL" -> "ARGS"
+  n41 -> n42 // "ARGS" -> "FUNCALL"
+  n42 -> n43 // "FUNCALL" -> "f"
+  n42 -> n44 // "FUNCALL" -> "ARGS"
+  n41 -> n45 // "ARGS" -> "FUNCALL"
+  n45 -> n46 // "FUNCALL" -> "hello"
+  n45 -> n47 // "FUNCALL" -> "ARGS"
+  n0 -> n48 // "BLOCK" -> "FUNCALL"
+  n48 -> n49 // "FUNCALL" -> "enumerate"
+  n48 -> n50 // "FUNCALL" -> "ARGS"
+  n48 -> n51 // "FUNCALL" -> "LAMBDA"
+  n51 -> n52 // "LAMBDA" -> "PARAMS"
+  n51 -> n53 // "LAMBDA" -> "BLOCK"
+  n53 -> n54 // "BLOCK" -> "FUNCALL"
+  n54 -> n55 // "FUNCALL" -> "figure"
+  n54 -> n56 // "FUNCALL" -> "ARGS"
+  n54 -> n57 // "FUNCALL" -> "LAMBDA"
+  n57 -> n58 // "LAMBDA" -> "PARAMS"
+  n57 -> n59 // "LAMBDA" -> "BLOCK"
+  n59 -> n60 // "BLOCK" -> "FUNCALL"
+  n60 -> n61 // "FUNCALL" -> "graphics"
+  n60 -> n62 // "FUNCALL" -> "ARGS"
+  n62 -> n63 // "ARGS" -> "FUNCALL"
+  n63 -> n64 // "FUNCALL" -> "test"
+  n63 -> n65 // "FUNCALL" -> "ARGS"
+  n59 -> n66 // "BLOCK" -> "FUNCALL"
+  n66 -> n67 // "FUNCALL" -> "caption"
+  n66 -> n68 // "FUNCALL" -> "ARGS"
+  n68 -> n69 // "ARGS" -> "FUNCALL"
+  n69 -> n70 // "FUNCALL" -> "something"
+  n69 -> n71 // "FUNCALL" -> "ARGS"
+  n68 -> n72 // "ARGS" -> "FUNCALL"
+  n72 -> n73 // "FUNCALL" -> "fancy"
+  n72 -> n74 // "FUNCALL" -> "ARGS"
+  n53 -> n75 // "BLOCK" -> "FUNCALL"
+  n75 -> n76 // "FUNCALL" -> "question"
+  n75 -> n77 // "FUNCALL" -> "ARGS"
+  n77 -> n78 // "ARGS" -> "FUNCALL"
+  n78 -> n79 // "FUNCALL" -> "nothing"
+  n78 -> n80 // "FUNCALL" -> "ARGS"
+
+}
+

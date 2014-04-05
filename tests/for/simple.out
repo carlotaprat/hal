@@ -20,45 +20,38 @@ digraph {
   n7 [label="BLOCK"];
   n8 [label="FUNCALL"];
   n8 [label="FUNCALL"];
-  n9 [label="do"];
-  n10 [label="ARGS"];
+  n9 [label="this"];
   n10 [label="ARGS"];
   n11 [label="FUNCALL"];
   n11 [label="FUNCALL"];
-  n12 [label="this"];
+  n12 [label="that"];
   n13 [label="ARGS"];
-  n14 [label="FUNCALL"];
-  n14 [label="FUNCALL"];
-  n15 [label="do"];
-  n16 [label="ARGS"];
-  n16 [label="ARGS"];
+  n14 [label="FOR_STMT"];
+  n14 [label="FOR_STMT"];
+  n15 [label="PARAMS"];
+  n15 [label="PARAMS"];
+  n16 [label="i"];
   n17 [label="FUNCALL"];
   n17 [label="FUNCALL"];
-  n18 [label="that"];
+  n18 [label="li"];
   n19 [label="ARGS"];
-  n20 [label="FOR_STMT"];
-  n20 [label="FOR_STMT"];
-  n21 [label="PARAMS"];
-  n21 [label="PARAMS"];
-  n22 [label="i"];
-  n23 [label="FUNCALL"];
-  n23 [label="FUNCALL"];
-  n24 [label="li"];
-  n25 [label="ARGS"];
-  n26 [label="BLOCK"];
-  n26 [label="BLOCK"];
-  n27 [label="FOR_STMT"];
-  n27 [label="FOR_STMT"];
-  n28 [label="PARAMS"];
-  n28 [label="PARAMS"];
-  n29 [label="j"];
-  n30 [label="FUNCALL"];
-  n30 [label="FUNCALL"];
-  n31 [label="lj"];
-  n32 [label="ARGS"];
-  n33 [label="BLOCK"];
-  n33 [label="BLOCK"];
-  n34 [label="dowhatever"];
+  n20 [label="BLOCK"];
+  n20 [label="BLOCK"];
+  n21 [label="FOR_STMT"];
+  n21 [label="FOR_STMT"];
+  n22 [label="PARAMS"];
+  n22 [label="PARAMS"];
+  n23 [label="j"];
+  n24 [label="FUNCALL"];
+  n24 [label="FUNCALL"];
+  n25 [label="lj"];
+  n26 [label="ARGS"];
+  n27 [label="BLOCK"];
+  n27 [label="BLOCK"];
+  n28 [label="FUNCALL"];
+  n28 [label="FUNCALL"];
+  n29 [label="whatever"];
+  n30 [label="ARGS"];
 
   n0 -> n1 // "BLOCK" -> "FOR_STMT"
   n1 -> n2 // "FOR_STMT" -> "PARAMS"
@@ -68,32 +61,28 @@ digraph {
   n4 -> n6 // "FUNCALL" -> "ARGS"
   n1 -> n7 // "FOR_STMT" -> "BLOCK"
   n7 -> n8 // "BLOCK" -> "FUNCALL"
-  n8 -> n9 // "FUNCALL" -> "do"
+  n8 -> n9 // "FUNCALL" -> "this"
   n8 -> n10 // "FUNCALL" -> "ARGS"
-  n10 -> n11 // "ARGS" -> "FUNCALL"
-  n11 -> n12 // "FUNCALL" -> "this"
+  n7 -> n11 // "BLOCK" -> "FUNCALL"
+  n11 -> n12 // "FUNCALL" -> "that"
   n11 -> n13 // "FUNCALL" -> "ARGS"
-  n7 -> n14 // "BLOCK" -> "FUNCALL"
-  n14 -> n15 // "FUNCALL" -> "do"
-  n14 -> n16 // "FUNCALL" -> "ARGS"
-  n16 -> n17 // "ARGS" -> "FUNCALL"
-  n17 -> n18 // "FUNCALL" -> "that"
+  n0 -> n14 // "BLOCK" -> "FOR_STMT"
+  n14 -> n15 // "FOR_STMT" -> "PARAMS"
+  n15 -> n16 // "PARAMS" -> "i"
+  n14 -> n17 // "FOR_STMT" -> "FUNCALL"
+  n17 -> n18 // "FUNCALL" -> "li"
   n17 -> n19 // "FUNCALL" -> "ARGS"
-  n0 -> n20 // "BLOCK" -> "FOR_STMT"
-  n20 -> n21 // "FOR_STMT" -> "PARAMS"
-  n21 -> n22 // "PARAMS" -> "i"
-  n20 -> n23 // "FOR_STMT" -> "FUNCALL"
-  n23 -> n24 // "FUNCALL" -> "li"
-  n23 -> n25 // "FUNCALL" -> "ARGS"
-  n20 -> n26 // "FOR_STMT" -> "BLOCK"
-  n26 -> n27 // "BLOCK" -> "FOR_STMT"
-  n27 -> n28 // "FOR_STMT" -> "PARAMS"
-  n28 -> n29 // "PARAMS" -> "j"
-  n27 -> n30 // "FOR_STMT" -> "FUNCALL"
-  n30 -> n31 // "FUNCALL" -> "lj"
-  n30 -> n32 // "FUNCALL" -> "ARGS"
-  n27 -> n33 // "FOR_STMT" -> "BLOCK"
-  n33 -> n34 // "BLOCK" -> "dowhatever"
+  n14 -> n20 // "FOR_STMT" -> "BLOCK"
+  n20 -> n21 // "BLOCK" -> "FOR_STMT"
+  n21 -> n22 // "FOR_STMT" -> "PARAMS"
+  n22 -> n23 // "PARAMS" -> "j"
+  n21 -> n24 // "FOR_STMT" -> "FUNCALL"
+  n24 -> n25 // "FUNCALL" -> "lj"
+  n24 -> n26 // "FUNCALL" -> "ARGS"
+  n21 -> n27 // "FOR_STMT" -> "BLOCK"
+  n27 -> n28 // "BLOCK" -> "FUNCALL"
+  n28 -> n29 // "FUNCALL" -> "whatever"
+  n28 -> n30 // "FUNCALL" -> "ARGS"
 
 }
 

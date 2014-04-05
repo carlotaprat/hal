@@ -1,8 +1,8 @@
 for i in v:
-    do this
-    do that
+    this
+    that
 
 
 for i in li:
     for j in lj:
-    	do whatever
+        whatever

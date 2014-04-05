@@ -18,6 +18,7 @@ tokens
     ASSIGN;
     BOOLEAN;
     LIST;
+    LAMBDA;
 }
 
 @header
@@ -34,6 +35,7 @@ tokens
 {
     public static final int MAX_INDENTS = 100;
     private int indentLevel = 0;
+    private boolean end = false;
     int[] indentStack = new int[MAX_INDENTS];
     java.util.Queue<Token> tokens =
         new java.util.LinkedList<Token>();
@@ -56,6 +58,7 @@ tokens
     public void emit(Token t) {
         state.token = t;
         tokens.offer(t);
+        System.err.println("=> " + t);
     }
 
     @Override
@@ -63,17 +66,22 @@ tokens
         super.nextToken();
 
         if(tokens.isEmpty()) {
+            // End file with new line
+            if(!end) {
+                emit(new CommonToken(NEWLINE, "\\n"));
+                end = true;
+            }
+
             // Undo all indentation
             if(indentLevel > 0) {
                 jump(Dedent);
                 return nextToken();
             }
 
-            // End file with new line
-            emit(new CommonToken(NEWLINE, ""));
             emit(Token.EOF_TOKEN);
         }
         Token t = tokens.poll();
+        System.err.println("<= " + t);
         return t;
     }
 
@@ -141,6 +149,7 @@ compound_stmt
     |   for_stmt
     |   while_stmt
     |   fundef
+    |   do_lambda
     ;
 
 if_stmt
@@ -198,6 +207,15 @@ arglist
     :   {space(input) && (!input.LT(1).getText().equals("-") ||
                 directlyFollows(input.LT(1), input.LT(2)))}?
         expr (options {greedy=true;}: ','! expr)*
+    ;
+
+do_lambda
+    : 'do' ID args lambda -> ^(FUNCALL ID args lambda)
+    ;
+
+lambda
+    :
+        ('as' paramlist)? COLON block -> ^(LAMBDA ^(PARAMS paramlist?) block)
     ;
 
 
