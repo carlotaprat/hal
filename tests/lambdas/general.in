@@ -1,11 +1,10 @@
-do map list as element:
-    do characters element as c: c + str 1
+map list as element:
+    characters element as c: c + str 1
 
-do file test as f: write f, hello
+file test as f: write f, hello
 
-
-do enumerate:
-  do figure:
+enumerate:
+  figure:
     graphics test
     caption something, fancy
 
