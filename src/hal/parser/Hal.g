@@ -156,8 +156,7 @@ simple_stmt
     ;
 
 small_stmt
-    @init{boolean assign=false;}
-    :   expr (EQUAL^ expr)*
+    :   expr (EQUAL small_stmt)? // Right-associative
     ;
 
 compound_stmt
