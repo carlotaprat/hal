@@ -120,29 +120,28 @@ tokens
 // GRAMMAR
 
 prog
-    :   (stmt)* EOF -> ^(BLOCK stmt*)
+    :   (NEWLINE | stmt)* EOF -> ^(BLOCK stmt*)
     ;
 
 stmt
-    :   simple_stmt[true]
+    :   simple_stmt
     |   compound_stmt
-    |   NEWLINE!
     ;
 
-simple_stmt[boolean can_lambda]
+simple_stmt
     @init{boolean conditional = false;}
-    :   s1=small_stmt[can_lambda] ({!$s1.has_lambda}?=> (
-                (options {greedy=true;}:SEMICOLON small_stmt[false])* SEMICOLON?
-            |   IF {conditional=true;} expr[false] (ELSE s2=small_stmt[false])?
-        ) NEWLINE)?
+    :   s1=small_stmt (
+                (options {greedy=true;}:SEMICOLON small_stmt)* SEMICOLON?
+            |   IF {conditional=true;} expr (ELSE s2=small_stmt)?
+        )
+        NEWLINE
         -> {conditional}? ^(IF_STMT expr ^(BLOCK $s1) ^(BLOCK $s2))
         -> small_stmt+
     ;
 
-small_stmt[boolean can_lambda] returns [boolean has_lambda]
-    @init{$has_lambda=false;}
+small_stmt
     : assign
-    | (e=expr[can_lambda] {$has_lambda=$e.has_lambda;})
+    | expr
     ;
 
 compound_stmt
@@ -150,6 +149,7 @@ compound_stmt
     |   for_stmt
     |   while_stmt
     |   fundef
+    |   do_lambda
     ;
 
 if_stmt
@@ -157,7 +157,7 @@ if_stmt
     ;
 
 if_body
-    :   expr[false] COLON! block if_extension?
+    :   expr COLON! block if_extension?
     ;
 
 if_extension
@@ -166,16 +166,16 @@ if_extension
     ;
 
 for_stmt
-    :  FOR paramlist IN expr[false] COLON block
+    :  FOR paramlist IN expr COLON block
         -> ^(FOR_STMT ^(PARAMS paramlist) expr block)
     ;
 
 while_stmt
-    :  WHILE expr[false] COLON block -> ^(WHILE_STMT expr block)
+    :  WHILE expr COLON block -> ^(WHILE_STMT expr block)
     ;
 
 block
-    :   simple_stmt[false] -> ^(BLOCK simple_stmt)
+    :   simple_stmt -> ^(BLOCK simple_stmt)
     |   multiline_block
     ;
 
@@ -195,9 +195,8 @@ paramlist
     :   ID (','! ID)*
     ;
 
-funcall[boolean can_lambda] returns [boolean has_lambda]
-    @init{$has_lambda=false;}
-    :   ID args ({can_lambda}?=> lambda {$has_lambda=true;})? -> ^(FUNCALL ID args lambda?)
+funcall
+    :   ID args -> ^(FUNCALL ID args)
     ;
 
 args
@@ -207,63 +206,61 @@ args
 arglist
     :   {space(input) && (!input.LT(1).getText().equals("-") ||
                 directlyFollows(input.LT(1), input.LT(2)))}?
-        expr[false] (options {greedy=true;}: ','! expr[false])*
+        expr (options {greedy=true;}: ','! expr)*
+    ;
+
+do_lambda
+    : 'do' ID args lambda -> ^(FUNCALL ID args lambda)
     ;
 
 lambda
     :
-        (AS paramlist)? COLON block -> ^(LAMBDA ^(PARAMS paramlist?) block)
+        ('as' paramlist)? COLON block -> ^(LAMBDA ^(PARAMS paramlist?) block)
     ;
 
 
 // Assignment
 assign
-    :	ID eq=EQUAL expr[true] -> ^(ASSIGN[$eq,":="] ID expr)
+    :	ID eq=EQUAL expr -> ^(ASSIGN[$eq,":="] ID expr)
     ;
 
-expr[boolean can_lambda] returns [boolean has_lambda]
-    :   e1=boolterm[can_lambda] {$has_lambda=$e1.has_lambda;}
-        ({!$has_lambda}?=> (options {greedy=true;}: OR^ boolterm[false])*)?
+expr
+    :   boolterm (options {greedy=true;}: OR^ boolterm)*
     ;
 
-boolterm[boolean can_lambda] returns [boolean has_lambda]
-    :   b1=boolfact[can_lambda] {$has_lambda=$b1.has_lambda;}
-        ({!$has_lambda}?=> (options {greedy=true;}: AND^ boolfact[false])*)?
+boolterm
+    :   boolfact (options {greedy=true;}: AND^ boolfact)*
     ;
 
-boolfact[boolean can_lambda] returns [boolean has_lambda]
-    :   f1=num_expr[can_lambda] {$has_lambda=$f1.has_lambda;}
-        (options {greedy=true;}: {!$has_lambda}?=>
-            (DOUBLE_EQUAL^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) num_expr[false])?
+boolfact
+    :   num_expr (options {greedy=true;}:
+            (DOUBLE_EQUAL^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) num_expr)?
     ;
 
-num_expr[boolean can_lambda] returns [boolean has_lambda]
-    :   n1=term[can_lambda] {$has_lambda=$n1.has_lambda;}
-        ({!$has_lambda}?=> (options {greedy=true;}: (PLUS^ | MINUS^) term[false])*)?
+num_expr
+    :   term (options {greedy=true;}: (PLUS^ | MINUS^) term)*
     ;
 
-term[boolean can_lambda] returns [boolean has_lambda]
-    :   t1=factor[can_lambda] {$has_lambda=$t1.has_lambda;}
-        ({!$has_lambda}?=> (options {greedy=true;}: (MUL^ | DIV^ | MOD^) factor[false])*)?
+term
+    :   factor (options {greedy=true;}: (MUL^ | DIV^ | MOD^) factor)*
     ;
 
-factor[boolean can_lambda] returns [boolean has_lambda]
-    :   NOT^ a=atom[can_lambda] {$has_lambda=$a.has_lambda;}
-    |   MINUS a=atom[can_lambda] {$has_lambda=$a.has_lambda;} -> ^(MINUS["NEGATE"] atom)
-    |   a=atom[can_lambda] {$has_lambda=$a.has_lambda;}
+factor
+    :   NOT^ atom
+    |   MINUS atom -> ^(MINUS["NEGATE"] atom)
+    |   atom
     ;
 
-atom[boolean can_lambda] returns [boolean has_lambda]
-    @init{$has_lambda=false;}
+atom
     :   INT
     |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
     |   list
-    |   (f=funcall[can_lambda] {$has_lambda=$f.has_lambda;})
-    |   LPAREN! expr[false] RPAREN!
+    |   funcall // An ID can be considered a "funcall" with 0 args
+    |   LPAREN! expr RPAREN!
     ;
 
 list
-    :  LBRACK (expr[false] (',' expr[false])*)? RBRACK -> ^(LIST expr*)
+    :  LBRACK (expr (',' expr)*)? RBRACK -> ^(LIST expr*)
     ;
 
 // LEXICAL RULES
@@ -294,7 +291,6 @@ FOR     : 'for';
 WHILE   : 'while';
 IN      : 'in';
 DEF     : 'def';
-AS      : 'as';
 // SPECIAL SYMBOLS
 COLON   : ':' ;
 SEMICOLON : ';';
