@@ -22,30 +22,27 @@ digraph {
   n8 [label="FUNCALL"];
   n9 [label="x"];
   n10 [label="ARGS"];
-  n11 [label="FUNCALL"];
-  n11 [label="FUNCALL"];
-  n12 [label="return"];
-  n13 [label="ARGS"];
-  n13 [label="ARGS"];
-  n14 [label="FUNCALL"];
-  n14 [label="FUNCALL"];
-  n15 [label="bar"];
-  n16 [label="ARGS"];
-  n17 [label="FUNDEF"];
-  n17 [label="FUNDEF"];
-  n18 [label="bar"];
-  n19 [label="PARAMS"];
-  n20 [label="BLOCK"];
-  n20 [label="BLOCK"];
-  n21 [label="FUNCALL"];
-  n21 [label="FUNCALL"];
-  n22 [label="print"];
-  n23 [label="ARGS"];
-  n23 [label="ARGS"];
-  n24 [label="FUNCALL"];
-  n24 [label="FUNCALL"];
-  n25 [label="y"];
-  n26 [label="ARGS"];
+  n11 [label="RETURN"];
+  n11 [label="RETURN"];
+  n12 [label="FUNCALL"];
+  n12 [label="FUNCALL"];
+  n13 [label="bar"];
+  n14 [label="ARGS"];
+  n15 [label="FUNDEF"];
+  n15 [label="FUNDEF"];
+  n16 [label="bar"];
+  n17 [label="PARAMS"];
+  n18 [label="BLOCK"];
+  n18 [label="BLOCK"];
+  n19 [label="FUNCALL"];
+  n19 [label="FUNCALL"];
+  n20 [label="print"];
+  n21 [label="ARGS"];
+  n21 [label="ARGS"];
+  n22 [label="FUNCALL"];
+  n22 [label="FUNCALL"];
+  n23 [label="y"];
+  n24 [label="ARGS"];
 
   n0 -> n1 // "BLOCK" -> "FUNDEF"
   n1 -> n2 // "FUNDEF" -> "foo"
@@ -57,22 +54,20 @@ digraph {
   n7 -> n8 // "ARGS" -> "FUNCALL"
   n8 -> n9 // "FUNCALL" -> "x"
   n8 -> n10 // "FUNCALL" -> "ARGS"
-  n4 -> n11 // "BLOCK" -> "FUNCALL"
-  n11 -> n12 // "FUNCALL" -> "return"
-  n11 -> n13 // "FUNCALL" -> "ARGS"
-  n13 -> n14 // "ARGS" -> "FUNCALL"
-  n14 -> n15 // "FUNCALL" -> "bar"
-  n14 -> n16 // "FUNCALL" -> "ARGS"
-  n0 -> n17 // "BLOCK" -> "FUNDEF"
-  n17 -> n18 // "FUNDEF" -> "bar"
-  n17 -> n19 // "FUNDEF" -> "PARAMS"
-  n17 -> n20 // "FUNDEF" -> "BLOCK"
-  n20 -> n21 // "BLOCK" -> "FUNCALL"
-  n21 -> n22 // "FUNCALL" -> "print"
-  n21 -> n23 // "FUNCALL" -> "ARGS"
-  n23 -> n24 // "ARGS" -> "FUNCALL"
-  n24 -> n25 // "FUNCALL" -> "y"
-  n24 -> n26 // "FUNCALL" -> "ARGS"
+  n4 -> n11 // "BLOCK" -> "RETURN"
+  n11 -> n12 // "RETURN" -> "FUNCALL"
+  n12 -> n13 // "FUNCALL" -> "bar"
+  n12 -> n14 // "FUNCALL" -> "ARGS"
+  n0 -> n15 // "BLOCK" -> "FUNDEF"
+  n15 -> n16 // "FUNDEF" -> "bar"
+  n15 -> n17 // "FUNDEF" -> "PARAMS"
+  n15 -> n18 // "FUNDEF" -> "BLOCK"
+  n18 -> n19 // "BLOCK" -> "FUNCALL"
+  n19 -> n20 // "FUNCALL" -> "print"
+  n19 -> n21 // "FUNCALL" -> "ARGS"
+  n21 -> n22 // "ARGS" -> "FUNCALL"
+  n22 -> n23 // "FUNCALL" -> "y"
+  n22 -> n24 // "FUNCALL" -> "ARGS"
 
 }
 

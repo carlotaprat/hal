@@ -52,24 +52,18 @@ digraph {
   n28 [label="PARAMS"];
   n29 [label="BLOCK"];
   n29 [label="BLOCK"];
-  n30 [label="FUNCALL"];
-  n30 [label="FUNCALL"];
-  n31 [label="return"];
-  n32 [label="ARGS"];
-  n32 [label="ARGS"];
-  n33 [label="FUNCALL"];
-  n33 [label="FUNCALL"];
-  n34 [label="a"];
-  n35 [label="ARGS"];
-  n36 [label="FUNCALL"];
-  n36 [label="FUNCALL"];
-  n37 [label="return"];
-  n38 [label="ARGS"];
-  n38 [label="ARGS"];
-  n39 [label="FUNCALL"];
-  n39 [label="FUNCALL"];
-  n40 [label="k"];
-  n41 [label="ARGS"];
+  n30 [label="RETURN"];
+  n30 [label="RETURN"];
+  n31 [label="FUNCALL"];
+  n31 [label="FUNCALL"];
+  n32 [label="a"];
+  n33 [label="ARGS"];
+  n34 [label="RETURN"];
+  n34 [label="RETURN"];
+  n35 [label="FUNCALL"];
+  n35 [label="FUNCALL"];
+  n36 [label="k"];
+  n37 [label="ARGS"];
 
   n0 -> n1 // "BLOCK" -> "FUNCALL"
   n1 -> n2 // "FUNCALL" -> "f"
@@ -100,18 +94,14 @@ digraph {
   n26 -> n27 // "FUNDEF" -> "k"
   n26 -> n28 // "FUNDEF" -> "PARAMS"
   n26 -> n29 // "FUNDEF" -> "BLOCK"
-  n29 -> n30 // "BLOCK" -> "FUNCALL"
-  n30 -> n31 // "FUNCALL" -> "return"
-  n30 -> n32 // "FUNCALL" -> "ARGS"
-  n32 -> n33 // "ARGS" -> "FUNCALL"
-  n33 -> n34 // "FUNCALL" -> "a"
-  n33 -> n35 // "FUNCALL" -> "ARGS"
-  n25 -> n36 // "BLOCK" -> "FUNCALL"
-  n36 -> n37 // "FUNCALL" -> "return"
-  n36 -> n38 // "FUNCALL" -> "ARGS"
-  n38 -> n39 // "ARGS" -> "FUNCALL"
-  n39 -> n40 // "FUNCALL" -> "k"
-  n39 -> n41 // "FUNCALL" -> "ARGS"
+  n29 -> n30 // "BLOCK" -> "RETURN"
+  n30 -> n31 // "RETURN" -> "FUNCALL"
+  n31 -> n32 // "FUNCALL" -> "a"
+  n31 -> n33 // "FUNCALL" -> "ARGS"
+  n25 -> n34 // "BLOCK" -> "RETURN"
+  n34 -> n35 // "RETURN" -> "FUNCALL"
+  n35 -> n36 // "FUNCALL" -> "k"
+  n35 -> n37 // "FUNCALL" -> "ARGS"
 
 }
 

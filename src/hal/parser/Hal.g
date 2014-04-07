@@ -19,6 +19,7 @@ tokens
     BOOLEAN;
     LIST;
     LAMBDA;
+    ACCESS;
 }
 
 @header
@@ -163,7 +164,12 @@ simple_stmt
     ;
 
 small_stmt
-    :   expr (EQUAL^ small_stmt)? // Right-associative
+    :   assign_expr
+    |   r=RETURN expr -> ^(RETURN[$r, "RETURN"] expr)
+    ;
+
+assign_expr
+    :   expr (EQUAL^ assign_expr)? // Right-associative
     ;
 
 compound_stmt
@@ -239,7 +245,7 @@ do_lambda
 
 assign_lambda
     :   {before(NEWLINE, COLON) && before(COLON, EQUAL)}?
-        expr eq=EQUAL do_lambda -> ^(ASSIGN[$eq, ":="] expr do_lambda)
+        expr EQUAL^ do_lambda
     ;
 
 lambda
@@ -269,9 +275,15 @@ term
     ;
 
 factor
-    :   NOT^ atom
-    |   MINUS atom -> ^(MINUS["NEGATE"] atom)
-    |   atom
+    :   NOT^ element
+    |   MINUS element -> ^(MINUS["NEGATE"] element)
+    |   element
+    ;
+
+element
+    :   atom ac=access?
+        -> {ac==null}? atom
+        -> ^(ACCESS["[]"] atom access)
     ;
 
 atom
@@ -279,6 +291,7 @@ atom
     |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
     |   list
     |   funcall // An ID can be considered a "funcall" with 0 args
+    |   y=YIELD expr -> ^(YIELD[$y, "YIELD"] expr)
     |   LPAREN! expr RPAREN!
     ;
 
@@ -320,6 +333,8 @@ WHILE   : 'while';
 IN      : 'in';
 DEF     : 'def';
 LKW     : 'as';
+RETURN  : 'return';
+YIELD   : 'yield';
 // SPECIAL SYMBOLS
 COLON   : ':' ;
 SEMICOLON : ';';
