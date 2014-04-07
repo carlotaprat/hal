@@ -19,23 +19,25 @@ digraph {
   n7 [label="ARGS"];
   n8 [label="BLOCK"];
   n8 [label="BLOCK"];
-  n9 [label=":="];
-  n9 [label=":="];
+  n9 [label="FUNCALL"];
+  n9 [label="FUNCALL"];
   n10 [label="something"];
-  n11 [label="+"];
-  n11 [label="+"];
-  n12 [label="FUNCALL"];
-  n12 [label="FUNCALL"];
-  n13 [label="key"];
-  n14 [label="ARGS"];
-  n15 [label="FUNCALL"];
-  n15 [label="FUNCALL"];
-  n16 [label="value"];
-  n17 [label="ARGS"];
-  n18 [label="FUNCALL"];
-  n18 [label="FUNCALL"];
-  n19 [label="pass"];
-  n20 [label="ARGS"];
+  n11 [label="ARGS"];
+  n12 [label="="];
+  n13 [label="+"];
+  n13 [label="+"];
+  n14 [label="FUNCALL"];
+  n14 [label="FUNCALL"];
+  n15 [label="key"];
+  n16 [label="ARGS"];
+  n17 [label="FUNCALL"];
+  n17 [label="FUNCALL"];
+  n18 [label="value"];
+  n19 [label="ARGS"];
+  n20 [label="FUNCALL"];
+  n20 [label="FUNCALL"];
+  n21 [label="pass"];
+  n22 [label="ARGS"];
 
   n0 -> n1 // "BLOCK" -> "FOR_STMT"
   n1 -> n2 // "FOR_STMT" -> "PARAMS"
@@ -45,18 +47,20 @@ digraph {
   n5 -> n6 // "FUNCALL" -> "map"
   n5 -> n7 // "FUNCALL" -> "ARGS"
   n1 -> n8 // "FOR_STMT" -> "BLOCK"
-  n8 -> n9 // "BLOCK" -> ":="
-  n9 -> n10 // ":=" -> "something"
-  n9 -> n11 // ":=" -> "+"
-  n11 -> n12 // "+" -> "FUNCALL"
-  n12 -> n13 // "FUNCALL" -> "key"
-  n12 -> n14 // "FUNCALL" -> "ARGS"
-  n11 -> n15 // "+" -> "FUNCALL"
-  n15 -> n16 // "FUNCALL" -> "value"
-  n15 -> n17 // "FUNCALL" -> "ARGS"
-  n0 -> n18 // "BLOCK" -> "FUNCALL"
-  n18 -> n19 // "FUNCALL" -> "pass"
-  n18 -> n20 // "FUNCALL" -> "ARGS"
+  n8 -> n9 // "BLOCK" -> "FUNCALL"
+  n9 -> n10 // "FUNCALL" -> "something"
+  n9 -> n11 // "FUNCALL" -> "ARGS"
+  n8 -> n12 // "BLOCK" -> "="
+  n8 -> n13 // "BLOCK" -> "+"
+  n13 -> n14 // "+" -> "FUNCALL"
+  n14 -> n15 // "FUNCALL" -> "key"
+  n14 -> n16 // "FUNCALL" -> "ARGS"
+  n13 -> n17 // "+" -> "FUNCALL"
+  n17 -> n18 // "FUNCALL" -> "value"
+  n17 -> n19 // "FUNCALL" -> "ARGS"
+  n0 -> n20 // "BLOCK" -> "FUNCALL"
+  n20 -> n21 // "FUNCALL" -> "pass"
+  n20 -> n22 // "FUNCALL" -> "ARGS"
 
 }
 

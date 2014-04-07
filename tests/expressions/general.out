@@ -7,234 +7,270 @@ digraph {
 	edge [arrowsize=.5, color="black", style="bold"]
 
   n0 [label="BLOCK"];
-  n1 [label=":="];
-  n1 [label=":="];
+  n1 [label="FUNCALL"];
+  n1 [label="FUNCALL"];
   n2 [label="a"];
-  n3 [label="-"];
-  n3 [label="-"];
-  n4 [label="+"];
-  n4 [label="+"];
-  n5 [label="+"];
-  n5 [label="+"];
-  n6 [label="3"];
-  n7 [label="2"];
-  n8 [label="1"];
+  n3 [label="ARGS"];
+  n4 [label="="];
+  n5 [label="-"];
+  n5 [label="-"];
+  n6 [label="+"];
+  n6 [label="+"];
+  n7 [label="+"];
+  n7 [label="+"];
+  n8 [label="3"];
   n9 [label="2"];
-  n10 [label=":="];
-  n10 [label=":="];
-  n11 [label="b"];
-  n12 [label="NEGATE"];
-  n12 [label="NEGATE"];
-  n13 [label="FUNCALL"];
-  n13 [label="FUNCALL"];
-  n14 [label="a"];
-  n15 [label="ARGS"];
-  n16 [label=":="];
-  n16 [label=":="];
-  n17 [label="b"];
-  n18 [label="NEGATE"];
-  n18 [label="NEGATE"];
-  n19 [label="FUNCALL"];
-  n19 [label="FUNCALL"];
-  n20 [label="a"];
-  n21 [label="ARGS"];
-  n22 [label=":="];
-  n22 [label=":="];
-  n23 [label="f"];
+  n10 [label="1"];
+  n11 [label="2"];
+  n12 [label="FUNCALL"];
+  n12 [label="FUNCALL"];
+  n13 [label="b"];
+  n14 [label="ARGS"];
+  n15 [label="="];
+  n16 [label="NEGATE"];
+  n16 [label="NEGATE"];
+  n17 [label="FUNCALL"];
+  n17 [label="FUNCALL"];
+  n18 [label="a"];
+  n19 [label="ARGS"];
+  n20 [label="FUNCALL"];
+  n20 [label="FUNCALL"];
+  n21 [label="b"];
+  n22 [label="ARGS"];
+  n23 [label="="];
   n24 [label="NEGATE"];
   n24 [label="NEGATE"];
   n25 [label="FUNCALL"];
   n25 [label="FUNCALL"];
-  n26 [label="f"];
+  n26 [label="a"];
   n27 [label="ARGS"];
-  n27 [label="ARGS"];
-  n28 [label="2"];
-  n29 [label=":="];
-  n29 [label=":="];
-  n30 [label="f"];
-  n31 [label="+"];
-  n31 [label="+"];
-  n32 [label="-"];
-  n32 [label="-"];
-  n33 [label="3"];
-  n34 [label="2"];
-  n35 [label="FUNCALL"];
-  n35 [label="FUNCALL"];
-  n36 [label="f"];
-  n37 [label="ARGS"];
-  n38 [label=":="];
-  n38 [label=":="];
-  n39 [label="f"];
-  n40 [label="-"];
-  n40 [label="-"];
-  n41 [label="FUNCALL"];
-  n41 [label="FUNCALL"];
-  n42 [label="a"];
-  n43 [label="ARGS"];
-  n44 [label="FUNCALL"];
-  n44 [label="FUNCALL"];
-  n45 [label="b"];
-  n46 [label="ARGS"];
-  n47 [label=":="];
-  n47 [label=":="];
-  n48 [label="f"];
-  n49 [label="FUNCALL"];
-  n49 [label="FUNCALL"];
-  n50 [label="a"];
-  n51 [label="ARGS"];
-  n51 [label="ARGS"];
-  n52 [label="NEGATE"];
-  n52 [label="NEGATE"];
+  n28 [label="FUNCALL"];
+  n28 [label="FUNCALL"];
+  n29 [label="f"];
+  n30 [label="ARGS"];
+  n31 [label="="];
+  n32 [label="NEGATE"];
+  n32 [label="NEGATE"];
+  n33 [label="FUNCALL"];
+  n33 [label="FUNCALL"];
+  n34 [label="f"];
+  n35 [label="ARGS"];
+  n35 [label="ARGS"];
+  n36 [label="2"];
+  n37 [label="FUNCALL"];
+  n37 [label="FUNCALL"];
+  n38 [label="f"];
+  n39 [label="ARGS"];
+  n40 [label="="];
+  n41 [label="+"];
+  n41 [label="+"];
+  n42 [label="-"];
+  n42 [label="-"];
+  n43 [label="3"];
+  n44 [label="2"];
+  n45 [label="FUNCALL"];
+  n45 [label="FUNCALL"];
+  n46 [label="f"];
+  n47 [label="ARGS"];
+  n48 [label="FUNCALL"];
+  n48 [label="FUNCALL"];
+  n49 [label="f"];
+  n50 [label="ARGS"];
+  n51 [label="="];
+  n52 [label="-"];
+  n52 [label="-"];
   n53 [label="FUNCALL"];
   n53 [label="FUNCALL"];
-  n54 [label="b"];
+  n54 [label="a"];
   n55 [label="ARGS"];
-  n56 [label=":="];
-  n56 [label=":="];
-  n57 [label="f"];
-  n58 [label="-"];
-  n58 [label="-"];
+  n56 [label="FUNCALL"];
+  n56 [label="FUNCALL"];
+  n57 [label="b"];
+  n58 [label="ARGS"];
   n59 [label="FUNCALL"];
   n59 [label="FUNCALL"];
-  n60 [label="a"];
+  n60 [label="f"];
   n61 [label="ARGS"];
-  n62 [label="FUNCALL"];
-  n62 [label="FUNCALL"];
-  n63 [label="b"];
-  n64 [label="ARGS"];
-  n65 [label=":="];
-  n65 [label=":="];
-  n66 [label="f"];
-  n67 [label="-"];
-  n67 [label="-"];
-  n68 [label="-"];
-  n68 [label="-"];
-  n69 [label="FUNCALL"];
-  n69 [label="FUNCALL"];
-  n70 [label="a"];
-  n71 [label="ARGS"];
-  n72 [label="FUNCALL"];
-  n72 [label="FUNCALL"];
-  n73 [label="b"];
-  n74 [label="ARGS"];
+  n62 [label="="];
+  n63 [label="FUNCALL"];
+  n63 [label="FUNCALL"];
+  n64 [label="a"];
+  n65 [label="ARGS"];
+  n65 [label="ARGS"];
+  n66 [label="NEGATE"];
+  n66 [label="NEGATE"];
+  n67 [label="FUNCALL"];
+  n67 [label="FUNCALL"];
+  n68 [label="b"];
+  n69 [label="ARGS"];
+  n70 [label="FUNCALL"];
+  n70 [label="FUNCALL"];
+  n71 [label="f"];
+  n72 [label="ARGS"];
+  n73 [label="="];
+  n74 [label="-"];
+  n74 [label="-"];
   n75 [label="FUNCALL"];
   n75 [label="FUNCALL"];
-  n76 [label="c"];
+  n76 [label="a"];
   n77 [label="ARGS"];
-  n77 [label="ARGS"];
-  n78 [label="3"];
-  n79 [label="-"];
-  n79 [label="-"];
-  n80 [label="4"];
+  n78 [label="FUNCALL"];
+  n78 [label="FUNCALL"];
+  n79 [label="b"];
+  n80 [label="ARGS"];
   n81 [label="FUNCALL"];
   n81 [label="FUNCALL"];
-  n82 [label="d"];
+  n82 [label="f"];
   n83 [label="ARGS"];
-  n83 [label="ARGS"];
-  n84 [label="NEGATE"];
-  n84 [label="NEGATE"];
-  n85 [label="FUNCALL"];
-  n85 [label="FUNCALL"];
-  n86 [label="e"];
-  n87 [label="ARGS"];
-  n88 [label="NEGATE"];
-  n88 [label="NEGATE"];
-  n89 [label="FUNCALL"];
-  n89 [label="FUNCALL"];
-  n90 [label="f"];
-  n91 [label="ARGS"];
+  n84 [label="="];
+  n85 [label="-"];
+  n85 [label="-"];
+  n86 [label="-"];
+  n86 [label="-"];
+  n87 [label="FUNCALL"];
+  n87 [label="FUNCALL"];
+  n88 [label="a"];
+  n89 [label="ARGS"];
+  n90 [label="FUNCALL"];
+  n90 [label="FUNCALL"];
+  n91 [label="b"];
+  n92 [label="ARGS"];
+  n93 [label="FUNCALL"];
+  n93 [label="FUNCALL"];
+  n94 [label="c"];
+  n95 [label="ARGS"];
+  n95 [label="ARGS"];
+  n96 [label="3"];
+  n97 [label="-"];
+  n97 [label="-"];
+  n98 [label="4"];
+  n99 [label="FUNCALL"];
+  n99 [label="FUNCALL"];
+  n100 [label="d"];
+  n101 [label="ARGS"];
+  n101 [label="ARGS"];
+  n102 [label="NEGATE"];
+  n102 [label="NEGATE"];
+  n103 [label="FUNCALL"];
+  n103 [label="FUNCALL"];
+  n104 [label="e"];
+  n105 [label="ARGS"];
+  n106 [label="NEGATE"];
+  n106 [label="NEGATE"];
+  n107 [label="FUNCALL"];
+  n107 [label="FUNCALL"];
+  n108 [label="f"];
+  n109 [label="ARGS"];
 
-  n0 -> n1 // "BLOCK" -> ":="
-  n1 -> n2 // ":=" -> "a"
-  n1 -> n3 // ":=" -> "-"
-  n3 -> n4 // "-" -> "+"
-  n4 -> n5 // "+" -> "+"
-  n5 -> n6 // "+" -> "3"
-  n5 -> n7 // "+" -> "2"
-  n4 -> n8 // "+" -> "1"
-  n3 -> n9 // "-" -> "2"
-  n0 -> n10 // "BLOCK" -> ":="
-  n10 -> n11 // ":=" -> "b"
-  n10 -> n12 // ":=" -> "NEGATE"
-  n12 -> n13 // "NEGATE" -> "FUNCALL"
-  n13 -> n14 // "FUNCALL" -> "a"
-  n13 -> n15 // "FUNCALL" -> "ARGS"
-  n0 -> n16 // "BLOCK" -> ":="
-  n16 -> n17 // ":=" -> "b"
-  n16 -> n18 // ":=" -> "NEGATE"
-  n18 -> n19 // "NEGATE" -> "FUNCALL"
-  n19 -> n20 // "FUNCALL" -> "a"
-  n19 -> n21 // "FUNCALL" -> "ARGS"
-  n0 -> n22 // "BLOCK" -> ":="
-  n22 -> n23 // ":=" -> "f"
-  n22 -> n24 // ":=" -> "NEGATE"
+  n0 -> n1 // "BLOCK" -> "FUNCALL"
+  n1 -> n2 // "FUNCALL" -> "a"
+  n1 -> n3 // "FUNCALL" -> "ARGS"
+  n0 -> n4 // "BLOCK" -> "="
+  n0 -> n5 // "BLOCK" -> "-"
+  n5 -> n6 // "-" -> "+"
+  n6 -> n7 // "+" -> "+"
+  n7 -> n8 // "+" -> "3"
+  n7 -> n9 // "+" -> "2"
+  n6 -> n10 // "+" -> "1"
+  n5 -> n11 // "-" -> "2"
+  n0 -> n12 // "BLOCK" -> "FUNCALL"
+  n12 -> n13 // "FUNCALL" -> "b"
+  n12 -> n14 // "FUNCALL" -> "ARGS"
+  n0 -> n15 // "BLOCK" -> "="
+  n0 -> n16 // "BLOCK" -> "NEGATE"
+  n16 -> n17 // "NEGATE" -> "FUNCALL"
+  n17 -> n18 // "FUNCALL" -> "a"
+  n17 -> n19 // "FUNCALL" -> "ARGS"
+  n0 -> n20 // "BLOCK" -> "FUNCALL"
+  n20 -> n21 // "FUNCALL" -> "b"
+  n20 -> n22 // "FUNCALL" -> "ARGS"
+  n0 -> n23 // "BLOCK" -> "="
+  n0 -> n24 // "BLOCK" -> "NEGATE"
   n24 -> n25 // "NEGATE" -> "FUNCALL"
-  n25 -> n26 // "FUNCALL" -> "f"
+  n25 -> n26 // "FUNCALL" -> "a"
   n25 -> n27 // "FUNCALL" -> "ARGS"
-  n27 -> n28 // "ARGS" -> "2"
-  n0 -> n29 // "BLOCK" -> ":="
-  n29 -> n30 // ":=" -> "f"
-  n29 -> n31 // ":=" -> "+"
-  n31 -> n32 // "+" -> "-"
-  n32 -> n33 // "-" -> "3"
-  n32 -> n34 // "-" -> "2"
-  n31 -> n35 // "+" -> "FUNCALL"
-  n35 -> n36 // "FUNCALL" -> "f"
-  n35 -> n37 // "FUNCALL" -> "ARGS"
-  n0 -> n38 // "BLOCK" -> ":="
-  n38 -> n39 // ":=" -> "f"
-  n38 -> n40 // ":=" -> "-"
-  n40 -> n41 // "-" -> "FUNCALL"
-  n41 -> n42 // "FUNCALL" -> "a"
-  n41 -> n43 // "FUNCALL" -> "ARGS"
-  n40 -> n44 // "-" -> "FUNCALL"
-  n44 -> n45 // "FUNCALL" -> "b"
-  n44 -> n46 // "FUNCALL" -> "ARGS"
-  n0 -> n47 // "BLOCK" -> ":="
-  n47 -> n48 // ":=" -> "f"
-  n47 -> n49 // ":=" -> "FUNCALL"
-  n49 -> n50 // "FUNCALL" -> "a"
-  n49 -> n51 // "FUNCALL" -> "ARGS"
-  n51 -> n52 // "ARGS" -> "NEGATE"
-  n52 -> n53 // "NEGATE" -> "FUNCALL"
-  n53 -> n54 // "FUNCALL" -> "b"
+  n0 -> n28 // "BLOCK" -> "FUNCALL"
+  n28 -> n29 // "FUNCALL" -> "f"
+  n28 -> n30 // "FUNCALL" -> "ARGS"
+  n0 -> n31 // "BLOCK" -> "="
+  n0 -> n32 // "BLOCK" -> "NEGATE"
+  n32 -> n33 // "NEGATE" -> "FUNCALL"
+  n33 -> n34 // "FUNCALL" -> "f"
+  n33 -> n35 // "FUNCALL" -> "ARGS"
+  n35 -> n36 // "ARGS" -> "2"
+  n0 -> n37 // "BLOCK" -> "FUNCALL"
+  n37 -> n38 // "FUNCALL" -> "f"
+  n37 -> n39 // "FUNCALL" -> "ARGS"
+  n0 -> n40 // "BLOCK" -> "="
+  n0 -> n41 // "BLOCK" -> "+"
+  n41 -> n42 // "+" -> "-"
+  n42 -> n43 // "-" -> "3"
+  n42 -> n44 // "-" -> "2"
+  n41 -> n45 // "+" -> "FUNCALL"
+  n45 -> n46 // "FUNCALL" -> "f"
+  n45 -> n47 // "FUNCALL" -> "ARGS"
+  n0 -> n48 // "BLOCK" -> "FUNCALL"
+  n48 -> n49 // "FUNCALL" -> "f"
+  n48 -> n50 // "FUNCALL" -> "ARGS"
+  n0 -> n51 // "BLOCK" -> "="
+  n0 -> n52 // "BLOCK" -> "-"
+  n52 -> n53 // "-" -> "FUNCALL"
+  n53 -> n54 // "FUNCALL" -> "a"
   n53 -> n55 // "FUNCALL" -> "ARGS"
-  n0 -> n56 // "BLOCK" -> ":="
-  n56 -> n57 // ":=" -> "f"
-  n56 -> n58 // ":=" -> "-"
-  n58 -> n59 // "-" -> "FUNCALL"
-  n59 -> n60 // "FUNCALL" -> "a"
+  n52 -> n56 // "-" -> "FUNCALL"
+  n56 -> n57 // "FUNCALL" -> "b"
+  n56 -> n58 // "FUNCALL" -> "ARGS"
+  n0 -> n59 // "BLOCK" -> "FUNCALL"
+  n59 -> n60 // "FUNCALL" -> "f"
   n59 -> n61 // "FUNCALL" -> "ARGS"
-  n58 -> n62 // "-" -> "FUNCALL"
-  n62 -> n63 // "FUNCALL" -> "b"
-  n62 -> n64 // "FUNCALL" -> "ARGS"
-  n0 -> n65 // "BLOCK" -> ":="
-  n65 -> n66 // ":=" -> "f"
-  n65 -> n67 // ":=" -> "-"
-  n67 -> n68 // "-" -> "-"
-  n68 -> n69 // "-" -> "FUNCALL"
-  n69 -> n70 // "FUNCALL" -> "a"
-  n69 -> n71 // "FUNCALL" -> "ARGS"
-  n68 -> n72 // "-" -> "FUNCALL"
-  n72 -> n73 // "FUNCALL" -> "b"
-  n72 -> n74 // "FUNCALL" -> "ARGS"
-  n67 -> n75 // "-" -> "FUNCALL"
-  n75 -> n76 // "FUNCALL" -> "c"
+  n0 -> n62 // "BLOCK" -> "="
+  n0 -> n63 // "BLOCK" -> "FUNCALL"
+  n63 -> n64 // "FUNCALL" -> "a"
+  n63 -> n65 // "FUNCALL" -> "ARGS"
+  n65 -> n66 // "ARGS" -> "NEGATE"
+  n66 -> n67 // "NEGATE" -> "FUNCALL"
+  n67 -> n68 // "FUNCALL" -> "b"
+  n67 -> n69 // "FUNCALL" -> "ARGS"
+  n0 -> n70 // "BLOCK" -> "FUNCALL"
+  n70 -> n71 // "FUNCALL" -> "f"
+  n70 -> n72 // "FUNCALL" -> "ARGS"
+  n0 -> n73 // "BLOCK" -> "="
+  n0 -> n74 // "BLOCK" -> "-"
+  n74 -> n75 // "-" -> "FUNCALL"
+  n75 -> n76 // "FUNCALL" -> "a"
   n75 -> n77 // "FUNCALL" -> "ARGS"
-  n77 -> n78 // "ARGS" -> "3"
-  n77 -> n79 // "ARGS" -> "-"
-  n79 -> n80 // "-" -> "4"
-  n79 -> n81 // "-" -> "FUNCALL"
-  n81 -> n82 // "FUNCALL" -> "d"
+  n74 -> n78 // "-" -> "FUNCALL"
+  n78 -> n79 // "FUNCALL" -> "b"
+  n78 -> n80 // "FUNCALL" -> "ARGS"
+  n0 -> n81 // "BLOCK" -> "FUNCALL"
+  n81 -> n82 // "FUNCALL" -> "f"
   n81 -> n83 // "FUNCALL" -> "ARGS"
-  n83 -> n84 // "ARGS" -> "NEGATE"
-  n84 -> n85 // "NEGATE" -> "FUNCALL"
-  n85 -> n86 // "FUNCALL" -> "e"
-  n85 -> n87 // "FUNCALL" -> "ARGS"
-  n83 -> n88 // "ARGS" -> "NEGATE"
-  n88 -> n89 // "NEGATE" -> "FUNCALL"
-  n89 -> n90 // "FUNCALL" -> "f"
-  n89 -> n91 // "FUNCALL" -> "ARGS"
+  n0 -> n84 // "BLOCK" -> "="
+  n0 -> n85 // "BLOCK" -> "-"
+  n85 -> n86 // "-" -> "-"
+  n86 -> n87 // "-" -> "FUNCALL"
+  n87 -> n88 // "FUNCALL" -> "a"
+  n87 -> n89 // "FUNCALL" -> "ARGS"
+  n86 -> n90 // "-" -> "FUNCALL"
+  n90 -> n91 // "FUNCALL" -> "b"
+  n90 -> n92 // "FUNCALL" -> "ARGS"
+  n85 -> n93 // "-" -> "FUNCALL"
+  n93 -> n94 // "FUNCALL" -> "c"
+  n93 -> n95 // "FUNCALL" -> "ARGS"
+  n95 -> n96 // "ARGS" -> "3"
+  n95 -> n97 // "ARGS" -> "-"
+  n97 -> n98 // "-" -> "4"
+  n97 -> n99 // "-" -> "FUNCALL"
+  n99 -> n100 // "FUNCALL" -> "d"
+  n99 -> n101 // "FUNCALL" -> "ARGS"
+  n101 -> n102 // "ARGS" -> "NEGATE"
+  n102 -> n103 // "NEGATE" -> "FUNCALL"
+  n103 -> n104 // "FUNCALL" -> "e"
+  n103 -> n105 // "FUNCALL" -> "ARGS"
+  n101 -> n106 // "ARGS" -> "NEGATE"
+  n106 -> n107 // "NEGATE" -> "FUNCALL"
+  n107 -> n108 // "FUNCALL" -> "f"
+  n107 -> n109 // "FUNCALL" -> "ARGS"
 
 }
 

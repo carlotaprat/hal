@@ -130,6 +130,13 @@ tokens
 
     return true;
   }
+
+  public boolean directlyNext(int type) {
+    if(input.LT(1).getType() != type)
+      return false;
+
+    return directlyFollows(input.LT(-1), input.LT(1));
+  }
 }
 
 // GRAMMAR
@@ -280,7 +287,8 @@ list
     ;
 
 access
-    :   LBRACK! expr RBRACK!
+    :   {directlyNext(LBRACK)}?
+        LBRACK! expr RBRACK!
     ;
 
 // LEXICAL RULES
