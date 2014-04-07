@@ -19,11 +19,12 @@ digraph {
   n7 [label="ARGS"];
   n8 [label="BLOCK"];
   n8 [label="BLOCK"];
-  n9 [label="FUNCALL"];
-  n9 [label="FUNCALL"];
-  n10 [label="something"];
-  n11 [label="ARGS"];
-  n12 [label="="];
+  n9 [label="="];
+  n9 [label="="];
+  n10 [label="FUNCALL"];
+  n10 [label="FUNCALL"];
+  n11 [label="something"];
+  n12 [label="ARGS"];
   n13 [label="+"];
   n13 [label="+"];
   n14 [label="FUNCALL"];
@@ -47,11 +48,11 @@ digraph {
   n5 -> n6 // "FUNCALL" -> "map"
   n5 -> n7 // "FUNCALL" -> "ARGS"
   n1 -> n8 // "FOR_STMT" -> "BLOCK"
-  n8 -> n9 // "BLOCK" -> "FUNCALL"
-  n9 -> n10 // "FUNCALL" -> "something"
-  n9 -> n11 // "FUNCALL" -> "ARGS"
-  n8 -> n12 // "BLOCK" -> "="
-  n8 -> n13 // "BLOCK" -> "+"
+  n8 -> n9 // "BLOCK" -> "="
+  n9 -> n10 // "=" -> "FUNCALL"
+  n10 -> n11 // "FUNCALL" -> "something"
+  n10 -> n12 // "FUNCALL" -> "ARGS"
+  n9 -> n13 // "=" -> "+"
   n13 -> n14 // "+" -> "FUNCALL"
   n14 -> n15 // "FUNCALL" -> "key"
   n14 -> n16 // "FUNCALL" -> "ARGS"

@@ -163,7 +163,7 @@ simple_stmt
     ;
 
 small_stmt
-    :   expr (EQUAL small_stmt)? // Right-associative
+    :   expr (EQUAL^ small_stmt)? // Right-associative
     ;
 
 compound_stmt

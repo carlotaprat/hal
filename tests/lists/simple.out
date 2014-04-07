@@ -7,11 +7,12 @@ digraph {
 	edge [arrowsize=.5, color="black", style="bold"]
 
   n0 [label="BLOCK"];
-  n1 [label="FUNCALL"];
-  n1 [label="FUNCALL"];
-  n2 [label="list"];
-  n3 [label="ARGS"];
-  n4 [label="="];
+  n1 [label="="];
+  n1 [label="="];
+  n2 [label="FUNCALL"];
+  n2 [label="FUNCALL"];
+  n3 [label="list"];
+  n4 [label="ARGS"];
   n5 [label="LIST"];
   n5 [label="LIST"];
   n6 [label="FUNCALL"];
@@ -52,11 +53,11 @@ digraph {
   n31 [label="c"];
   n32 [label="ARGS"];
 
-  n0 -> n1 // "BLOCK" -> "FUNCALL"
-  n1 -> n2 // "FUNCALL" -> "list"
-  n1 -> n3 // "FUNCALL" -> "ARGS"
-  n0 -> n4 // "BLOCK" -> "="
-  n0 -> n5 // "BLOCK" -> "LIST"
+  n0 -> n1 // "BLOCK" -> "="
+  n1 -> n2 // "=" -> "FUNCALL"
+  n2 -> n3 // "FUNCALL" -> "list"
+  n2 -> n4 // "FUNCALL" -> "ARGS"
+  n1 -> n5 // "=" -> "LIST"
   n5 -> n6 // "LIST" -> "FUNCALL"
   n6 -> n7 // "FUNCALL" -> "a"
   n6 -> n8 // "FUNCALL" -> "ARGS"
