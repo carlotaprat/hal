@@ -102,6 +102,21 @@ tokens
 // END INDENTATION
 
 @parser::members {
+  public boolean before(int before, int type) {
+    int i = 1;
+    Token t;
+
+    do {
+        t = input.LT(i);
+        i++;
+
+        if(t.getType() == type)
+            return true;
+    } while(t.getType() != EOF && t.getType() != before);
+
+    return false;
+  }
+
   public boolean space(TokenStream input) {
     return !directlyFollows(input.LT(-1), input.LT(1));
   }
@@ -120,12 +135,13 @@ tokens
 // GRAMMAR
 
 prog
-    :   (NEWLINE | stmt)* EOF -> ^(BLOCK stmt*)
+    :   (stmt)* EOF -> ^(BLOCK stmt*)
     ;
 
 stmt
     :   simple_stmt
     |   compound_stmt
+    |   NEWLINE!
     ;
 
 simple_stmt
@@ -140,8 +156,8 @@ simple_stmt
     ;
 
 small_stmt
-    : assign
-    | expr
+    @init{boolean assign=false;}
+    :   expr (EQUAL^ expr)*
     ;
 
 compound_stmt
@@ -150,6 +166,7 @@ compound_stmt
     |   while_stmt
     |   fundef
     |   do_lambda
+    |   assign_lambda
     ;
 
 if_stmt
@@ -210,18 +227,18 @@ arglist
     ;
 
 do_lambda
-    : 'do' ID args lambda -> ^(FUNCALL ID args lambda)
+    :   {input.LT(1).getType()==ID && before(NEWLINE, COLON) && !before(COLON, EQUAL)}?
+        ID args lambda -> ^(FUNCALL ID args lambda)
+    ;
+
+assign_lambda
+    :   {before(NEWLINE, COLON) && before(COLON, EQUAL)}?
+        expr eq=EQUAL do_lambda -> ^(ASSIGN[$eq, ":="] expr do_lambda)
     ;
 
 lambda
     :
-        ('as' paramlist)? COLON block -> ^(LAMBDA ^(PARAMS paramlist?) block)
-    ;
-
-
-// Assignment
-assign
-    :	ID eq=EQUAL expr -> ^(ASSIGN[$eq,":="] ID expr)
+        (LKW paramlist)? COLON block -> ^(LAMBDA ^(PARAMS paramlist?) block)
     ;
 
 expr
@@ -260,7 +277,11 @@ atom
     ;
 
 list
-    :  LBRACK (expr (',' expr)*)? RBRACK -> ^(LIST expr*)
+    :   LBRACK (expr (',' expr)*)? RBRACK -> ^(LIST expr*)
+    ;
+
+access
+    :   LBRACK! expr RBRACK!
     ;
 
 // LEXICAL RULES
@@ -291,6 +312,7 @@ FOR     : 'for';
 WHILE   : 'while';
 IN      : 'in';
 DEF     : 'def';
+LKW     : 'as';
 // SPECIAL SYMBOLS
 COLON   : ':' ;
 SEMICOLON : ';';
