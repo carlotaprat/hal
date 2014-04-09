@@ -229,7 +229,7 @@ paramlist
 funcall
     :   ID (
             {directlyNext(LPAREN)}?=> LPAREN args RPAREN
-            | args
+            | {space(input)}?=> args
         )
         -> ^(FUNCALL ID args)
     ;
@@ -239,7 +239,7 @@ args
     ;
 
 arglist
-    :   {space(input) && (!input.LT(1).getText().equals("-") ||
+    :   {(!input.LT(1).getText().equals("-") ||
                 directlyFollows(input.LT(1), input.LT(2)))}?
         expr (options {greedy=true;}: ','! expr)*
     ;
