@@ -20,6 +20,8 @@ tokens
     LIST;
     LAMBDA;
     ACCESS;
+    GET_ITEM;
+    METHCALL; // Science, bitch!
 }
 
 @header
@@ -225,7 +227,11 @@ paramlist
     ;
 
 funcall
-    :   ID args -> ^(FUNCALL ID args)
+    :   ID (
+            {directlyNext(LPAREN)}?=> LPAREN args RPAREN
+            | args
+        )
+        -> ^(FUNCALL ID args)
     ;
 
 args
@@ -275,15 +281,16 @@ term
     ;
 
 factor
-    :   NOT^ element
-    |   MINUS element -> ^(MINUS["NEGATE"] element)
-    |   element
+    :   NOT^ item
+    |   MINUS item -> ^(MINUS["NEGATE"] item)
+    |   item
     ;
 
-element
-    :   atom ac=access?
-        -> {ac==null}? atom
-        -> ^(ACCESS["[]"] atom access)
+item
+    :   (atom -> atom) (options {greedy=true;}:
+            a=access -> ^(GET_ITEM $item $a)
+        |   ('.' f=funcall -> ^(METHCALL $item $f))
+        )*
     ;
 
 atom
