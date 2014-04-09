@@ -9,7 +9,6 @@ import org.apache.commons.cli.*; // Command Language Interface
 import java.io.*;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.jar.JarFile;
 
 // Parser and Interpreter
 import hal.parser.*;
@@ -27,7 +26,7 @@ public class Hal
     public static final String VERSION = "0.0.1";
     public static final String DATE = "Apr 09, 18:47";
 
-    private static Interpreter I = null;
+    private static Interpreter INTERPRETER = null;
     /** The file name of the program. */
     private static String infile = null;
     private static File astfile = null;
@@ -48,7 +47,7 @@ public class Hal
             if (!readOptions (args))
                 System.exit(1);
 
-            I = new Interpreter(tracefile); // prepares the interpreter
+            INTERPRETER = new Interpreter(tracefile); // prepares the interpreter
 
             if(interactive)
                 interactiveMode();
@@ -78,7 +77,9 @@ public class Hal
             if(input.equals("quit"))
                 break;
 
-            process(new ANTLRStringStream(input));
+            DataType d = process(new ANTLRStringStream(input));
+            if(d != null)
+                System.out.print(d.__repr__());
         }
     }
 
@@ -94,14 +95,16 @@ public class Hal
         }
     }
 
-    private static void process(CharStream source) throws IOException {
+    private static DataType process(CharStream source) throws IOException {
         HalTree tree = getTree(source);
 
         if(astfile != null)
             writeASTFile(tree);
 
         if(execute)
-            evaluate(tree);
+            return evaluate(tree);
+
+        return null;
     }
 
     private static HalTree getTree(CharStream source) {
@@ -137,26 +140,28 @@ public class Hal
         output.close();
     }
 
-    private static void evaluate(HalTree t) {
+    private static DataType evaluate(HalTree t) {
         int linenumber = -1;
         try {
-            I.Run(t);                  // Executes the code
+            return INTERPRETER.Run(t);                  // Executes the code
         } catch (RuntimeException e) {
-            if (I != null) linenumber = I.lineNumber();
+            if (INTERPRETER != null) linenumber = INTERPRETER.lineNumber();
             System.err.print (e.getClass().getSimpleName());
             if (linenumber < 0) System.err.print (": ");
             else System.err.print (" (" + infile + ", line " + linenumber + "): ");
             System.err.println (e.getMessage() + ".");
-            System.err.format (I.getStackTrace());
+            System.err.format(INTERPRETER.getStackTrace());
             if(e instanceof NullPointerException)
                 e.printStackTrace(System.err);
         } catch (StackOverflowError e) {
-            if (I != null) linenumber = I.lineNumber();
+            if (INTERPRETER != null) linenumber = INTERPRETER.lineNumber();
             System.err.print("Stack overflow error");
             if (linenumber < 0) System.err.print (".");
             else System.err.println (" (" + infile + ", line " + linenumber + ").");
-            System.err.format (I.getStackTrace(5));
+            System.err.format (INTERPRETER.getStackTrace(5));
         }
+
+        return null;
     }
 
     /**

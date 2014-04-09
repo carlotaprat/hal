@@ -83,8 +83,11 @@ public abstract class DataType<T>
     /**
      * Internal method to handle funcalls
      */
-    public HalMethod toMethod() {
-        throw new TypeException();
+    public DataType call(Interpreter interp, HalTree args) {
+        if(args.getChildCount() > 0)
+            throw new TypeException("No arguments expected");
+
+        return this;
     }
 
     /*

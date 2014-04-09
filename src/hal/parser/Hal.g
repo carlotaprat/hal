@@ -61,7 +61,7 @@ tokens
     public void emit(Token t) {
         state.token = t;
         tokens.offer(t);
-        System.err.println("=> " + t);
+        //System.err.println("=> " + t);
     }
 
     @Override
@@ -84,7 +84,7 @@ tokens
             emit(Token.EOF_TOKEN);
         }
         Token t = tokens.poll();
-        System.err.println("<= " + t);
+        //System.err.println("<= " + t);
         return t;
     }
 

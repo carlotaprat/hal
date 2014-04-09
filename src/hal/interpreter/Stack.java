@@ -74,6 +74,7 @@ public class Stack {
         CurrentAR = new HashMap<String, Reference>();
         Stack.addLast (CurrentAR);
         StackTrace.addLast (new StackTraceItem(name, line));
+        defineReference("return", new Reference(null));
     }
 
     /** Destroys the current activation record */

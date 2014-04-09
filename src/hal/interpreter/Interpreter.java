@@ -3,10 +3,10 @@ package hal.interpreter;
 import hal.interpreter.core.MethodDefinition;
 import hal.interpreter.datatypes.*;
 import hal.interpreter.exceptions.AttributeException;
+import hal.interpreter.exceptions.SyntaxException;
 import hal.interpreter.exceptions.TypeException;
 import hal.parser.*;
 
-import javax.xml.crypto.Data;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +41,7 @@ public class Interpreter {
     private PrintWriter trace = null;
 
     /** Nested levels of function calls. */
-    private int function_nesting = -1;
+    private int function_nesting = 0;
     
     /**
      * Constructor of the interpreter. It prepares the main
@@ -49,17 +49,17 @@ public class Interpreter {
      */
     public Interpreter(PrintWriter tracefile) {
         Stack = new Stack(); // Creates the memory of the virtual machine
-        Stack.pushActivationRecord("Core", 0);
+        Stack.pushActivationRecord("Base", 0);
         // Initializes the standard input of the program
         stdin = new Scanner (new BufferedReader(new InputStreamReader(System.in)));
         trace = tracefile;
-        function_nesting = -1;
+        function_nesting = 0;
     }
 
     /** Runs the program by calling the main function without parameters. */
-    public void Run(HalTree t) {
+    public DataType Run(HalTree t) {
         PreProcessAST(t); // Some internal pre-processing on the AST
-        executeListInstructions(t);
+        return executeListInstructions(t);
     }
 
     /** Returns the contents of the stack trace */
@@ -108,15 +108,14 @@ public class Interpreter {
      * @param args The AST node representing the list of arguments of the caller.
      * @return The data returned by the function.
      */
-    private DataType executeFunction (String funcname, HalTree args) {
+    private DataType executeCall(String funcname, HalTree args) {
         // Get the AST of the function
         DataType f = Stack.getVariable(funcname);
-        if (f == null) {
-            throw new RuntimeException("method " + funcname + " not declared");
-        }
+        return f.call(this, args);
+    }
 
-        HalMethod method = f.toMethod();
-        MethodDefinition def = method.getValue();
+    public DataType executeMethod(MethodDefinition def, HalTree args)
+    {
         HalTree tree = def.tree;
 
         // Gather the list of arguments of the caller. This function
@@ -132,7 +131,7 @@ public class Interpreter {
         int nparam = p.getChildCount(); // Number of parameters
 
         // Create the activation record in memory
-        Stack.pushActivationRecord(funcname, lineNumber());
+        Stack.pushActivationRecord(def.name, lineNumber());
 
         // Track line number
         setLineNumber(tree);
@@ -148,10 +147,10 @@ public class Interpreter {
 
         // If the result is null, then the function returns void
         if (result == null) result = new HalNone();
-        
+
         // Dumps trace information
         if (trace != null) traceReturn(tree, result, Arg_values);
-        
+
         // Destroy the activation record
         Stack.popActivationRecord();
 
@@ -168,13 +167,15 @@ public class Interpreter {
      */
     private DataType executeListInstructions (HalTree t) {
         assert t != null;
-        DataType result = null;
+        Reference result = Stack.getReference("return");
+        DataType last = null;
+
         int ninstr = t.getChildCount();
         for (int i = 0; i < ninstr; ++i) {
-            result = executeInstruction (t.getChild(i));
-            if (result != null) return result;
+            last = executeInstruction (t.getChild(i));
+            if (result.data != null) return result.data;
         }
-        return null;
+        return last;
     }
     
     /**
@@ -200,8 +201,7 @@ public class Interpreter {
                 return null;
 
             case HalLexer.EXPR:
-                evaluateExpression(t.getChild(0));
-                return null;
+                return evaluateExpression(t.getChild(0));
 
             // If-then-else
             case HalLexer.IF:
@@ -222,10 +222,18 @@ public class Interpreter {
 
             // Return
             case HalLexer.RETURN:
-                if (t.getChildCount() != 0) {
-                    return evaluateExpression(t.getChild(0));
-                }
-                return new HalNone(); // No expression: returns void data
+                if(function_nesting == 0)
+                    throw new SyntaxException("return outside method");
+
+                DataType result;
+
+                if (t.getChildCount() != 0)
+                     result = evaluateExpression(t.getChild(0));
+                else
+                    result = new HalNone(); // No expression: returns void data
+
+                Stack.defineVariable("return", result);
+                return result;
 
             default: assert false; // Should never happen
         }
@@ -291,7 +299,7 @@ public class Interpreter {
                 break;
             // A function call. Checks that the function returns a result.
             case HalLexer.FUNCALL:
-                value = executeFunction(t.getChild(0).getText(), t.getChild(1));
+                value = executeCall(t.getChild(0).getText(), t.getChild(1));
                 assert value != null;
                 if (value.getValue() == null) {
                     throw new RuntimeException ("function expected to return a value");
