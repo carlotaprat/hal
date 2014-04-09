@@ -227,21 +227,22 @@ paramlist
     ;
 
 funcall
-    :   ID (
-            {directlyNext(LPAREN)}?=> LPAREN args RPAREN
-            | {space(input)}?=> args
-        )
-        -> ^(FUNCALL ID args)
+    :   ID args -> ^(FUNCALL ID args)
     ;
 
 args
-    :   arglist? -> ^(ARGS arglist?)
+    :   {directlyNext(LPAREN)}?=> LPAREN arglist? RPAREN -> ^(ARGS arglist?)
+        | space_arglist? -> ^(ARGS space_arglist?)
+    ;
+
+space_arglist
+    :   {space(input) && (!input.LT(1).getText().equals("-") ||
+            directlyFollows(input.LT(1), input.LT(2)))}?
+        arglist
     ;
 
 arglist
-    :   {(!input.LT(1).getText().equals("-") ||
-                directlyFollows(input.LT(1), input.LT(2)))}?
-        expr (options {greedy=true;}: ','! expr)*
+    :  expr (options {greedy=true;}: ','! expr)*
     ;
 
 do_lambda
