@@ -1,10 +1,12 @@
 package hal.interpreter;
 
+import hal.interpreter.core.MethodDefinition;
 import hal.interpreter.datatypes.*;
 import hal.interpreter.exceptions.AttributeException;
 import hal.interpreter.exceptions.TypeException;
 import hal.parser.*;
 
+import javax.xml.crypto.Data;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,27 +47,19 @@ public class Interpreter {
      * Constructor of the interpreter. It prepares the main
      * data structures for the execution of the main program.
      */
-    public Interpreter(HalTree T, String tracefile) {
-        assert T != null;
-        MapFunctions(T);  // Creates the table to map function names into AST nodes
-        PreProcessAST(T); // Some internal pre-processing ot the AST
+    public Interpreter(PrintWriter tracefile) {
         Stack = new Stack(); // Creates the memory of the virtual machine
+        Stack.pushActivationRecord("Core", 0);
         // Initializes the standard input of the program
         stdin = new Scanner (new BufferedReader(new InputStreamReader(System.in)));
-        if (tracefile != null) {
-            try {
-                trace = new PrintWriter(new FileWriter(tracefile));
-            } catch (IOException e) {
-                System.err.println(e);
-                System.exit(1);
-            }
-        }
+        trace = tracefile;
         function_nesting = -1;
     }
 
     /** Runs the program by calling the main function without parameters. */
-    public void Run() {
-        executeFunction ("main", null);
+    public void Run(HalTree t) {
+        PreProcessAST(t); // Some internal pre-processing on the AST
+        executeListInstructions(t);
     }
 
     /** Returns the contents of the stack trace */
@@ -76,25 +70,6 @@ public class Interpreter {
     /** Returns a summarized contents of the stack trace */
     public String getStackTrace(int nitems) {
         return Stack.getStackTrace(lineNumber(), nitems);
-    }
-    
-    /**
-     * Gathers information from the AST and creates the map from
-     * function names to the corresponding AST nodes.
-     */
-    private void MapFunctions(HalTree T) {
-        assert T != null && T.getType() == HalLexer.LIST_FUNCTIONS;
-        FuncName2Tree = new HashMap<String,HalTree> ();
-        int n = T.getChildCount();
-        for (int i = 0; i < n; ++i) {
-            HalTree f = T.getChild(i);
-            assert f.getType() == HalLexer.FUNC;
-            String fname = f.getChild(0).getText();
-            if (FuncName2Tree.containsKey(fname)) {
-                throw new RuntimeException("Multiple definitions of function " + fname);
-            }
-            FuncName2Tree.put(fname, f);
-        } 
     }
 
     /**
@@ -135,27 +110,33 @@ public class Interpreter {
      */
     private DataType executeFunction (String funcname, HalTree args) {
         // Get the AST of the function
-        HalTree f = FuncName2Tree.get(funcname);
-        if (f == null) throw new RuntimeException(" function " + funcname + " not declared");
+        DataType f = Stack.getVariable(funcname);
+        if (f == null) {
+            throw new RuntimeException("method " + funcname + " not declared");
+        }
+
+        HalMethod method = f.toMethod();
+        MethodDefinition def = method.getValue();
+        HalTree tree = def.tree;
 
         // Gather the list of arguments of the caller. This function
         // performs all the checks required for the compatibility of
         // parameters.
-        ArrayList<Reference> Arg_values = listArguments(f, args);
+        ArrayList<Reference> Arg_values = listArguments(tree, args);
 
         // Dumps trace information (function call and arguments)
-        if (trace != null) traceFunctionCall(f, Arg_values);
-        
+        if (trace != null) traceFunctionCall(tree, Arg_values);
+
         // List of parameters of the callee
-        HalTree p = f.getChild(1);
+        HalTree p = def.params;
         int nparam = p.getChildCount(); // Number of parameters
 
         // Create the activation record in memory
         Stack.pushActivationRecord(funcname, lineNumber());
 
         // Track line number
-        setLineNumber(f);
-         
+        setLineNumber(tree);
+
         // Copy the parameters to the current activation record
         for (int i = 0; i < nparam; ++i) {
             String param_name = p.getChild(i).getText();
@@ -163,13 +144,13 @@ public class Interpreter {
         }
 
         // Execute the instructions
-        DataType result = executeListInstructions (f.getChild(2));
+        DataType result = executeListInstructions(def.block);
 
         // If the result is null, then the function returns void
         if (result == null) result = new HalNone();
         
         // Dumps trace information
-        if (trace != null) traceReturn(f, result, Arg_values);
+        if (trace != null) traceReturn(tree, result, Arg_values);
         
         // Destroy the activation record
         Stack.popActivationRecord();
@@ -246,33 +227,6 @@ public class Interpreter {
                 }
                 return new HalNone(); // No expression: returns void data
 
-            // Read statement: reads a variable and raises an exception
-            // in case of a format error.
-            case HalLexer.READ:
-                String token = null;
-                HalInteger val = new HalInteger(0);
-                try {
-                    token = stdin.next();
-                    val.setValue(Integer.parseInt(token)); 
-                } catch (NumberFormatException ex) {
-                    throw new RuntimeException ("Format error when reading a number: " + token);
-                }
-                Stack.defineVariable (t.getChild(0).getText(), val);
-                return null;
-
-            // Write statement: it can write an expression or a string.
-            case HalLexer.WRITE:
-                HalTree v = t.getChild(0);
-                // Special case for strings
-                if (v.getType() == HalLexer.STRING) {
-                    System.out.format(v.getStringValue());
-                    return null;
-                }
-
-                // Write an expression
-                System.out.print(evaluateExpression(v).toString());
-                return null;
-
             default: assert false; // Should never happen
         }
 
@@ -283,18 +237,22 @@ public class Interpreter {
 
     private void evaluateAssign(HalTree t) {
         HalTree left = t.getChild(0);
-        DataType value = evaluateExpression(t.getChild(1));
+        DataType value = evaluateExpression(t.getChild(1).getChild(0));
 
         switch(left.getType()) {
-            case HalLexer.ID:
-                Stack.defineVariable(t.getChild(0).getText(), value);
+            case HalLexer.FUNCALL:
+                if(left.getChild(1).getChildCount() > 0)
+                    throw new TypeException("Funcall with arguments in left hand assignation.");
+
+                String id = left.getChild(0).getText();
+                Stack.defineVariable(id, value);
                 break;
             case HalLexer.GET_ITEM:
                 DataType d = evaluateExpression(left.getChild(0));
                 d.__setitem__(evaluateExpression(left.getChild(1)), value);
                 break;
             default:
-                throw new TypeException();
+                throw new TypeException("Impossible to assign to left expression.");
         }
     }
 
@@ -323,10 +281,10 @@ public class Interpreter {
                 break;
             // A Boolean literal
             case HalLexer.BOOLEAN:
-                value = new AslBoolean(t.getBooleanValue());
+                value = new HalBoolean(t.getBooleanValue());
                 break;
             case HalLexer.STRING:
-                value = new AslString(t.getStringValue());
+                value = new HalString(t.getStringValue());
                 break;
             case HalLexer.ARRAY:
                 value = evaluateArray(t);
@@ -429,7 +387,7 @@ public class Interpreter {
     }
 
     private DataType evaluateArray(HalTree t) {
-        AslArray value = new AslArray();
+        HalArray value = new HalArray();
         int n = t.getChildCount();
 
         for(int i = 0; i < n; ++i)
@@ -487,9 +445,9 @@ public class Interpreter {
             return (DataType) obj.getClass().getMethod("__" + id + "__", param_types).invoke(
                     obj, args);
         } catch (IllegalAccessException e) {
-            throw new TypeException();
+            throw new TypeException("Illegal access to method.");
         } catch (InvocationTargetException e) {
-            throw new TypeException();
+            throw new TypeException("Number of arguments did not match.");
         } catch (NoSuchMethodException e) {
             throw new AttributeException("Undefined method: " + id);
         }
@@ -500,25 +458,17 @@ public class Interpreter {
      * that the arguments are compatible with the parameters. In particular,
      * it checks that the number of parameters is the same and that no
      * expressions are passed as parametres by reference.
-     * @param AstF The AST of the callee.
      * @param args The AST of the list of arguments passed by the caller.
      * @return The list of evaluated arguments.
      */
      
     private ArrayList<Reference> listArguments (HalTree AstF, HalTree args) {
-        if (args != null) setLineNumber(args);
+        setLineNumber(args);
         HalTree pars = AstF.getChild(1);   // Parameters of the function
-        
+
         // Create the list of parameters
         ArrayList<Reference> Params = new ArrayList<Reference> ();
         int n = pars.getChildCount();
-
-        // Check that the number of parameters is the same
-        int nargs = (args == null) ? 0 : args.getChildCount();
-        if (n != nargs) {
-            throw new RuntimeException ("Incorrect number of parameters calling function " +
-                                        AstF.getChild(0).getText());
-        }
 
         // Checks the compatibility of the parameters passed by
         // reference and calculates the values and references of
@@ -527,18 +477,8 @@ public class Interpreter {
             HalTree p = pars.getChild(i); // Parameters of the callee
             HalTree a = args.getChild(i); // Arguments passed by the caller
             setLineNumber(a);
-            if (p.getType() == HalLexer.PVALUE) {
-                // Pass by value: evaluate the expression
-                Params.add(i, new Reference(evaluateExpression(a)));
-            } else {
-                // Pass by reference: check that it is a variable
-                if (a.getType() != HalLexer.ID) {
-                    throw new RuntimeException("Wrong argument for pass by reference");
-                }
-                // Find the variable and pass the reference
-                Reference r = Stack.getReference(a.getText());
-                Params.add(i,r);
-            }
+            // Pass by value: evaluate the expression
+            Params.set(i, new Reference(evaluateExpression(a)));
         }
         return Params;
     }
@@ -562,7 +502,6 @@ public class Interpreter {
         for (int i = 0; i < nargs; ++i) {
             if (i > 0) trace.print(", ");
             HalTree p = params.getChild(i);
-            if (p.getType() == HalLexer.PREF) trace.print("&");
             trace.print(p.getText() + "=" + arg_values.get(i));
         }
         trace.print(") ");
@@ -591,8 +530,7 @@ public class Interpreter {
         int nargs = params.getChildCount();
         for (int i = 0; i < nargs; ++i) {
             HalTree p = params.getChild(i);
-            if (p.getType() == HalLexer.PVALUE) continue;
-            trace.print(", &" + p.getText() + "=" + arg_values.get(i));
+            trace.print(", " + p.getText() + "=" + arg_values.get(i));
         }
         
         trace.println(" <line " + lineNumber() + ">");

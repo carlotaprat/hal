@@ -15,13 +15,13 @@ tokens
     IF_STMT;
     FOR_STMT;
     WHILE_STMT;
-    ASSIGN;
     BOOLEAN;
-    LIST;
+    ARRAY;
     LAMBDA;
     ACCESS;
     GET_ITEM;
     METHCALL; // Science, bitch!
+    EXPR;
 }
 
 @header
@@ -171,7 +171,9 @@ small_stmt
     ;
 
 assign_expr
-    :   expr (EQUAL^ assign_expr)? // Right-associative
+    :   expr (a=ASSIGN assign_expr)? // Right-associative
+        -> {a==null}? ^(EXPR expr)
+        -> ^(ASSIGN expr assign_expr)
     ;
 
 compound_stmt
@@ -270,7 +272,7 @@ boolterm
 
 boolfact
     :   num_expr (options {greedy=true;}:
-            (DOUBLE_EQUAL^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) num_expr)?
+            (EQUAL^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) num_expr)?
     ;
 
 num_expr
@@ -296,6 +298,7 @@ item
 
 atom
     :   INT
+    |   STRING
     |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
     |   list
     |   funcall // An ID can be considered a "funcall" with 0 args
@@ -304,7 +307,7 @@ atom
     ;
 
 list
-    :   LBRACK (expr (',' expr)*)? RBRACK -> ^(LIST expr*)
+    :   LBRACK (expr (',' expr)*)? RBRACK -> ^(ARRAY expr*)
     ;
 
 access
@@ -315,8 +318,8 @@ access
 // LEXICAL RULES
 
 // OPERATORS
-EQUAL	: '=' ;
-DOUBLE_EQUAL : '==';
+EQUAL : '==';
+ASSIGN	: '=' ;
 NOT_EQUAL: '!=' ;
 LT      : '<' ;
 LE      : '<=';
@@ -364,6 +367,14 @@ ID  : (LETTER|'_') (LETTER|'_'|DIGIT)* ('!'|'?')?;
 
 // Integers
 INT : (DIGIT)+;
+
+// Strings
+STRING  :  '"' ( ESC_SEQ | ~('\\'|'"') )* '"'
+        ;
+
+fragment ESC_SEQ
+        :   '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
+        ;
 
 WS
     : SP {skip();}

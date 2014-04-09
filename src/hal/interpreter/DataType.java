@@ -28,6 +28,7 @@
 package hal.interpreter;
 
 import hal.interpreter.datatypes.HalBoolean;
+import hal.interpreter.datatypes.HalMethod;
 import hal.interpreter.exceptions.OperatorNotSupportedException;
 import hal.interpreter.exceptions.TypeException;
 
@@ -79,6 +80,13 @@ public abstract class DataType<T>
         return (Boolean) __bool__().getValue();
     }
 
+    /**
+     * Internal method to handle funcalls
+     */
+    public HalMethod toMethod() {
+        throw new TypeException();
+    }
+
     /*
      * UNARY OPERATORS
      */
@@ -92,6 +100,10 @@ public abstract class DataType<T>
 
     public DataType __not__() {
         throw new OperatorNotSupportedException();
+    }
+
+    public DataType __call__() {
+        return this;
     }
 
     /*
