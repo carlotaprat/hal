@@ -83,9 +83,14 @@ public class Hal
                 do {
                     console.setPrompt("... ");
                     block = console.readLine();
+
+                    if(block == null) {
+                        System.out.println();
+                        break;
+                    }
+
                     input += "\n" + block;
                 } while(!block.equals(""));
-                System.out.println(input);
             }
 
             if(input.equals("quit"))

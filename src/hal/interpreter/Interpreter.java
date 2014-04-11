@@ -197,8 +197,7 @@ public class Interpreter {
 
             // Assignment
             case HalLexer.ASSIGN:
-                evaluateAssign(t);
-                return null;
+                return evaluateAssign(t);
 
             case HalLexer.EXPR:
                 return evaluateExpression(t.getChild(0));
@@ -212,12 +211,13 @@ public class Interpreter {
                 return null;
 
             // While
-            case HalLexer.WHILE:
+            case HalLexer.WHILE_STMT:
+                DataType last = new HalNone();
                 while (true) {
                     value = evaluateExpression(t.getChild(0));
-                    if (!value.toBoolean()) return null;
-                    DataType r = executeListInstructions(t.getChild(1));
-                    if (r != null) return r;
+                    if(!value.toBoolean())
+                        return last;
+                    last = executeListInstructions(t.getChild(1));
                 }
 
             // Return
@@ -243,7 +243,7 @@ public class Interpreter {
         return null;
     }
 
-    private void evaluateAssign(HalTree t) {
+    private DataType evaluateAssign(HalTree t) {
         HalTree left = t.getChild(0);
         DataType value = evaluateExpression(t.getChild(1).getChild(0));
 
@@ -262,6 +262,8 @@ public class Interpreter {
             default:
                 throw new TypeException("Impossible to assign to left expression.");
         }
+
+        return value;
     }
 
     /**
