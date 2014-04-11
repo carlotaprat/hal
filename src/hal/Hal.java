@@ -14,6 +14,10 @@ import java.util.Scanner;
 import hal.parser.*;
 import hal.interpreter.*;
 
+// Interactive mode
+import jline.console.ConsoleReader;
+import jline.console.completer.FileNameCompleter;
+
 /**
  * The class <code>Hal</code> implement the main function of the
  * interpreter. It accepts a set of options to generate the AST in
@@ -63,39 +67,35 @@ public class Hal
         System.out.println("Hal " + VERSION + " (" + DATE + ") [java "
                 + System.getProperty("java.version") + "]");
 
-        Scanner keyboard = new Scanner(System.in);
+        ConsoleReader console = new ConsoleReader();
         String input;
-        boolean quit = false;
-        while(!quit) {
-            input = "";
-            System.out.print("\n>>> ");
-            try {
-                input = keyboard.nextLine();
-                if(input.endsWith(":")) {
-                    String block;
-                    do {
-                        System.out.print("... ");
-                        block = keyboard.nextLine();
-                        input += block;
-                    } while(!block.equals(""));
-                }
-            } catch(NoSuchElementException e) {
-                if(input.isEmpty()) {
-                    System.out.println();
-                    break;
-                } else {
-                    quit = true;
-                }
+        while(true) {
+            console.setPrompt(">>> ");
+            input = console.readLine();
+
+            if(input == null) {
+                System.out.println();
+                break;
+            }
+
+            if(input.endsWith(":")) {
+                String block;
+                do {
+                    console.setPrompt("... ");
+                    block = console.readLine();
+                    input += "\n" + block;
+                } while(!block.equals(""));
+                System.out.println(input);
             }
 
             if(input.equals("quit"))
-                quit = true;
+                break;
 
             try {
                 DataType d = process(new ANTLRStringStream(input));
 
                 if (d != null)
-                    System.out.print(d.__repr__());
+                    System.out.println(d.__repr__());
             } catch(RuntimeException e) {
                 System.out.println("Syntax error.");
             }

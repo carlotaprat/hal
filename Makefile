@@ -20,8 +20,9 @@ MANIFEST = $(BIN)/$(TARGET)_Manifest.txt
 # Libraries and Classpath
 LIB_ANTLR = $(LIBDIR)/antlr3.jar
 LIB_CLI   = $(LIBDIR)/commons-cli.jar
-CLASSPATH = $(LIB_ANTLR):$(LIB_CLI):$(SRCDIR)
-JARPATH   = "$(LIB_ANTLR) $(LIB_CLI)"
+LIB_JLINE = $(LIBDIR)/jline-2.11.jar
+CLASSPATH = $(LIB_ANTLR):$(LIB_CLI):$(LIB_JLINE):$(SRCDIR)
+JARPATH   = "$(LIB_ANTLR) $(LIB_CLI) $(LIB_JLINE)"
 
 # Distribution (tar) file
 DATE      = $(shell date +"%d%b%y")
@@ -39,7 +40,7 @@ INTERP_SRC := $(shell find $(INTERP) -name '*.java')
 
 ALL_SRC     = $(MAIN_SRC) $(PARSER_SRC) $(INTERP_SRC)
 				
-all: compile exec docs
+all: compile exec
 
 compile:
 	antlr3 -o $(PARSER) $(GRAMMAR)
