@@ -65,21 +65,40 @@ public class Hal
 
         Scanner keyboard = new Scanner(System.in);
         String input;
-        while(true) {
+        boolean quit = false;
+        while(!quit) {
+            input = "";
             System.out.print("\n>>> ");
             try {
                 input = keyboard.nextLine();
+                if(input.endsWith(":")) {
+                    String block;
+                    do {
+                        System.out.print("... ");
+                        block = keyboard.nextLine();
+                        input += block;
+                    } while(!block.equals(""));
+                }
             } catch(NoSuchElementException e) {
-                System.out.println();
-                break;
+                if(input.isEmpty()) {
+                    System.out.println();
+                    break;
+                } else {
+                    quit = true;
+                }
             }
 
             if(input.equals("quit"))
-                break;
+                quit = true;
 
-            DataType d = process(new ANTLRStringStream(input));
-            if(d != null)
-                System.out.print(d.__repr__());
+            try {
+                DataType d = process(new ANTLRStringStream(input));
+
+                if (d != null)
+                    System.out.print(d.__repr__());
+            } catch(RuntimeException e) {
+                System.out.println("Syntax error.");
+            }
         }
     }
 
