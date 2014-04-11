@@ -10,7 +10,6 @@ import hal.parser.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Scanner;
 import java.io.*;
 
@@ -20,16 +19,6 @@ public class Interpreter {
 
     /** Memory of the virtual machine. */
     private Stack Stack;
-
-    /**
-     * Map between function names (keys) and ASTs (values).
-     * Each entry of the map stores the root of the AST
-     * correponding to the function.
-     */
-    private HashMap<String,HalTree> FuncName2Tree;
-
-    /** Standard input of the interpreter (System.in). */
-    private Scanner stdin;
 
     /**
      * Stores the line number of the current statement.
@@ -50,8 +39,6 @@ public class Interpreter {
     public Interpreter(PrintWriter tracefile) {
         Stack = new Stack(); // Creates the memory of the virtual machine
         Stack.pushActivationRecord("Base", 0);
-        // Initializes the standard input of the program
-        stdin = new Scanner (new BufferedReader(new InputStreamReader(System.in)));
         trace = tracefile;
         function_nesting = 0;
     }
