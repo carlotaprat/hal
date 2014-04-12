@@ -20,7 +20,7 @@ public class HalNone extends HalObject
     private static final Reference __str__ = new Reference(new BuiltinMethod("__str__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
-            return new HalString("None");
+            return new HalString("none");
         }
     });
     

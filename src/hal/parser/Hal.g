@@ -300,6 +300,7 @@ atom
     :   INT
     |   STRING
     |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
+    |   NONE
     |   list
     |   funcall // An ID can be considered a "funcall" with 0 args
     |   y=YIELD expr -> ^(YIELD[$y, "YIELD"] expr)
@@ -336,6 +337,7 @@ AND     : 'and' ;
 OR      : 'or' ;
 TRUE    : 'true';
 FALSE   : 'false';
+NONE    : 'none';
 IF      : 'if';
 ELIF    : 'elif';
 ELSE    : 'else';
