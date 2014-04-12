@@ -5,6 +5,8 @@ import hal.interpreter.types.HalObject;
 
 abstract public class Builtin extends HalObject<String>
 {
+    public String className;
+
     public Builtin(String name) {
         super(name);
     }

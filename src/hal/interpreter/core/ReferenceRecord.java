@@ -9,14 +9,17 @@ import java.util.HashMap;
 
 public class ReferenceRecord
 {
+    public String name;
+    public ReferenceRecord parent;
     protected HashMap<String, Reference> record;
 
-    public ReferenceRecord() {
+    public ReferenceRecord(String name, ReferenceRecord parent, Reference... builtins) {
+        this.name = name;
+        this.parent = parent;
         record = new HashMap<String, Reference>();
-    }
 
-    public void setRecord(ReferenceRecord r) {
-        record = r.record;
+        for(Reference builtin : builtins)
+            defineBuiltin(builtin);
     }
 
     public void defineReference(String name, Reference ref) {
@@ -35,8 +38,10 @@ public class ReferenceRecord
         else r.data = value; // Use the previous data
     }
 
-    public void defineBuiltin(Reference builtin) {
-        defineReference((String)builtin.data.getValue(), builtin);
+    public void defineBuiltin(Reference ref) {
+        Builtin builtin = (Builtin) ref.data;
+        builtin.className = name;
+        defineReference(builtin.getValue(), ref);
     }
 
     public Reference getReference(String name) {

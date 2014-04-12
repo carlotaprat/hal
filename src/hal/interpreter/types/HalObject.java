@@ -6,18 +6,12 @@ import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.NameException;
 import hal.interpreter.exceptions.TypeException;
 
-import java.util.HashMap;
-
 
 public abstract class HalObject<T> {
-    private static final String classId = "Object";
-    static HashMap<String, ReferenceRecord> records = new HashMap<String, ReferenceRecord>();
-
     public T value;
-    protected ReferenceRecord record;
 
     public HalObject() {
-        record = getRecord(getClassId());
+
     }
 
     /**
@@ -28,18 +22,12 @@ public abstract class HalObject<T> {
         value = d;
     }
 
-    public String getClassId() {
-        return classId;
-    }
-
-    public static void init() {
-        // Close circular dependency with BuiltinMethods
-        ReferenceRecord builtinRecord = records.get(BuiltinMethod.classId);
-        builtinRecord.setRecord(createStaticRecord());
-    }
-
     public T getValue() {
         return value;
+    }
+
+    public ReferenceRecord getRecord() {
+        return record;
     }
 
     /**
@@ -68,45 +56,29 @@ public abstract class HalObject<T> {
     }
 
     public HalObject methodcall(String name, HalObject... args) {
-        try {
-            return record.getVariable(name).call(this, args);
-        } catch(NameException e) {
-            throw new TypeException(e.getMessage() + " in class " + getClassId());
+        ReferenceRecord original = getRecord();
+        ReferenceRecord current = original;
+
+        while(true) {
+            try {
+                return getRecord().getVariable(name).call(this, args);
+            } catch (NameException e) {
+                current = current.parent;
+
+                if(current == null)
+                    throw new TypeException(e.getMessage() + " in class " + original.name);
+            }
         }
     }
 
-    private ReferenceRecord getRecord(String id) {
-        if(records.containsKey(id))
-            return records.get(id);
-
-        ReferenceRecord r = createRecord();
-        records.put(id, r);
-        return r;
-    }
-
-    protected ReferenceRecord createRecord() {
-        return createStaticRecord();
-    }
-
-    private static ReferenceRecord createStaticRecord() {
-        ReferenceRecord base = new ReferenceRecord();
-
-        // Builtin base methods
-        base.defineBuiltin(__repr__);
-        base.defineBuiltin(__eq__);
-        base.defineBuiltin(__neq__);
-
-        return base;
-    }
-
-    private static Reference __repr__ = new Reference(new BuiltinMethod(classId, "__repr__") {
+    private static Reference __repr__ = new Reference(new BuiltinMethod("__repr__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return instance.methodcall("__str__");
         }
     });
 
-    private static Reference __eq__ = new Reference(new BuiltinMethod(classId, "__eq__") {
+    private static Reference __eq__ = new Reference(new BuiltinMethod("__eq__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)
@@ -116,10 +88,16 @@ public abstract class HalObject<T> {
         }
     });
 
-    private static Reference __neq__ = new Reference(new BuiltinMethod(classId, "__neq__") {
+    private static Reference __neq__ = new Reference(new BuiltinMethod("__neq__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return __eq__.data.call(instance, args).methodcall("__not__");
         }
     });
+
+    private static final ReferenceRecord record = new ReferenceRecord("Object", null,
+            __repr__,
+            __eq__,
+            __neq__
+    );
 }
