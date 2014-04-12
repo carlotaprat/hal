@@ -43,7 +43,6 @@ public class Interpreter {
         Stack.pushActivationRecord("Base", 0);
         trace = tracefile;
         function_nesting = 0;
-        HalObject.init();
     }
 
     /** Runs the program by calling the main function without parameters. */

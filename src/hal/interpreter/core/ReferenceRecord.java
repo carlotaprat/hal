@@ -12,7 +12,13 @@ public class ReferenceRecord
     public String name;
     public ReferenceRecord parent;
     protected HashMap<String, Reference> record;
-
+    
+    public ReferenceRecord() {
+        name = null;
+        parent = null;
+        record = null;
+    }
+    
     public ReferenceRecord(String name, ReferenceRecord parent, Reference... builtins) {
         this.name = name;
         this.parent = parent;

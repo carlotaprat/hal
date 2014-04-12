@@ -16,19 +16,28 @@ public class HalNone extends HalObject
     public String getClassId() {
         return classId;
     }
-
-    public ReferenceRecord createRecord() {
-        ReferenceRecord base = super.createRecord();
-
-        base.defineBuiltin(__str__);
-
-        return base;
-    }
-
-    private static final Reference __str__ = new Reference(new BuiltinMethod(classId, "__str__") {
+    
+    private static final Reference __str__ = new Reference(new BuiltinMethod("__str__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return new HalString("None");
         }
     });
+    
+    private static final Reference __eq__ = new Reference(new BuiltinMethod("__eq__") {
+        @Override
+        public HalObject call(HalObject instance, HalObject... args) {
+            return new HalBoolean(args[0] instanceof HalNone); 
+        }
+    });
+    
+    
+    private static final ReferenceRecord record = new ReferenceRecord(classId, null, 
+                __str__,
+                __eq__);
+    
+    public ReferenceRecord getRecord() {
+        return record;
+    }
+
 }

@@ -22,31 +22,21 @@ public class HalString extends HalObject<String>
         return value;
     }
 
-    public ReferenceRecord createRecord() {
-        ReferenceRecord base = super.createRecord();
-
-        base.defineBuiltin(__repr__);
-        base.defineBuiltin(__str__);
-        base.defineBuiltin(__getitem__);
-
-        return base;
-    }
-
-    private static final Reference __repr__ = new Reference(new BuiltinMethod(classId, "__repr__") {
+    private static final Reference __repr__ = new Reference(new BuiltinMethod("__repr__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return new HalString("'" + instance.toString() + "'");
         }
     });
 
-    private static final Reference __str__ = new Reference(new BuiltinMethod(classId, "__str__") {
+    private static final Reference __str__ = new Reference(new BuiltinMethod("__str__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return new HalString(instance.toString());
         }
     });
 
-    private static final Reference __getitem__ = new Reference(new BuiltinMethod(classId, "__getitem__") {
+    private static final Reference __getitem__ = new Reference(new BuiltinMethod("__getitem__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)
@@ -56,4 +46,15 @@ public class HalString extends HalObject<String>
             return new HalString(instance.toString().substring(i, i+1));
         }
     });
+    
+    private static final ReferenceRecord record = new ReferenceRecord(classId, null,
+            __repr__,
+            __str__,
+            __getitem__
+    );
+    
+    public ReferenceRecord getRecord() {
+        return record;
+    }
+
 }

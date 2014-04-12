@@ -10,6 +10,8 @@ import hal.interpreter.exceptions.TypeException;
 public abstract class HalObject<T> {
     public T value;
 
+    public static final String classId = "Object";
+    
     public HalObject() {
 
     }
@@ -61,7 +63,7 @@ public abstract class HalObject<T> {
 
         while(true) {
             try {
-                return getRecord().getVariable(name).call(this, args);
+                return current.getVariable(name).call(this, args);
             } catch (NameException e) {
                 current = current.parent;
 
@@ -95,9 +97,10 @@ public abstract class HalObject<T> {
         }
     });
 
-    private static final ReferenceRecord record = new ReferenceRecord("Object", null,
+    public static final ReferenceRecord record = new ReferenceRecord(classId, null,
             __repr__,
             __eq__,
             __neq__
     );
+    
 }

@@ -21,20 +21,7 @@ public class HalArray extends HalObject<List<HalObject>>
         return classId;
     }
 
-    protected ReferenceRecord createRecord() {
-        ReferenceRecord record = super.createRecord();
-
-        record.defineBuiltin(__str__);
-        record.defineBuiltin(__getitem__);
-        record.defineBuiltin(__setitem__);
-        record.defineBuiltin(append);
-        record.defineBuiltin(size);
-        record.defineBuiltin(sum);
-
-        return record;
-    }
-
-    private static final Reference __str__ = new Reference(new BuiltinMethod(classId, "__str__") {
+    private static final Reference __str__ = new Reference(new BuiltinMethod("__str__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             String s = "";
@@ -52,7 +39,7 @@ public class HalArray extends HalObject<List<HalObject>>
         }
     });
 
-    private static final Reference __getitem__ = new Reference(new BuiltinMethod(classId, "__getitem__") {
+    private static final Reference __getitem__ = new Reference(new BuiltinMethod("__getitem__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)
@@ -62,7 +49,7 @@ public class HalArray extends HalObject<List<HalObject>>
         }
     });
 
-    private static final Reference __setitem__ = new Reference(new BuiltinMethod(classId, "__setitem__") {
+    private static final Reference __setitem__ = new Reference(new BuiltinMethod("__setitem__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 2)
@@ -73,7 +60,7 @@ public class HalArray extends HalObject<List<HalObject>>
         }
     });
 
-    private static final Reference append = new Reference(new BuiltinMethod(classId, "append") {
+    private static final Reference append = new Reference(new BuiltinMethod("append") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)
@@ -84,14 +71,14 @@ public class HalArray extends HalObject<List<HalObject>>
         }
     });
 
-    private static final Reference size = new Reference(new BuiltinMethod(classId, "size") {
+    private static final Reference size = new Reference(new BuiltinMethod("size") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return new HalInteger(((HalArray) instance).value.size());
         }
     });
 
-    private static final Reference sum = new Reference(new BuiltinMethod(classId, "sum") {
+    private static final Reference sum = new Reference(new BuiltinMethod("sum") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             HalObject sum = new HalInteger(0);
@@ -103,4 +90,17 @@ public class HalArray extends HalObject<List<HalObject>>
             return sum;
         }
     });
+    
+    private static final ReferenceRecord record = new ReferenceRecord(classId, null,
+            __str__,
+            __getitem__,
+            __setitem__,
+            append,
+            size,
+            sum
+    );
+    
+    public ReferenceRecord getRecord() {
+        return record;
+    }
 }
