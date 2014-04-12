@@ -14,10 +14,6 @@ public class HalInteger extends HalObject<Integer>
         super(i);
     }
 
-    public String getClassId() {
-        return classId;
-    }
-
     public Integer toInteger() {
         return value;
     }

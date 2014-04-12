@@ -47,7 +47,7 @@ public class HalString extends HalObject<String>
         }
     });
     
-    private static final ReferenceRecord record = new ReferenceRecord(classId, null,
+    private static final ReferenceRecord record = new ReferenceRecord(classId, HalObject.record,
             __repr__,
             __str__,
             __getitem__
@@ -56,5 +56,4 @@ public class HalString extends HalObject<String>
     public ReferenceRecord getRecord() {
         return record;
     }
-
 }

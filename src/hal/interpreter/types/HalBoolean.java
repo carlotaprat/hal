@@ -15,10 +15,6 @@ public class HalBoolean extends HalObject<Boolean>
         super(b);
     }
 
-    public String getClassId() {
-        return classId;
-    }
-
     public Boolean toBoolean() {
         return value;
     }
@@ -47,7 +43,7 @@ public class HalBoolean extends HalObject<Boolean>
         }
     });
     
-    private static final ReferenceRecord record = new ReferenceRecord(classId, null,
+    private static final ReferenceRecord record = new ReferenceRecord(classId, HalObject.record,
             __str__,
             __bool__,
             __not__

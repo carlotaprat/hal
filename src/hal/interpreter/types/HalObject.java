@@ -28,10 +28,6 @@ public abstract class HalObject<T> {
         return value;
     }
 
-    public ReferenceRecord getRecord() {
-        return record;
-    }
-
     /**
      * Returns a string representing the data in textual form.
      */
@@ -102,5 +98,9 @@ public abstract class HalObject<T> {
             __eq__,
             __neq__
     );
-    
+
+
+    public ReferenceRecord getRecord() {
+        return record;
+    }
 }

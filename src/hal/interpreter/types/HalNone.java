@@ -32,7 +32,7 @@ public class HalNone extends HalObject
     });
     
     
-    private static final ReferenceRecord record = new ReferenceRecord(classId, null, 
+    private static final ReferenceRecord record = new ReferenceRecord(classId, HalObject.record,
                 __str__,
                 __eq__);
     

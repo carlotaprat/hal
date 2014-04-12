@@ -17,10 +17,6 @@ public class HalArray extends HalObject<List<HalObject>>
         value = new ArrayList<HalObject>();
     }
 
-    public String getClassId() {
-        return classId;
-    }
-
     private static final Reference __str__ = new Reference(new BuiltinMethod("__str__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
@@ -91,7 +87,7 @@ public class HalArray extends HalObject<List<HalObject>>
         }
     });
     
-    private static final ReferenceRecord record = new ReferenceRecord(classId, null,
+    private static final ReferenceRecord record = new ReferenceRecord(classId, HalObject.record,
             __str__,
             __getitem__,
             __setitem__,
