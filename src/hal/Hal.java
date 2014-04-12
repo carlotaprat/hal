@@ -30,7 +30,7 @@ public class Hal
     public static final String VERSION = "0.0.1";
     public static final String DATE = "Apr 09, 18:47";
 
-    private static Interpreter INTERPRETER = null;
+    public static Interpreter INTERPRETER = null;
     /** The file name of the program. */
     private static String infile = null;
     private static File astfile = null;
@@ -100,9 +100,9 @@ public class Hal
                 DataType d = process(new ANTLRStringStream(input));
 
                 if (d != null)
-                    System.out.println(d.__repr__());
+                    System.out.println("=> " + d.methodcall("__repr__"));
             } catch(RuntimeException e) {
-                System.out.println("Syntax error.");
+                System.out.println(e.getMessage());
             }
         }
     }
@@ -148,7 +148,7 @@ public class Hal
         // Check for parsing errors
         int nerrors = parser.getNumberOfSyntaxErrors();
         if (nerrors > 0)
-            throw new RuntimeException(nerrors + " errors detected. The program has not been executed.");
+            throw new RuntimeException(nerrors + " syntax error" + (nerrors > 1 ? "s" : ""));
 
         return (HalTree)result.getTree();
     }
@@ -183,6 +183,7 @@ public class Hal
             if (linenumber < 0) System.err.print (".");
             else System.err.println (" (" + infile + ", line " + linenumber + ").");
             System.err.format (INTERPRETER.getStackTrace(5));
+            e.printStackTrace(System.err);
         }
 
         return null;

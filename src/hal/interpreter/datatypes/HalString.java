@@ -9,6 +9,10 @@ public class HalString extends DataType<String>
         value = s;
     }
 
+    public String toString(){
+        return value;
+    }
+
     public HalString __str__() {
         return new HalString(value);
     }

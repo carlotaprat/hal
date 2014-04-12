@@ -1,16 +1,13 @@
 package hal.interpreter;
 
+import hal.interpreter.core.BaseClass;
+import hal.interpreter.core.ClassDefinition;
 import hal.interpreter.core.MethodDefinition;
 import hal.interpreter.datatypes.*;
-import hal.interpreter.exceptions.AttributeException;
 import hal.interpreter.exceptions.SyntaxException;
 import hal.interpreter.exceptions.TypeException;
 import hal.parser.*;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
 import java.io.*;
 
 /** Class that implements the interpreter of the language. */
@@ -19,6 +16,8 @@ public class Interpreter {
 
     /** Memory of the virtual machine. */
     private Stack Stack;
+    private BaseClass baseClass;
+    private ClassDefinition currentClass;
 
     /**
      * Stores the line number of the current statement.
@@ -38,6 +37,7 @@ public class Interpreter {
      */
     public Interpreter(PrintWriter tracefile) {
         Stack = new Stack(); // Creates the memory of the virtual machine
+        baseClass = new BaseClass();
         Stack.pushActivationRecord("Base", 0);
         trace = tracefile;
         function_nesting = 0;
@@ -98,20 +98,15 @@ public class Interpreter {
     private DataType executeCall(String funcname, HalTree args) {
         // Get the AST of the function
         DataType f = Stack.getVariable(funcname);
-        return f.call(this, args);
+        return f.call(null, listArguments(args));
     }
 
-    public DataType executeMethod(MethodDefinition def, HalTree args)
+    public DataType executeMethod(MethodDefinition def, DataType... args)
     {
         HalTree tree = def.tree;
 
-        // Gather the list of arguments of the caller. This function
-        // performs all the checks required for the compatibility of
-        // parameters.
-        ArrayList<Reference> Arg_values = listArguments(tree, args);
-
         // Dumps trace information (function call and arguments)
-        if (trace != null) traceFunctionCall(tree, Arg_values);
+        if (trace != null) traceFunctionCall(tree, args);
 
         // List of parameters of the callee
         HalTree p = def.params;
@@ -126,7 +121,7 @@ public class Interpreter {
         // Copy the parameters to the current activation record
         for (int i = 0; i < nparam; ++i) {
             String param_name = p.getChild(i).getText();
-            Stack.defineReference(param_name, Arg_values.get(i));
+            Stack.defineVariable(param_name, args[i]);
         }
 
         // Execute the instructions
@@ -136,7 +131,7 @@ public class Interpreter {
         if (result == null) result = new HalNone();
 
         // Dumps trace information
-        if (trace != null) traceReturn(tree, result, Arg_values);
+        if (trace != null) traceReturn(tree, result, args);
 
         // Destroy the activation record
         Stack.popActivationRecord();
@@ -164,9 +159,9 @@ public class Interpreter {
         }
         return last;
     }
-    
+
     /**
-     * Executes an instruction. 
+     * Executes an instruction.
      * Non-null results are only returned by "return" statements.
      * @param t The AST of the instruction.
      * @return The data returned by the instruction. The data will be
@@ -175,7 +170,7 @@ public class Interpreter {
      */
     private DataType executeInstruction (HalTree t) {
         assert t != null;
-        
+
         setLineNumber(t);
         DataType value; // The returned value
 
@@ -244,7 +239,7 @@ public class Interpreter {
                 break;
             case HalLexer.GET_ITEM:
                 DataType d = evaluateExpression(left.getChild(0));
-                d.__setitem__(evaluateExpression(left.getChild(1)), value);
+                d.methodcall("__setitem__", evaluateExpression(left.getChild(1)), value);
                 break;
             default:
                 throw new TypeException("Impossible to assign to left expression.");
@@ -258,7 +253,7 @@ public class Interpreter {
      * @param t The AST of the expression
      * @return The value of the expression.
      */
-    private DataType evaluateExpression(HalTree t) {
+    public DataType evaluateExpression(HalTree t) {
         assert t != null;
 
         int previous_line = lineNumber();
@@ -289,10 +284,6 @@ public class Interpreter {
             // A function call. Checks that the function returns a result.
             case HalLexer.FUNCALL:
                 value = executeCall(t.getChild(0).getText(), t.getChild(1));
-                assert value != null;
-                if (value.getValue() == null) {
-                    throw new RuntimeException ("function expected to return a value");
-                }
                 break;
             default: break;
         }
@@ -308,13 +299,13 @@ public class Interpreter {
         if (t.getChildCount() == 1) {
             switch (type) {
                 case HalLexer.PLUS:
-                    value = value.__pos__();
+                    value = value.methodcall("__pos__");
                     break;
                 case HalLexer.MINUS:
-                    value = value.__neg__();
+                    value = value.methodcall("__neg__");
                     break;
                 case HalLexer.NOT:
-                    value = value.__not__();
+                    value = value.methodcall("__not__");
                     break;
                 default: assert false; // Should never happen
             }
@@ -348,37 +339,37 @@ public class Interpreter {
         switch (type) {
             // Relational operators
             case HalLexer.EQUAL:
-                value = value.__eq__(value2); break;
+                value = value.methodcall("__eq__", value2); break;
             case HalLexer.NOT_EQUAL:
-                value = value.__neq__(value2); break;
+                value = value.methodcall("__neq__", value2); break;
             case HalLexer.LT:
-                value = value.__lt__(value2); break;
+                value = value.methodcall("__lt__", value2); break;
             case HalLexer.LE:
-                value = value.__le__(value2); break;
+                value = value.methodcall("__le__", value2); break;
             case HalLexer.GT:
-                value = value.__gt__(value2); break;
+                value = value.methodcall("__gt__", value2); break;
             case HalLexer.GE:
-                value = value.__ge__(value2); break;
+                value = value.methodcall("__ge__", value2); break;
 
             // Arithmetic operators
             case HalLexer.PLUS:
-                value = value.__add__(value2); break;
+                value = value.methodcall("__add__", value2); break;
             case HalLexer.MINUS:
-                value = value.__sub__(value2); break;
+                value = value.methodcall("__sub__", value2); break;
             case HalLexer.MUL:
-                value = value.__mul__(value2); break;
+                value = value.methodcall("__mul__", value2); break;
             case HalLexer.DIV:
-                value = value.__div__(value2); break;
+                value = value.methodcall("__div__", value2); break;
             case HalLexer.MOD:
-                value = value.__mod__(value2); break;
+                value = value.methodcall("__mod__", value2); break;
 
             // Additional operators
             case HalLexer.GET_ITEM:
-                value = value.__getitem__(value2); break;
+                value = value.methodcall("__getitem__", value2); break;
 
             default: assert false; // Should never happen
         }
-        
+
         setLineNumber(previous_line);
         return value;
     }
@@ -392,7 +383,7 @@ public class Interpreter {
 
         return value;
     }
-    
+
     /**
      * Evaluation of Boolean expressions. This function implements
      * a short-circuit evaluation. The second operand is still a tree
@@ -411,12 +402,12 @@ public class Interpreter {
                 // Short circuit if v is false
                 if (!v.toBoolean()) return v;
                 break;
-        
+
             case HalLexer.OR:
                 // Short circuit if v is true
                 if (v.toBoolean()) return v;
                 break;
-                
+
             default: assert false;
         }
 
@@ -426,28 +417,8 @@ public class Interpreter {
     }
 
     private DataType evaluateMethodCall(DataType obj, HalTree funcall) {
-        String id = funcall.getChild(0).getText();
-        HalTree arglist = funcall.getChild(1);
-        int n = arglist.getChildCount();
-
-        Class<?>[] param_types = new Class<?>[n];
-        Arrays.fill(param_types, DataType.class);
-
-        Object[] args = new Object[n];
-        for(int i = 0; i < n; ++i) {
-            args[i] = evaluateExpression(arglist.getChild(i));
-        }
-
-        try {
-            return (DataType) obj.getClass().getMethod("__" + id + "__", param_types).invoke(
-                    obj, args);
-        } catch (IllegalAccessException e) {
-            throw new TypeException("Illegal access to method.");
-        } catch (InvocationTargetException e) {
-            throw new TypeException("Number of arguments did not match.");
-        } catch (NoSuchMethodException e) {
-            throw new AttributeException("Undefined method: " + id);
-        }
+        String name = funcall.getChild(0).getText();
+        return obj.methodcall(name, listArguments(funcall.getChild(1)));
     }
 
     /**
@@ -458,24 +429,22 @@ public class Interpreter {
      * @param args The AST of the list of arguments passed by the caller.
      * @return The list of evaluated arguments.
      */
-     
-    private ArrayList<Reference> listArguments (HalTree AstF, HalTree args) {
+
+    private DataType[] listArguments(HalTree args) {
         setLineNumber(args);
-        HalTree pars = AstF.getChild(1);   // Parameters of the function
 
         // Create the list of parameters
-        ArrayList<Reference> Params = new ArrayList<Reference> ();
-        int n = pars.getChildCount();
+        int n = args.getChildCount();
+        DataType[] Params = new DataType[n];
 
         // Checks the compatibility of the parameters passed by
         // reference and calculates the values and references of
         // the parameters.
         for (int i = 0; i < n; ++i) {
-            HalTree p = pars.getChild(i); // Parameters of the callee
             HalTree a = args.getChild(i); // Arguments passed by the caller
             setLineNumber(a);
             // Pass by value: evaluate the expression
-            Params.set(i, new Reference(evaluateExpression(a)));
+            Params[i] = evaluateExpression(a);
         }
         return Params;
     }
@@ -487,7 +456,7 @@ public class Interpreter {
      * @param f AST of the function
      * @param arg_values Values of the parameters passed to the function
      */
-    private void traceFunctionCall(HalTree f, ArrayList<Reference> arg_values) {
+    private void traceFunctionCall(HalTree f, DataType... arg_values) {
         function_nesting++;
         HalTree params = f.getChild(1);
         int nargs = params.getChildCount();
@@ -499,7 +468,7 @@ public class Interpreter {
         for (int i = 0; i < nargs; ++i) {
             if (i > 0) trace.print(", ");
             HalTree p = params.getChild(i);
-            trace.print(p.getText() + "=" + arg_values.get(i));
+            trace.print(p.getText() + "=" + arg_values[i]);
         }
         trace.print(") ");
         
@@ -516,7 +485,7 @@ public class Interpreter {
      * @param result The value of the result
      * @param arg_values The value of the parameters passed to the function
      */
-    private void traceReturn(HalTree f, DataType result, ArrayList<Reference> arg_values) {
+    private void traceReturn(HalTree f, DataType result, DataType... arg_values) {
         for (int i=0; i < function_nesting; ++i) trace.print("|   ");
         function_nesting--;
         trace.print("return");
@@ -527,7 +496,7 @@ public class Interpreter {
         int nargs = params.getChildCount();
         for (int i = 0; i < nargs; ++i) {
             HalTree p = params.getChild(i);
-            trace.print(", " + p.getText() + "=" + arg_values.get(i));
+            trace.print(", " + p.getText() + "=" + arg_values[i]);
         }
         
         trace.println(" <line " + lineNumber() + ">");

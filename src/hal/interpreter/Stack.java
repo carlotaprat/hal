@@ -27,6 +27,8 @@
 
 package hal.interpreter;
 
+import hal.interpreter.core.ReferenceRecord;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -38,13 +40,10 @@ import java.util.ListIterator;
  * <name of variable,value>.
  */
  
-public class Stack {
+public class Stack extends ReferenceRecord {
 
     /** Stack of activation records */
     private LinkedList<HashMap<String, Reference>> Stack;
-
-    /** Reference to the current activation record */
-    private HashMap<String, Reference> CurrentAR = null;
 
     /**
      * Class to represent an item of the Stack trace.
@@ -65,14 +64,14 @@ public class Stack {
     /** Constructor of the memory */
     public Stack() {
         Stack = new LinkedList<HashMap<String, Reference>>();
-        CurrentAR = null;
+        record = null;
         StackTrace = new LinkedList<StackTraceItem>();
     }
 
     /** Creates a new activation record on the top of the stack */
     public void pushActivationRecord(String name, int line) {
-        CurrentAR = new HashMap<String, Reference>();
-        Stack.addLast (CurrentAR);
+        record = new HashMap<String, Reference>();
+        Stack.addLast(record);
         StackTrace.addLast (new StackTraceItem(name, line));
         defineReference("return", new Reference(null));
     }
@@ -80,43 +79,9 @@ public class Stack {
     /** Destroys the current activation record */
     public void popActivationRecord() {
         Stack.removeLast();
-        if (Stack.isEmpty()) CurrentAR = null;
-        else CurrentAR = Stack.getLast();
+        if (Stack.isEmpty()) record = null;
+        else record = Stack.getLast();
         StackTrace.removeLast();
-    }
-
-    public void defineReference(String name, Reference ref) {
-        CurrentAR.put(name, ref);
-    }
-
-    /** Defines the value of a variable. If the variable does not
-     * exist, it is created. If it exists, the value and type of
-     * the variable are re-defined.
-     * @param name The name of the variable
-     * @param value The value of the variable
-     */
-    public void defineVariable(String name, DataType value) {
-        Reference r = CurrentAR.get(name);
-        if (r == null) CurrentAR.put(name, new Reference(value)); // New definition
-        else r.data = value; // Use the previous data
-    }
-
-    public Reference getReference(String name) {
-        Reference r = CurrentAR.get(name);
-        if (r == null) {
-            throw new RuntimeException ("Variable " + name + " not defined");
-        }
-        return r;
-    }
-
-    /** Gets the value of the variable. The value is represented as
-     * a Data object. In this way, any modification of the object
-     * implicitly modifies the value of the variable.
-     * @param name The name of the variable
-     * @return The value of the variable
-     */
-    public DataType getVariable(String name) {
-        return getReference(name).data;
     }
 
     /**
