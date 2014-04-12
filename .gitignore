@@ -1,9 +1,12 @@
 .idea/
+nbproject/
 bin/
 classes/
 javadoc/
 src/hal/parser/
 
+build.xml
+*.mf
 *.class
 *.pdf
 out.dot
