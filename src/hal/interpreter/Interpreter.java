@@ -203,7 +203,7 @@ public class Interpreter {
                         return last;
                     last = executeListInstructions(t.getChild(1));
                 }
-
+                
             // Return
             case HalLexer.RETURN:
                 if(function_nesting == 0)
@@ -277,6 +277,9 @@ public class Interpreter {
             case HalLexer.BOOLEAN:
                 value = new HalBoolean(t.getBooleanValue());
                 break;
+            case HalLexer.NONE:
+                value = NONE;
+                break;
             case HalLexer.STRING:
                 value = new HalString(t.getStringValue());
                 break;
@@ -287,6 +290,7 @@ public class Interpreter {
             case HalLexer.FUNCALL:
                 value = executeCall(t.getChild(0).getText(), t.getChild(1));
                 break;
+                
             default: break;
         }
 
