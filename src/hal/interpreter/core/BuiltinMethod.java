@@ -1,12 +1,12 @@
 package hal.interpreter.core;
 
-import hal.interpreter.DataType;
-import hal.interpreter.datatypes.HalString;
+import hal.interpreter.types.HalObject;
+import hal.interpreter.types.HalString;
 
 
 abstract public class BuiltinMethod extends Builtin
 {
-    private static ReferenceRecord cached_record = null;
+    public static final String classId = "BuiltinMethod";
     private String className;
 
     public BuiltinMethod(String cname, String method_name) {
@@ -14,15 +14,15 @@ abstract public class BuiltinMethod extends Builtin
         className = cname;
     }
 
-    abstract public DataType call(DataType instance, DataType... args);
+    public String getClassId() {
+        return classId;
+    }
+
+    abstract public HalObject call(HalObject instance, HalObject... args);
 
     public ReferenceRecord createRecord(){
         // Resolve infinite recursion just relaxing the dependency
-        if(cached_record != null)
-            return cached_record;
-
-        cached_record = new ReferenceRecord();
-        return cached_record;
+        return new ReferenceRecord();
     }
 
     public HalString __str__() {

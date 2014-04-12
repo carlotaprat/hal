@@ -1,14 +1,13 @@
 package hal;
 
 // Imports for ANTLR
+import hal.interpreter.types.HalObject;
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
 
 // Imports from Java
 import org.apache.commons.cli.*; // Command Language Interface
 import java.io.*;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 // Parser and Interpreter
 import hal.parser.*;
@@ -16,7 +15,6 @@ import hal.interpreter.*;
 
 // Interactive mode
 import jline.console.ConsoleReader;
-import jline.console.completer.FileNameCompleter;
 
 /**
  * The class <code>Hal</code> implement the main function of the
@@ -68,6 +66,7 @@ public class Hal
                 + System.getProperty("java.version") + "]");
 
         ConsoleReader console = new ConsoleReader();
+        console.setExpandEvents(false);
         String input;
         while(true) {
             console.setPrompt(">>> ");
@@ -97,7 +96,7 @@ public class Hal
                 break;
 
             try {
-                DataType d = process(new ANTLRStringStream(input));
+                HalObject d = process(new ANTLRStringStream(input));
 
                 if (d != null)
                     System.out.println("=> " + d.methodcall("__repr__"));
@@ -119,7 +118,7 @@ public class Hal
         }
     }
 
-    private static DataType process(CharStream source) throws IOException {
+    private static HalObject process(CharStream source) throws IOException {
         HalTree tree = getTree(source);
 
         if(astfile != null)
@@ -164,7 +163,7 @@ public class Hal
         output.close();
     }
 
-    private static DataType evaluate(HalTree t) {
+    private static HalObject evaluate(HalTree t) {
         int linenumber = -1;
         try {
             return INTERPRETER.Run(t);                  // Executes the code

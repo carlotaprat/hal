@@ -1,6 +1,7 @@
 package hal.interpreter.core;
 
-import hal.interpreter.DataType;
+import hal.interpreter.exceptions.NameException;
+import hal.interpreter.types.HalObject;
 import hal.interpreter.Reference;
 
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class ReferenceRecord
      * @param name The name of the variable
      * @param value The value of the variable
      */
-    public void defineVariable(String name, DataType value) {
+    public void defineVariable(String name, HalObject value) {
         Reference r = record.get(name);
         if (r == null) record.put(name, new Reference(value)); // New definition
         else r.data = value; // Use the previous data
@@ -41,7 +42,7 @@ public class ReferenceRecord
     public Reference getReference(String name) {
         Reference r = record.get(name);
         if (r == null) {
-            throw new RuntimeException ("Method " + name + " not defined");
+            throw new NameException("Method " + name + " not defined");
         }
         return r;
     }
@@ -52,7 +53,7 @@ public class ReferenceRecord
      * @param name The name of the variable
      * @return The value of the variable
      */
-    public DataType getVariable(String name) {
+    public HalObject getVariable(String name) {
         return getReference(name).data;
     }
 }

@@ -3,7 +3,7 @@ package hal.interpreter;
 import hal.interpreter.core.BaseClass;
 import hal.interpreter.core.ClassDefinition;
 import hal.interpreter.core.MethodDefinition;
-import hal.interpreter.datatypes.*;
+import hal.interpreter.types.*;
 import hal.interpreter.exceptions.SyntaxException;
 import hal.interpreter.exceptions.TypeException;
 import hal.parser.*;
@@ -13,6 +13,8 @@ import java.io.*;
 /** Class that implements the interpreter of the language. */
 
 public class Interpreter {
+    /** Singleton Hal None value **/
+    private static final HalNone NONE = new HalNone();
 
     /** Memory of the virtual machine. */
     private Stack Stack;
@@ -41,10 +43,11 @@ public class Interpreter {
         Stack.pushActivationRecord("Base", 0);
         trace = tracefile;
         function_nesting = 0;
+        HalObject.init();
     }
 
     /** Runs the program by calling the main function without parameters. */
-    public DataType Run(HalTree t) {
+    public HalObject Run(HalTree t) {
         PreProcessAST(t); // Some internal pre-processing on the AST
         return executeListInstructions(t);
     }
@@ -95,13 +98,13 @@ public class Interpreter {
      * @param args The AST node representing the list of arguments of the caller.
      * @return The data returned by the function.
      */
-    private DataType executeCall(String funcname, HalTree args) {
+    private HalObject executeCall(String funcname, HalTree args) {
         // Get the AST of the function
-        DataType f = Stack.getVariable(funcname);
+        HalObject f = Stack.getVariable(funcname);
         return f.call(null, listArguments(args));
     }
 
-    public DataType executeMethod(MethodDefinition def, DataType... args)
+    public HalObject executeMethod(MethodDefinition def, HalObject... args)
     {
         HalTree tree = def.tree;
 
@@ -125,7 +128,7 @@ public class Interpreter {
         }
 
         // Execute the instructions
-        DataType result = executeListInstructions(def.block);
+        HalObject result = executeListInstructions(def.block);
 
         // If the result is null, then the function returns void
         if (result == null) result = new HalNone();
@@ -147,10 +150,10 @@ public class Interpreter {
      * @return The data returned by the instructions (null if no return
      * statement has been executed).
      */
-    private DataType executeListInstructions (HalTree t) {
+    private HalObject executeListInstructions (HalTree t) {
         assert t != null;
         Reference result = Stack.getReference("return");
-        DataType last = null;
+        HalObject last = NONE;
 
         int ninstr = t.getChildCount();
         for (int i = 0; i < ninstr; ++i) {
@@ -168,11 +171,11 @@ public class Interpreter {
      * non-null only if a return statement is executed or a block
      * of instructions executing a return.
      */
-    private DataType executeInstruction (HalTree t) {
+    private HalObject executeInstruction (HalTree t) {
         assert t != null;
 
         setLineNumber(t);
-        DataType value; // The returned value
+        HalObject value; // The returned value
 
         // A big switch for all type of instructions
         switch (t.getType()) {
@@ -194,7 +197,7 @@ public class Interpreter {
 
             // While
             case HalLexer.WHILE_STMT:
-                DataType last = new HalNone();
+                HalObject last = NONE;
                 while (true) {
                     value = evaluateExpression(t.getChild(0));
                     if(!value.toBoolean())
@@ -207,7 +210,7 @@ public class Interpreter {
                 if(function_nesting == 0)
                     throw new SyntaxException("return outside method");
 
-                DataType result;
+                HalObject result;
 
                 if (t.getChildCount() != 0)
                      result = evaluateExpression(t.getChild(0));
@@ -225,9 +228,9 @@ public class Interpreter {
         return null;
     }
 
-    private DataType evaluateAssign(HalTree t) {
+    private HalObject evaluateAssign(HalTree t) {
         HalTree left = t.getChild(0);
-        DataType value = evaluateExpression(t.getChild(1).getChild(0));
+        HalObject value = evaluateExpression(t.getChild(1).getChild(0));
 
         switch(left.getType()) {
             case HalLexer.FUNCALL:
@@ -238,7 +241,7 @@ public class Interpreter {
                 Stack.defineVariable(id, value);
                 break;
             case HalLexer.GET_ITEM:
-                DataType d = evaluateExpression(left.getChild(0));
+                HalObject d = evaluateExpression(left.getChild(0));
                 d.methodcall("__setitem__", evaluateExpression(left.getChild(1)), value);
                 break;
             default:
@@ -253,14 +256,14 @@ public class Interpreter {
      * @param t The AST of the expression
      * @return The value of the expression.
      */
-    public DataType evaluateExpression(HalTree t) {
+    public HalObject evaluateExpression(HalTree t) {
         assert t != null;
 
         int previous_line = lineNumber();
         setLineNumber(t);
         int type = t.getType();
 
-        DataType value = null;
+        HalObject value = null;
         // Atoms
         switch (type) {
             // A variable
@@ -313,7 +316,7 @@ public class Interpreter {
             return value;
         }
 
-        DataType value2 = null;
+        HalObject value2 = null;
 
         // Two operands
         switch(type) {
@@ -374,12 +377,15 @@ public class Interpreter {
         return value;
     }
 
-    private DataType evaluateArray(HalTree t) {
+    private HalObject evaluateArray(HalTree t) {
         HalArray value = new HalArray();
         int n = t.getChildCount();
 
+        // Use method __append__ on creation?
+        // Let the programmer play with arrays freely?
+        // TODO: Think about this
         for(int i = 0; i < n; ++i)
-            value.__append__(evaluateExpression(t.getChild(i)));
+            value.value.add(evaluateExpression(t.getChild(i)));
 
         return value;
     }
@@ -394,7 +400,7 @@ public class Interpreter {
      * @param t AST node of the second operand.
      * @return An Boolean data with the value of the expression.
      */
-    private DataType evaluateBoolean (int type, DataType v, HalTree t) {
+    private HalObject evaluateBoolean (int type, HalObject v, HalTree t) {
         // Boolean evaluation with short-circuit
 
         switch (type) {
@@ -416,7 +422,7 @@ public class Interpreter {
         return v;
     }
 
-    private DataType evaluateMethodCall(DataType obj, HalTree funcall) {
+    private HalObject evaluateMethodCall(HalObject obj, HalTree funcall) {
         String name = funcall.getChild(0).getText();
         return obj.methodcall(name, listArguments(funcall.getChild(1)));
     }
@@ -430,12 +436,12 @@ public class Interpreter {
      * @return The list of evaluated arguments.
      */
 
-    private DataType[] listArguments(HalTree args) {
+    private HalObject[] listArguments(HalTree args) {
         setLineNumber(args);
 
         // Create the list of parameters
         int n = args.getChildCount();
-        DataType[] Params = new DataType[n];
+        HalObject[] Params = new HalObject[n];
 
         // Checks the compatibility of the parameters passed by
         // reference and calculates the values and references of
@@ -456,7 +462,7 @@ public class Interpreter {
      * @param f AST of the function
      * @param arg_values Values of the parameters passed to the function
      */
-    private void traceFunctionCall(HalTree f, DataType... arg_values) {
+    private void traceFunctionCall(HalTree f, HalObject... arg_values) {
         function_nesting++;
         HalTree params = f.getChild(1);
         int nargs = params.getChildCount();
@@ -485,7 +491,7 @@ public class Interpreter {
      * @param result The value of the result
      * @param arg_values The value of the parameters passed to the function
      */
-    private void traceReturn(HalTree f, DataType result, DataType... arg_values) {
+    private void traceReturn(HalTree f, HalObject result, HalObject... arg_values) {
         for (int i=0; i < function_nesting; ++i) trace.print("|   ");
         function_nesting--;
         trace.print("return");

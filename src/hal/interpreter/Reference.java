@@ -1,9 +1,11 @@
 package hal.interpreter;
 
-public class Reference {
-    public DataType data;
+import hal.interpreter.types.HalObject;
 
-    public Reference(DataType value) {
+public class Reference {
+    public HalObject data;
+
+    public Reference(HalObject value) {
         data = value;
     }
 

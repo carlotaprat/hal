@@ -1,9 +1,9 @@
 package hal.interpreter.core;
 
-import hal.interpreter.DataType;
+import hal.interpreter.types.HalObject;
 
 
-abstract public class Builtin extends DataType<String>
+abstract public class Builtin extends HalObject<String>
 {
     public Builtin(String name) {
         super(name);

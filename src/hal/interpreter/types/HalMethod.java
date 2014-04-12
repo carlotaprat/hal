@@ -1,18 +1,17 @@
-package hal.interpreter.datatypes;
+package hal.interpreter.types;
 
 import hal.Hal;
-import hal.interpreter.DataType;
 import hal.interpreter.HalTree;
 import hal.interpreter.core.MethodDefinition;
 
 
-public class HalMethod extends DataType<MethodDefinition>
+public class HalMethod extends HalObject<MethodDefinition>
 {
     public HalMethod(HalTree tree) {
         value = new MethodDefinition(tree);
     }
 
-    public DataType call(DataType instance, DataType... args) {
+    public HalObject call(HalObject instance, HalObject... args) {
         return Hal.INTERPRETER.executeMethod(value, args);
     }
 
