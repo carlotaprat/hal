@@ -35,10 +35,13 @@ public class HalInteger extends HalObject<Integer>
         }
     });
 
-    private static final Reference __neg__ = new Reference(new BuiltinMethod("__neq__") {
+    private static final Reference __neg__ = new Reference(new BuiltinMethod("__neg__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
-            return null;
+            if(args.length > 0)
+                throw new TypeException();
+
+            return new HalInteger(-instance.toInteger());
         }
     });
 
@@ -86,7 +89,6 @@ public class HalInteger extends HalObject<Integer>
 
         // Relational
         __lt__
-
     );
     
     public ReferenceRecord getRecord() {

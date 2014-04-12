@@ -89,14 +89,48 @@ public abstract class HalObject<T> {
     private static Reference __neq__ = new Reference(new BuiltinMethod("__neq__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
-            return __eq__.data.call(instance, args).methodcall("__not__");
+            return instance.methodcall("__eq__", args).methodcall("__not__");
+        }
+    });
+
+    private static final Reference __le__ = new Reference(new BuiltinMethod("__le__") {
+        @Override
+        public HalObject call(HalObject instance, HalObject... args) {
+            if(args.length != 1)
+                throw new TypeException();
+
+            return new HalBoolean(instance.methodcall("__lt__", args).toBoolean() ||
+                instance.methodcall("__eq__", args).toBoolean());
+        }
+    });
+
+    private static final Reference __gt__ = new Reference(new BuiltinMethod("__gt__") {
+        @Override
+        public HalObject call(HalObject instance, HalObject... args) {
+            if(args.length != 1)
+                throw new TypeException();
+
+            return instance.methodcall("__le__", args).methodcall("__not__");
+        }
+    });
+
+    private static final Reference __ge__ = new Reference(new BuiltinMethod("__ge__") {
+        @Override
+        public HalObject call(HalObject instance, HalObject... args) {
+            if(args.length != 1)
+                throw new TypeException();
+
+            return instance.methodcall("__lt__", args).methodcall("__not__");
         }
     });
 
     public static final ReferenceRecord record = new ReferenceRecord(classId, null,
             __repr__,
             __eq__,
-            __neq__
+            __neq__,
+            __le__,
+            __gt__,
+            __ge__
     );
 
 
