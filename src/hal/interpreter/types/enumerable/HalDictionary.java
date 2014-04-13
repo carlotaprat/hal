@@ -9,38 +9,37 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class HalDictionary extends HalEnumerable<HashMap<String, HalObject>>
+public class HalDictionary extends HalEnumerable<HashMap<HalObject, HalObject>>
 {
     public HalDictionary() {
-        value = new HashMap<String, HalObject>();
+        value = new HashMap<HalObject, HalObject>();
     }
 
     public HalString str() {
         String s = "";
         boolean first = true;
 
-        for(Map.Entry<String, HalObject> e : value.entrySet()) {
+        for(Map.Entry<HalObject, HalObject> e : value.entrySet()) {
             if(first) first = false;
             else s += ", ";
 
-            HalString key = new HalString(e.getKey());
-            s += key.methodcall("__repr__") + " => " + e.getValue().methodcall("__repr__");
+            s += e.getKey().methodcall("__repr__") + " => " + e.getValue().methodcall("__repr__");
         }
 
         return new HalString("{" + s + "}");
     }
 
-    public HalObject getitem(HalInteger index) {
-        HalObject item = value.get(index.toString());
+    public HalObject getitem(HalObject index) {
+        HalObject item = value.get(index);
 
         if(item == null)
-            throw new KeyException("Invalid key " + index.methodcall("__str__").methodcall("__repr__"));
+            throw new KeyException("Invalid key " + index.methodcall("__repr__"));
 
         return item;
     }
 
-    public void setitem(HalInteger index, HalObject item) {
-        value.put(index.toString(), item);
+    public void setitem(HalObject index, HalObject item) {
+        value.put(index, item);
     }
 
     public HalInteger size() {

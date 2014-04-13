@@ -22,12 +22,25 @@ public abstract class HalObject<T> extends HalType {
         return value;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof HalObject)
+            return methodcall("__eq__", (HalObject) o).toBoolean();
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
+
     public String toString() {
-        return (String) methodcall("__str__").getValue();
+        return ((HalString) methodcall("__str__")).getValue();
     }
 
     public Boolean toBoolean(){
-        return (Boolean) methodcall("__bool__").getValue();
+        return ((HalBoolean) methodcall("__bool__")).getValue();
     }
 
     public HalString repr() {

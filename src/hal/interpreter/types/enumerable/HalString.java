@@ -2,6 +2,7 @@ package hal.interpreter.types.enumerable;
 
 
 import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.types.HalObject;
 import hal.interpreter.types.numeric.HalInteger;
 
 public class HalString extends HalEnumerable<String>
@@ -24,8 +25,10 @@ public class HalString extends HalEnumerable<String>
         return new HalString(value);
     }
 
-    public HalString getitem(HalInteger index) {
-        return new HalString(value.substring(index.value, index.value+1));
+    public HalString getitem(HalObject index) {
+        HalInteger i = (HalInteger) index;
+
+        return new HalString(value.substring(i.value, i.value+1));
     }
 
     public HalInteger size() {

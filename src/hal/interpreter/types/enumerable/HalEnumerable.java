@@ -14,9 +14,9 @@ public abstract class HalEnumerable<T> extends HalObject<T>
 {
     public static final String classId = "Enumerable";
 
-    public abstract HalObject getitem(HalInteger index);
+    public abstract HalObject getitem(HalObject index);
 
-    public void setitem(HalInteger index, HalObject item) {
+    public void setitem(HalObject index, HalObject item) {
         throw new NameException("__setitem__");
     }
 
@@ -32,7 +32,7 @@ public abstract class HalEnumerable<T> extends HalObject<T>
             if(args.length != 1)
                 throw new TypeException();
 
-            return ((HalEnumerable) instance).getitem((HalInteger) args[0]);
+            return ((HalEnumerable) instance).getitem(args[0]);
         }
     });
 
@@ -42,7 +42,7 @@ public abstract class HalEnumerable<T> extends HalObject<T>
             if(args.length != 2)
                 throw new TypeException();
 
-            ((HalEnumerable) instance).setitem((HalInteger) args[0], args[1]);
+            ((HalEnumerable) instance).setitem(args[0], args[1]);
             return args[1];
         }
     });

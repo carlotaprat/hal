@@ -100,8 +100,8 @@ public class Hal
 
                 if (d != null)
                     System.out.println("=> " + d.methodcall("__repr__"));
-            } catch(RuntimeException e) {
-                System.out.println(e.getMessage());
+            } catch(Throwable e) {
+                handleException(e);
             }
         }
     }
@@ -164,15 +164,25 @@ public class Hal
     }
 
     private static HalObject evaluate(HalTree t) {
-        int linenumber = -1;
         try {
             return INTERPRETER.Run(t);                  // Executes the code
-        } catch (RuntimeException e) {
+        } catch(Throwable e) {
+            handleException(e);
+        }
+
+        return null;
+    }
+
+    private static void handleException(Throwable ex) {
+        int linenumber = -1;
+        try {
+            throw ex;
+        } catch(RuntimeException e) {
             if (INTERPRETER != null) linenumber = INTERPRETER.lineNumber();
             System.err.print (e.getClass().getSimpleName());
             if (linenumber < 0) System.err.print (": ");
-            else System.err.print (" (" + infile + ", line " + linenumber + "): ");
-            System.err.println (e.getMessage() + ".");
+            else System.err.print(" (" + infile + ", line " + linenumber + "): ");
+            System.err.println(e.getMessage() + ".");
             System.err.format(INTERPRETER.getStackTrace());
             if(e instanceof NullPointerException)
                 e.printStackTrace(System.err);
@@ -182,10 +192,9 @@ public class Hal
             if (linenumber < 0) System.err.print (".");
             else System.err.println (" (" + infile + ", line " + linenumber + ").");
             System.err.format (INTERPRETER.getStackTrace(5));
-            e.printStackTrace(System.err);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
-
-        return null;
     }
 
     /**

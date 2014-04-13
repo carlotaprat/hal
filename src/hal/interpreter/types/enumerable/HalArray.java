@@ -33,12 +33,12 @@ public class HalArray extends HalEnumerable<List<HalObject>>
         return new HalString("[" + s + "]");
     }
 
-    public HalObject getitem(HalInteger index) {
-        return value.get(index.value);
+    public HalObject getitem(HalObject index) {
+        return value.get(((HalInteger) index).value);
     }
 
-    public void setitem(HalInteger index, HalObject item) {
-        value.set(index.value, item);
+    public void setitem(HalObject index, HalObject item) {
+        value.set(((HalInteger) index).value, item);
     }
 
     public HalInteger size() {
