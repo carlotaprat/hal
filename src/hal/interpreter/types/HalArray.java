@@ -5,6 +5,7 @@ import hal.interpreter.core.BuiltinMethod;
 import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.TypeException;
 
+import hal.interpreter.types.numeric.HalInteger;
 import java.util.ArrayList;
 import java.util.List;
 

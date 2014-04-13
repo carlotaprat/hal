@@ -1,27 +1,27 @@
-package hal.interpreter.types;
+package hal.interpreter.types.numeric;
 
 import hal.interpreter.Reference;
 import hal.interpreter.core.BuiltinMethod;
 import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.TypeException;
+import hal.interpreter.types.HalBoolean;
+import hal.interpreter.types.HalObject;
+import hal.interpreter.types.HalString;
 
-public class HalInteger extends HalObject<Integer>
-{
-    private static final String classId = "Integer";
-
-    public HalInteger(Integer i)
-    {
+public class HalNumber extends HalObject<Number> {
+    
+    public HalNumber(Integer i) {
         super(i);
     }
-
-    public Integer toInteger() {
-        return value;
+    
+    public HalNumber(Float f) {
+        super(f);
     }
-
+    
     private static final Reference __str__ = new Reference(new BuiltinMethod("__str__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
-            return new HalString(Integer.toString(instance.toInteger()));
+            return new HalString(((Number)instance.value).toString());
         }
     });
 
@@ -72,7 +72,8 @@ public class HalInteger extends HalObject<Integer>
         }
     });
     
-    private static final ReferenceRecord record = new ReferenceRecord(classId, HalObject.record,
+    
+    public static final ReferenceRecord record = new ReferenceRecord(classId, HalObject.record,
         // Conversion
         __str__,
         __bool__,

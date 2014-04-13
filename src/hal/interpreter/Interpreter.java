@@ -1,5 +1,7 @@
 package hal.interpreter;
 
+import hal.interpreter.types.numeric.HalInteger;
+import hal.interpreter.types.numeric.HalFloat;
 import hal.interpreter.core.BaseClass;
 import hal.interpreter.core.ClassDefinition;
 import hal.interpreter.core.MethodDefinition;
@@ -272,6 +274,9 @@ public class Interpreter {
             // An integer literal
             case HalLexer.INT:
                 value = new HalInteger(t.getIntValue());
+                break;
+            case HalLexer.FLOAT:
+                value = new HalFloat(Float.parseFloat(t.getText()));
                 break;
             // A Boolean literal
             case HalLexer.BOOLEAN:
