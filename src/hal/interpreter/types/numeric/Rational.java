@@ -23,11 +23,32 @@ public class Rational extends Number {
         num = r.num;
         den = r.den;
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Rational rational = (Rational) o;
+
+        if (den != rational.den) return false;
+        if (num != rational.num) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = num;
+        result = 31 * result + den;
+        return result;
+    }
+
     private static int gcd(int a, int b) {
         while (b != 0) {
             int tmp = a;
             a = b;
+
             b = tmp % a;
         }
         return a;
