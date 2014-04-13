@@ -300,6 +300,7 @@ item
 
 atom
     :   INT
+    |   FLOAT
     |   STRING
     |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
     |   NONE
@@ -382,7 +383,8 @@ fragment SP     : (' ' | '\t')+;
 ID  : (LETTER|'_') (LETTER|'_'|DIGIT)* ('!'|'?')?;
 
 // Integers
-INT : (DIGIT)+;
+INT : (DIGIT+ (('.' DIGIT)=> '.' DIGIT+ {$type=FLOAT;})?);
+fragment FLOAT  :;
 
 // Strings
 STRING  :  '"' ( ESC_SEQ | ~('\\'|'"') )* '"'

@@ -5,6 +5,7 @@ import hal.interpreter.core.BuiltinMethod;
 import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.TypeException;
 
+import hal.interpreter.types.numeric.HalInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class HalArray extends HalObject<List<HalObject>>
             if(args.length != 1)
                 throw new TypeException();
 
-            return ((HalArray) instance).value.get(args[0].toInteger());
+            return ((HalArray) instance).value.get(((HalInteger)args[0]).toInteger());
         }
     });
 
@@ -51,7 +52,7 @@ public class HalArray extends HalObject<List<HalObject>>
             if(args.length != 2)
                 throw new TypeException();
 
-            ((HalArray) instance).value.set(args[0].toInteger(), args[1]);
+            ((HalArray) instance).value.set(((HalInteger)args[0]).toInteger(), args[1]);
             return args[1];
         }
     });
