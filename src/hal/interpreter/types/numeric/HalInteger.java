@@ -1,6 +1,7 @@
 package hal.interpreter.types.numeric;
 
 import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.types.HalBoolean;
 
 public class HalInteger extends HalNumber<Integer>
 {
@@ -93,5 +94,15 @@ public class HalInteger extends HalNumber<Integer>
     @Override
     public HalNumber ddiv(HalNumber n) {
         return new HalInteger(toInteger() / ((HalInteger) n).toInteger());
+    }
+
+    @Override
+    public HalBoolean eq(HalNumber n) {
+        return ((HalBoolean)(new HalRational(toInteger())).methodcall("__eq__", n));
+    }
+
+    @Override
+    public HalBoolean lt(HalNumber n) {
+        return ((HalBoolean)(new HalRational(toInteger())).methodcall("__lt__", n));
     }
 }

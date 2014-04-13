@@ -1,6 +1,7 @@
 package hal.interpreter.types.numeric;
 
 import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.types.HalBoolean;
 
 
 public class HalFloat extends HalNumber<Double>
@@ -49,6 +50,16 @@ public class HalFloat extends HalNumber<Double>
     @Override
     public HalNumber div(HalNumber n) {
         return new HalFloat(toFloat() / n.toFloat());
+    }
+
+    @Override
+    public HalBoolean eq(HalNumber n) {
+        return new HalBoolean(toFloat() == n.toFloat());
+    }
+
+    @Override
+    public HalBoolean lt(HalNumber n) {
+        return new HalBoolean(toFloat() < n.toFloat());
     }
     
 }

@@ -34,6 +34,9 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     public HalNumber mod(HalNumber n) { throw new InvalidArgumentsException(); }
     public HalNumber ddiv(HalNumber n) { throw new InvalidArgumentsException(); }
 
+    public abstract HalBoolean eq(HalNumber n);
+    public abstract HalBoolean lt(HalNumber n);
+    
     private static final Reference __int__ = new Reference(new BuiltinMethod("int") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
@@ -133,8 +136,17 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
             if(args.length != 1)
                 throw new InvalidArgumentsException();
 
-            return new HalBoolean(((HalInteger)instance.value).toInteger()
-                    < ((HalInteger)args[0]).toInteger());
+            return ((HalNumber)instance).lt(((HalNumber)args[0]));
+        }
+    });
+    
+    private static final Reference __eq__ = new Reference(new BuiltinMethod("eq") {
+        @Override
+        public HalObject call(HalObject instance, HalObject... args) {
+            if(args.length != 1)
+                throw new InvalidArgumentsException();
+
+            return ((HalNumber)instance).eq(((HalNumber)args[0]));
         }
     });
     
@@ -156,7 +168,8 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
             __ddiv__,
 
             // Relational
-            __lt__
+            __lt__,
+            __eq__
     );
 
     public ReferenceRecord getRecord() { return record; }
