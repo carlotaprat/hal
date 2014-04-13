@@ -3,7 +3,7 @@ package hal.interpreter.types.numeric;
 import hal.interpreter.Reference;
 import hal.interpreter.core.BuiltinMethod;
 import hal.interpreter.core.ReferenceRecord;
-import hal.interpreter.exceptions.TypeException;
+import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.exceptions.ZeroDivisionException;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalObject;
@@ -31,14 +31,14 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     public abstract HalNumber sub(HalNumber n);
     public abstract HalNumber mul(HalNumber n);
     public abstract HalNumber div(HalNumber n);
-    public HalNumber mod(HalNumber n) { throw new TypeException(); }
-    public HalNumber ddiv(HalNumber n) { throw new TypeException(); }
+    public HalNumber mod(HalNumber n) { throw new InvalidArgumentsException(); }
+    public HalNumber ddiv(HalNumber n) { throw new InvalidArgumentsException(); }
 
     private static final Reference __int__ = new Reference(new BuiltinMethod("int") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if (args.length != 0)
-                throw new TypeException();
+                throw new InvalidArgumentsException();
             return new HalInteger(((HalNumber)instance).toInteger());
         }
     });
@@ -47,7 +47,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if (args.length != 0)
-                throw new TypeException();
+                throw new InvalidArgumentsException();
             return new HalFloat(((HalNumber)instance).toFloat());
         }
     });
@@ -57,7 +57,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if (args.length != 0)
-                throw new TypeException();
+                throw new InvalidArgumentsException();
             return ((HalNumber)instance).neg();
         }
     });
@@ -66,7 +66,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if (args.length != 0)
-                throw new TypeException();
+                throw new InvalidArgumentsException();
             return ((HalNumber)instance).pos();
         }
     });
@@ -76,7 +76,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1 || ! (args[0] instanceof HalNumber))
-                throw new TypeException();
+                throw new InvalidArgumentsException();
 
             return ((HalNumber)instance).add((HalNumber)args[0]);
         }
@@ -86,7 +86,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1 || ! (args[0] instanceof HalNumber))
-                throw new TypeException();
+                throw new InvalidArgumentsException();
 
             return ((HalNumber)instance).sub((HalNumber)args[0]);
         }
@@ -96,7 +96,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1 || ! (args[0] instanceof HalNumber))
-                throw new TypeException();
+                throw new InvalidArgumentsException();
 
             return ((HalNumber)instance).mul((HalNumber)args[0]);
         }
@@ -106,7 +106,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1 || ! (args[0] instanceof HalNumber))
-                throw new TypeException();
+                throw new InvalidArgumentsException();
             if(((HalNumber) args[0]).isZero())
                 throw new ZeroDivisionException();
 
@@ -118,7 +118,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1 || ! (args[0] instanceof HalNumber))
-                throw new TypeException();
+                throw new InvalidArgumentsException();
             if(((HalNumber) args[0]).isZero())
                 throw new ZeroDivisionException();
 
@@ -131,7 +131,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)
-                throw new TypeException();
+                throw new InvalidArgumentsException();
 
             return new HalBoolean(((HalInteger)instance.value).toInteger()
                     < ((HalInteger)args[0]).toInteger());
