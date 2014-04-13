@@ -1,6 +1,7 @@
 package hal.interpreter.types;
 
 import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.exceptions.NameException;
 import hal.interpreter.exceptions.TypeException;
 import hal.interpreter.types.enumerable.HalString;
@@ -53,7 +54,7 @@ public abstract class HalObject<T> extends HalType {
 
     public HalObject call(HalObject instance, HalObject... args) {
         if (args.length > 0)
-            throw new TypeException("No arguments expected");
+            throw new InvalidArgumentsException();
 
         return this;
     }
@@ -68,8 +69,10 @@ public abstract class HalObject<T> extends HalType {
             } catch (NameException e) {
                 current = current.parent;
 
-                if(current == null)
+                if (current == null)
                     throw new TypeException(e.getMessage() + " in class " + original.name);
+            } catch (InvalidArgumentsException e) {
+                throw new TypeException(e.getMessage() + " for " + original.name + "#" + name);
             }
         }
     }

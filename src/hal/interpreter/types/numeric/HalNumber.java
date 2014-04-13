@@ -16,7 +16,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     }
 
     public abstract boolean isZero();
-    public Integer toInteger() { return value.intValue(); }
+    public int toInteger() { return value.intValue(); }
     public Double toFloat() { return value.doubleValue(); }
     public HalBoolean bool() { return new HalBoolean(!isZero()); }
 

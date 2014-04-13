@@ -3,6 +3,7 @@ package hal.interpreter.types;
 import hal.interpreter.Reference;
 import hal.interpreter.core.BuiltinMethod;
 import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.exceptions.NameException;
 import hal.interpreter.exceptions.TypeException;
 import hal.interpreter.types.enumerable.HalString;
@@ -21,6 +22,9 @@ public abstract class HalType
     private static Reference __repr__ = new Reference(new BuiltinMethod("repr") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
+            if(args.length > 0)
+                throw new TypeException();
+
             return instance.repr();
         }
     });
@@ -28,6 +32,9 @@ public abstract class HalType
     private static Reference __str__ = new Reference(new BuiltinMethod("str") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
+            if(args.length > 0)
+                throw new InvalidArgumentsException();
+
             return instance.str();
         }
     });
@@ -36,7 +43,7 @@ public abstract class HalType
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length > 0)
-                throw new TypeException();
+                throw new InvalidArgumentsException();
 
             return instance.bool();
         }
@@ -46,7 +53,7 @@ public abstract class HalType
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length > 0)
-                throw new TypeException();
+                throw new InvalidArgumentsException();
 
             return instance.not();
         }
@@ -56,7 +63,7 @@ public abstract class HalType
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)
-                throw new TypeException();
+                throw new InvalidArgumentsException();
 
             return new HalBoolean(instance.getValue().equals(args[0].getValue()));
         }
@@ -72,9 +79,6 @@ public abstract class HalType
     private static final Reference __le__ = new Reference(new BuiltinMethod("le") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
-            if(args.length != 1)
-                throw new TypeException();
-
             return new HalBoolean(instance.methodcall("__lt__", args).toBoolean() ||
                     instance.methodcall("__eq__", args).toBoolean());
         }
@@ -83,9 +87,6 @@ public abstract class HalType
     private static final Reference __gt__ = new Reference(new BuiltinMethod("gt") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
-            if(args.length != 1)
-                throw new TypeException();
-
             return instance.methodcall("__le__", args).methodcall("__not__");
         }
     });
@@ -93,9 +94,6 @@ public abstract class HalType
     private static final Reference __ge__ = new Reference(new BuiltinMethod("ge") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
-            if(args.length != 1)
-                throw new TypeException();
-
             return instance.methodcall("__lt__", args).methodcall("__not__");
         }
     });

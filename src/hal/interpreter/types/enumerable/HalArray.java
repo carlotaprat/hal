@@ -3,7 +3,7 @@ package hal.interpreter.types.enumerable;
 import hal.interpreter.Reference;
 import hal.interpreter.core.BuiltinMethod;
 import hal.interpreter.core.ReferenceRecord;
-import hal.interpreter.exceptions.TypeException;
+import hal.interpreter.exceptions.InvalidArgumentsException;
 
 import hal.interpreter.types.HalObject;
 import hal.interpreter.types.numeric.HalInteger;
@@ -50,7 +50,7 @@ public class HalArray extends HalEnumerable<List<HalObject>>
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)
-                throw new TypeException();
+                throw new InvalidArgumentsException();
 
             ((HalArray) instance).value.add(args[0]);
             return instance;
@@ -60,6 +60,9 @@ public class HalArray extends HalEnumerable<List<HalObject>>
     private static final Reference __sum__ = new Reference(new BuiltinMethod("sum") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
+            if(args.length > 0)
+                throw new InvalidArgumentsException();
+
             HalObject sum = new HalInteger(0);
 
             HalArray i = (HalArray) instance;

@@ -3,8 +3,8 @@ package hal.interpreter.types.enumerable;
 import hal.interpreter.Reference;
 import hal.interpreter.core.BuiltinMethod;
 import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.exceptions.NameException;
-import hal.interpreter.exceptions.TypeException;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalObject;
 import hal.interpreter.types.numeric.HalInteger;
@@ -30,7 +30,7 @@ public abstract class HalEnumerable<T> extends HalObject<T>
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)
-                throw new TypeException();
+                throw new InvalidArgumentsException();
 
             return ((HalEnumerable) instance).getitem(args[0]);
         }
@@ -40,7 +40,7 @@ public abstract class HalEnumerable<T> extends HalObject<T>
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 2)
-                throw new TypeException();
+                throw new InvalidArgumentsException();
 
             ((HalEnumerable) instance).setitem(args[0], args[1]);
             return args[1];
@@ -50,6 +50,9 @@ public abstract class HalEnumerable<T> extends HalObject<T>
     private static final Reference __size__ = new Reference(new BuiltinMethod("size") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
+            if(args.length > 0)
+                throw new InvalidArgumentsException();
+
             return ((HalEnumerable) instance).size();
         }
     });
@@ -60,8 +63,6 @@ public abstract class HalEnumerable<T> extends HalObject<T>
             return instance.methodcall("__size__");
         }
     });
-
-
 
     public static final ReferenceRecord record = new ReferenceRecord(classId, HalObject.record,
             __getitem__,
