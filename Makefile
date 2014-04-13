@@ -35,11 +35,14 @@ DOCFLAGS = -classpath $(CLASSPATH) -d $(JAVADOC) -private
 # Source files
 GRAMMAR     = $(PARSER)/$(TARGET_CLASS).g
 MAIN_SRC    = $(MAIN)/$(TARGET_CLASS).java
-PARSER_SRC := $(shell find $(PARSER) -name '*.java')	
+PARSER_SRC := $(shell find $(PARSER) -name '*.java')
 INTERP_SRC := $(shell find $(INTERP) -name '*.java')
 
 ALL_SRC     = $(MAIN_SRC) $(PARSER_SRC) $(INTERP_SRC)
-				
+
+TIMESTAMP  = $(shell date +'%Y %b %d, %H:%M')
+MAINFILE   = $(MAIN)/Hal.java
+
 all: compile exec
 
 compile:
@@ -47,7 +50,9 @@ compile:
 	if [ ! -e $(CLASSDIR) ]; then\
 	  mkdir $(CLASSDIR);\
 	fi
-	javac $(JFLAGS) $(ALL_SRC)
+	sed -i.bkp "s|\$$DATE|$(TIMESTAMP)|" $(MAINFILE)
+	-javac $(JFLAGS) $(ALL_SRC)
+	mv $(MAINFILE).bkp $(MAINFILE);
 
 docs:
 	javadoc $(DOCFLAGS) $(ALL_SRC)
@@ -62,9 +67,9 @@ exec:
 	printf "#!/bin/sh\n\n" > $(EXEC)
 	printf 'exec java -enableassertions -jar $(JARFILE) "$$@"' >> $(EXEC)
 	chmod a+x $(EXEC)
-	
+
 clean:
-	rm -rf $(PARSER)/*.java $(PARSER)/*.tokens 
+	rm -rf $(PARSER)/*.java $(PARSER)/*.tokens
 	rm -rf $(CLASSDIR)
 
 distrib: clean
