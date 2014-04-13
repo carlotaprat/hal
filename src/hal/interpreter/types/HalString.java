@@ -14,29 +14,25 @@ public class HalString extends HalObject<String>
         value = s;
     }
 
-    public String getClassId() {
-        return classId;
-    }
-
     public String toString(){
         return value;
     }
 
-    private static final Reference __repr__ = new Reference(new BuiltinMethod("__repr__") {
+    private static final Reference __repr__ = new Reference(new BuiltinMethod("repr") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return new HalString("'" + instance.toString() + "'");
         }
     });
 
-    private static final Reference __str__ = new Reference(new BuiltinMethod("__str__") {
+    private static final Reference __str__ = new Reference(new BuiltinMethod("str") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return new HalString(instance.toString());
         }
     });
 
-    private static final Reference __getitem__ = new Reference(new BuiltinMethod("__getitem__") {
+    private static final Reference __getitem__ = new Reference(new BuiltinMethod("getitem") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)

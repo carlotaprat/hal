@@ -69,14 +69,14 @@ public abstract class HalObject<T> {
         }
     }
 
-    private static Reference __repr__ = new Reference(new BuiltinMethod("__repr__") {
+    private static Reference __repr__ = new Reference(new BuiltinMethod("repr") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return instance.methodcall("__str__");
         }
     });
 
-    private static Reference __eq__ = new Reference(new BuiltinMethod("__eq__") {
+    private static Reference __eq__ = new Reference(new BuiltinMethod("eq") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)
@@ -86,14 +86,14 @@ public abstract class HalObject<T> {
         }
     });
 
-    private static Reference __neq__ = new Reference(new BuiltinMethod("__neq__") {
+    private static Reference __neq__ = new Reference(new BuiltinMethod("neq") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return instance.methodcall("__eq__", args).methodcall("__not__");
         }
     });
 
-    private static final Reference __le__ = new Reference(new BuiltinMethod("__le__") {
+    private static final Reference __le__ = new Reference(new BuiltinMethod("le") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)
@@ -104,7 +104,7 @@ public abstract class HalObject<T> {
         }
     });
 
-    private static final Reference __gt__ = new Reference(new BuiltinMethod("__gt__") {
+    private static final Reference __gt__ = new Reference(new BuiltinMethod("gt") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)
@@ -114,7 +114,7 @@ public abstract class HalObject<T> {
         }
     });
 
-    private static final Reference __ge__ = new Reference(new BuiltinMethod("__ge__") {
+    private static final Reference __ge__ = new Reference(new BuiltinMethod("ge") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)

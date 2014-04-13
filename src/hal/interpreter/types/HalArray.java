@@ -17,7 +17,7 @@ public class HalArray extends HalObject<List<HalObject>>
         value = new ArrayList<HalObject>();
     }
 
-    private static final Reference __str__ = new Reference(new BuiltinMethod("__str__") {
+    private static final Reference __str__ = new Reference(new BuiltinMethod("str") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             String s = "";
@@ -35,7 +35,7 @@ public class HalArray extends HalObject<List<HalObject>>
         }
     });
 
-    private static final Reference __getitem__ = new Reference(new BuiltinMethod("__getitem__") {
+    private static final Reference __getitem__ = new Reference(new BuiltinMethod("getitem") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)
@@ -45,7 +45,7 @@ public class HalArray extends HalObject<List<HalObject>>
         }
     });
 
-    private static final Reference __setitem__ = new Reference(new BuiltinMethod("__setitem__") {
+    private static final Reference __setitem__ = new Reference(new BuiltinMethod("setitem") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 2)

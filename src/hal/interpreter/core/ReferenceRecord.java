@@ -47,7 +47,8 @@ public class ReferenceRecord
     public void defineBuiltin(Reference ref) {
         Builtin builtin = (Builtin) ref.data;
         builtin.className = name;
-        defineReference(builtin.getValue(), ref);
+        defineReference("__" + builtin.getValue() + "__", ref);
+        defineReference(builtin.getValue(), new Reference(ref.data));
     }
 
     public Reference getReference(String name) {

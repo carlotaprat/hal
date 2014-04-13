@@ -286,6 +286,9 @@ public class Interpreter {
             case HalLexer.ARRAY:
                 value = evaluateArray(t);
                 break;
+            case HalLexer.DICT:
+                value = evaluateDict(t);
+                break;
             // A function call. Checks that the function returns a result.
             case HalLexer.FUNCALL:
                 value = executeCall(t.getChild(0).getText(), t.getChild(1));
@@ -381,16 +384,26 @@ public class Interpreter {
     }
 
     private HalObject evaluateArray(HalTree t) {
-        HalArray value = new HalArray();
+        HalArray array = new HalArray();
         int n = t.getChildCount();
 
-        // Use method __append__ on creation?
-        // Let the programmer play with arrays freely?
-        // TODO: Think about this
         for(int i = 0; i < n; ++i)
-            value.value.add(evaluateExpression(t.getChild(i)));
+            array.methodcall("append", evaluateExpression(t.getChild(i)));
 
-        return value;
+        return array;
+    }
+
+    private HalObject evaluateDict(HalTree t) {
+        HalDictionary dict = new HalDictionary();
+        int n = t.getChildCount();
+
+        for(int i = 0; i < n; ++i) {
+            HalTree entry = t.getChild(i);
+            dict.methodcall("__setitem__", evaluateExpression(entry.getChild(0)),
+                    evaluateExpression(entry.getChild(1)));
+        }
+
+        return dict;
     }
 
     /**

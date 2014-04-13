@@ -22,6 +22,8 @@ tokens
     GET_ITEM;
     METHCALL; // Science, bitch!
     EXPR;
+    DICT;
+    PAIR;
 }
 
 @header
@@ -302,6 +304,7 @@ atom
     |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
     |   NONE
     |   list
+    |   dict
     |   funcall // An ID can be considered a "funcall" with 0 args
     |   y=YIELD expr -> ^(YIELD[$y, "YIELD"] expr)
     |   LPAREN! expr RPAREN!
@@ -309,6 +312,14 @@ atom
 
 list
     :   LBRACK (expr (',' expr)*)? RBRACK -> ^(ARRAY expr*)
+    ;
+
+dict
+    :   LBRACE (entry (',' entry)*)? RBRACE -> ^(DICT entry*)
+    ;
+
+entry
+    :   expr LARROW expr -> ^(PAIR expr expr)
     ;
 
 access
@@ -319,7 +330,7 @@ access
 // LEXICAL RULES
 
 // OPERATORS
-EQUAL : '==';
+EQUAL   : '==';
 ASSIGN	: '=' ;
 NOT_EQUAL: '!=' ;
 LT      : '<' ;
@@ -349,12 +360,15 @@ LKW     : 'as';
 RETURN  : 'return';
 YIELD   : 'yield';
 // SPECIAL SYMBOLS
-COLON   : ':' ;
+COLON     : ':' ;
 SEMICOLON : ';';
 LPAREN  : '(';
 RPAREN  : ')';
 LBRACK  : '[';
 RBRACK  : ']';
+LBRACE  : '{';
+RBRACE  : '}';
+LARROW  : '=>';
 
 // Useful fragments
 fragment DIGIT : ('0'..'9');

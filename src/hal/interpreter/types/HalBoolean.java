@@ -19,21 +19,21 @@ public class HalBoolean extends HalObject<Boolean>
         return value;
     }
 
-    private static final Reference __str__ = new Reference(new BuiltinMethod("__str__") {
+    private static final Reference __str__ = new Reference(new BuiltinMethod("str") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return new HalString(instance.toBoolean() ? "true" : "false");
         }
     });
 
-    private static final Reference __bool__ = new Reference(new BuiltinMethod("__bool__") {
+    private static final Reference __bool__ = new Reference(new BuiltinMethod("bool") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return new HalBoolean(instance.toBoolean());
         }
     });
 
-    private static final Reference __not__ = new Reference(new BuiltinMethod("__not__") {
+    private static final Reference __not__ = new Reference(new BuiltinMethod("not") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length > 0)

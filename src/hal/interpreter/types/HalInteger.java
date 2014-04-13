@@ -18,14 +18,14 @@ public class HalInteger extends HalObject<Integer>
         return value;
     }
 
-    private static final Reference __str__ = new Reference(new BuiltinMethod("__str__") {
+    private static final Reference __str__ = new Reference(new BuiltinMethod("str") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return new HalString(Integer.toString(instance.toInteger()));
         }
     });
 
-    private static final Reference __bool__ = new Reference(new BuiltinMethod("__bool__") {
+    private static final Reference __bool__ = new Reference(new BuiltinMethod("bool") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length > 0)
@@ -35,7 +35,7 @@ public class HalInteger extends HalObject<Integer>
         }
     });
 
-    private static final Reference __neg__ = new Reference(new BuiltinMethod("__neg__") {
+    private static final Reference __neg__ = new Reference(new BuiltinMethod("neg") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length > 0)
@@ -45,7 +45,7 @@ public class HalInteger extends HalObject<Integer>
         }
     });
 
-    private static final Reference __add__ = new Reference(new BuiltinMethod("__add__") {
+    private static final Reference __add__ = new Reference(new BuiltinMethod("add") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)
@@ -55,7 +55,7 @@ public class HalInteger extends HalObject<Integer>
         }
     });
 
-    private static final Reference __sub__ = new Reference(new BuiltinMethod("__sub__") {
+    private static final Reference __sub__ = new Reference(new BuiltinMethod("sub") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)
@@ -65,7 +65,7 @@ public class HalInteger extends HalObject<Integer>
         }
     });
 
-    private static final Reference __lt__ = new Reference(new BuiltinMethod("__lt__") {
+    private static final Reference __lt__ = new Reference(new BuiltinMethod("lt") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             if(args.length != 1)

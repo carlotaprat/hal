@@ -12,19 +12,15 @@ public class HalNone extends HalObject
     {
         value = null;
     }
-
-    public String getClassId() {
-        return classId;
-    }
     
-    private static final Reference __str__ = new Reference(new BuiltinMethod("__str__") {
+    private static final Reference __str__ = new Reference(new BuiltinMethod("str") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return new HalString("none");
         }
     });
     
-    private static final Reference __eq__ = new Reference(new BuiltinMethod("__eq__") {
+    private static final Reference __eq__ = new Reference(new BuiltinMethod("eq") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
             return new HalBoolean(args[0] instanceof HalNone); 
