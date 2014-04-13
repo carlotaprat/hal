@@ -54,7 +54,7 @@ public class ReferenceRecord
     public Reference getReference(String name) {
         Reference r = record.get(name);
         if (r == null) {
-            throw new NameException("Method " + name + " not defined");
+            throw new NameException(name);
         }
         return r;
     }

@@ -1,5 +1,8 @@
 package hal.interpreter;
 
+import hal.interpreter.types.enumerable.HalArray;
+import hal.interpreter.types.enumerable.HalDictionary;
+import hal.interpreter.types.enumerable.HalString;
 import hal.interpreter.types.numeric.HalInteger;
 import hal.interpreter.types.numeric.HalFloat;
 import hal.interpreter.core.BaseClass;
@@ -393,7 +396,7 @@ public class Interpreter {
         int n = t.getChildCount();
 
         for(int i = 0; i < n; ++i)
-            array.methodcall("append", evaluateExpression(t.getChild(i)));
+            array.methodcall("__append!__", evaluateExpression(t.getChild(i)));
 
         return array;
     }

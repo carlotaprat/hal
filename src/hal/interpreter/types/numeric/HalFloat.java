@@ -4,12 +4,8 @@ import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalObject;
 
-public class HalFloat extends HalNumber {
-    
-    public HalFloat(int i) {
-        super((double) i);
-    }
-    
+public class HalFloat extends HalNumber<Double>
+{
     public HalFloat(float f) {
         super((double) f);
     }

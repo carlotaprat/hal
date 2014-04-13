@@ -380,7 +380,7 @@ fragment NL     : (('\r')? '\n')+;
 fragment SP     : (' ' | '\t')+;
 
 // Identifiers
-ID  : (LETTER|'_') (LETTER|'_'|DIGIT)* ('!'|'?')?;
+ID  : (LETTER|'_') (LETTER|'_'|DIGIT)* (('!'|'?')('_')*)?;
 
 // Integers
 INT : (DIGIT+ (('.' DIGIT)=> '.' DIGIT+ {$type=FLOAT;})?);

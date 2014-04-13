@@ -1,10 +1,8 @@
 package hal.interpreter.types;
 
 
-import hal.interpreter.Reference;
-import hal.interpreter.core.BuiltinMethod;
 import hal.interpreter.core.ReferenceRecord;
-import hal.interpreter.exceptions.TypeException;
+import hal.interpreter.types.enumerable.HalString;
 
 public class HalBoolean extends HalObject<Boolean>
 {
@@ -18,37 +16,10 @@ public class HalBoolean extends HalObject<Boolean>
     public Boolean toBoolean() {
         return value;
     }
+    public HalString str() { return new HalString(value ? "true" : "false"); }
+    public HalBoolean bool() { return new HalBoolean(value); }
 
-    private static final Reference __str__ = new Reference(new BuiltinMethod("str") {
-        @Override
-        public HalObject call(HalObject instance, HalObject... args) {
-            return new HalString(instance.toBoolean() ? "true" : "false");
-        }
-    });
-
-    private static final Reference __bool__ = new Reference(new BuiltinMethod("bool") {
-        @Override
-        public HalObject call(HalObject instance, HalObject... args) {
-            return new HalBoolean(instance.toBoolean());
-        }
-    });
-
-    private static final Reference __not__ = new Reference(new BuiltinMethod("not") {
-        @Override
-        public HalObject call(HalObject instance, HalObject... args) {
-            if(args.length > 0)
-                throw new TypeException();
-
-            return new HalBoolean(!instance.toBoolean());
-        }
-    });
-    
-    private static final ReferenceRecord record = new ReferenceRecord(classId, HalObject.record,
-            __str__,
-            __bool__,
-            __not__
-    );
-    
+    private static final ReferenceRecord record = new ReferenceRecord(classId, HalObject.record);
     public ReferenceRecord getRecord() {
         return record;
     }

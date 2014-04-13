@@ -6,9 +6,8 @@ import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.TypeException;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalObject;
-import hal.interpreter.types.HalString;
 
-public class HalInteger extends HalNumber
+public class HalInteger extends HalNumber<Integer>
 {
     private static final String classId = "Integer";
 
@@ -21,12 +20,8 @@ public class HalInteger extends HalNumber
         super((int) f);
     }
     
-    public HalInteger(double d) {
-        super((int) d);
-    }
-    
     public HalBoolean bool() {
-        return new HalBoolean(toInteger() == 0);
+        return new HalBoolean(value != 0);
     }
     
     public HalNumber add(HalNumber n) {
@@ -38,6 +33,7 @@ public class HalInteger extends HalNumber
         return new HalInteger(toInteger() + n.toInteger());
         
     }
+
     private static final Reference __add__ = new Reference(new BuiltinMethod("__add__") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {

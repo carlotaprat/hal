@@ -6,39 +6,28 @@ import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.TypeException;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalObject;
-import hal.interpreter.types.HalString;
+import hal.interpreter.types.enumerable.HalString;
 
-public abstract class HalNumber extends HalObject<Number> {
+public abstract class HalNumber<T extends Number> extends HalObject<T> {
     
-    public HalNumber(Integer i) {
-        super(i);
-    }
-    
-    public HalNumber(Double d) {
+    public HalNumber(T d) {
         super(d);
     }
     
     public Integer toInteger() {
         return value.intValue();
     }
-    
     public Double toFloat() {
         return value.doubleValue();
     }
     
     public abstract HalBoolean bool();
     public abstract HalNumber neg();
-    
     public abstract HalNumber add(HalNumber n);
-    
-    
-    
-    private static final Reference __str__ = new Reference(new BuiltinMethod("str") {
-        @Override
-        public HalObject call(HalObject instance, HalObject... args) {
-            return new HalString(((Number)instance.value).toString());
-        }
-    });
+
+    public HalString str() {
+        return new HalString(value.toString());
+    }
 
     private static final Reference __int__ = new Reference(new BuiltinMethod("int") {
         @Override
@@ -111,10 +100,10 @@ public abstract class HalNumber extends HalObject<Number> {
     
     public static final ReferenceRecord record = new ReferenceRecord(classId, HalObject.record,
         // Conversion
-        __str__,
         __bool__,
         __int__,
         __float__,
+
         // Unary
         __neg__,
 
@@ -124,7 +113,6 @@ public abstract class HalNumber extends HalObject<Number> {
 
         // Relational
         __lt__
-
     );
     
     public ReferenceRecord getRecord() {
