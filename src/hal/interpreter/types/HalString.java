@@ -5,6 +5,7 @@ import hal.interpreter.Reference;
 import hal.interpreter.core.BuiltinMethod;
 import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.TypeException;
+import hal.interpreter.types.numeric.HalInteger;
 
 public class HalString extends HalObject<String>
 {
@@ -42,7 +43,7 @@ public class HalString extends HalObject<String>
             if(args.length != 1)
                 throw new TypeException();
 
-            int i = args[0].toInteger();
+            int i = ((HalInteger)args[0]).toInteger();
             return new HalString(instance.toString().substring(i, i+1));
         }
     });

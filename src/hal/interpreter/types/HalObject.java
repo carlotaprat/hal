@@ -34,11 +34,7 @@ public abstract class HalObject<T> {
     public String toString() {
         return (String) methodcall("__str__").getValue();
     }
-
-    public Integer toInteger() throws TypeException {
-        return (Integer) methodcall("__int__").getValue();
-    }
-
+    
     public Boolean toBoolean() throws TypeException {
         return (Boolean) methodcall("__bool__").getValue();
     }
