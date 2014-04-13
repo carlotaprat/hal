@@ -52,8 +52,12 @@ public class Interpreter {
 
     /** Runs the program by calling the main function without parameters. */
     public HalObject Run(HalTree t) {
-        PreProcessAST(t); // Some internal pre-processing on the AST
-        return executeListInstructions(t);
+        try {
+            PreProcessAST(t); // Some internal pre-processing on the AST
+            return executeListInstructions(t);
+        } catch(ClassCastException e) {
+            throw TypeException.fromCastException(e);
+        }
     }
 
     /** Returns the contents of the stack trace */

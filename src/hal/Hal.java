@@ -265,6 +265,7 @@ public class Hal
         switch(files.length) {
             case 0:
                 interactive = true;
+                infile = "stdin";
                 break;
             case 1:
                 infile = files[0];
