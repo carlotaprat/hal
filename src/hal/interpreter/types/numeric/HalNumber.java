@@ -32,6 +32,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     public abstract HalNumber mul(HalNumber n);
     public abstract HalNumber div(HalNumber n);
     public HalNumber mod(HalNumber n) { throw new TypeException(); }
+    public HalNumber ddiv(HalNumber n) { throw new TypeException(); }
 
     private static final Reference __int__ = new Reference(new BuiltinMethod("int") {
         @Override
@@ -112,6 +113,18 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
             return ((HalNumber)instance).div((HalNumber)args[0]);
         }
     });
+    
+    private static final Reference __ddiv__ = new Reference(new BuiltinMethod("ddiv") {
+        @Override
+        public HalObject call(HalObject instance, HalObject... args) {
+            if(args.length != 1 || ! (args[0] instanceof HalNumber))
+                throw new TypeException();
+            if(((HalNumber) args[0]).isZero())
+                throw new ZeroDivisionException();
+
+            return ((HalNumber)instance).ddiv((HalNumber)args[0]);
+        }
+    });
 
 
     private static final Reference __lt__ = new Reference(new BuiltinMethod("lt") {
@@ -140,6 +153,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
             __sub__,
             __mul__,
             __div__,
+            __ddiv__,
 
             // Relational
             __lt__

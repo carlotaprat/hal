@@ -282,7 +282,7 @@ num_expr
     ;
 
 term
-    :   factor (options {greedy=true;}: (MUL^ | DIV^ | MOD^) factor)*
+    :   factor (options {greedy=true;}: (MUL^ | DIV^ | DDIV^ | MOD^) factor)*
     ;
 
 factor
@@ -342,6 +342,7 @@ PLUS    : '+' ;
 MINUS   : '-' ;
 MUL     : '*';
 DIV     : '/';
+DDIV    : '//';
 MOD     : '%' ;
 // KEYWORDS
 NOT     : 'not';
