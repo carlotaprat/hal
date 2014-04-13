@@ -16,6 +16,7 @@ public abstract class HalType
     }
 
     public abstract HalBoolean bool();
+    public abstract HalBoolean not();
 
     private static Reference __repr__ = new Reference(new BuiltinMethod("repr") {
         @Override
