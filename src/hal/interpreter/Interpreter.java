@@ -23,6 +23,7 @@ public class Interpreter {
 
     /** Memory of the virtual machine. */
     private Stack Stack;
+    private ReferenceRecord globals;
 
     /**
      * Stores the line number of the record statement.
@@ -43,6 +44,7 @@ public class Interpreter {
     public Interpreter(PrintWriter tracefile) {
         HalKernel.init();
         Stack = new Stack(); // Creates the memory of the virtual machine
+        globals = new ReferenceRecord("globals", null);
 
         // Create a main container class
         Stack.pushContext("main", new HalClass("main") {
@@ -281,6 +283,9 @@ public class Interpreter {
                 HalObject d = evaluateExpression(left.getChild(0));
                 d.methodcall("__setitem__", evaluateExpression(left.getChild(1)), value);
                 break;
+            case HalLexer.GLOBAL:
+                globals.defineVariable(left.getText(), value);
+                break;
             default:
                 throw new TypeException("Impossible to assign to left expression");
         }
@@ -329,6 +334,9 @@ public class Interpreter {
             // A function call. Checks that the function returns a result.
             case HalLexer.FUNCALL:
                 value = executeCall(t.getChild(0).getText(), t.getChild(1));
+                break;
+            case HalLexer.GLOBAL:
+                value = globals.getVariable(t.getText());
                 break;
                 
             default: break;

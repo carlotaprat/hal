@@ -308,6 +308,7 @@ atom
     :   INT
     |   FLOAT
     |   STRING
+    |   GLOBAL
     |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
     |   NONE
     |   list
@@ -389,6 +390,7 @@ fragment SP     : (' ' | '\t')+;
 
 // Identifiers
 ID  : (LETTER|'_') (LETTER|'_'|DIGIT)* (('!'|'?')('_')*)?;
+GLOBAL : '$' ID;
 
 // Integers
 INT : (DIGIT+ (('.' DIGIT)=> '.' DIGIT+ {$type=FLOAT;})?);
