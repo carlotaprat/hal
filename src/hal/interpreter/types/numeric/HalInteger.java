@@ -91,12 +91,12 @@ public class HalInteger extends HalNumber<Integer>
 
     @Override
     public HalNumber mod(HalNumber n) {
-        return new HalInteger(toInteger() % ((HalInteger) n).toInteger());
+        return new HalInteger(toInteger() % n.toInteger());
     }
 
     @Override
     public HalNumber ddiv(HalNumber n) {
-        return new HalInteger(toInteger() / ((HalInteger) n).toInteger());
+        return new HalInteger(toInteger() / n.toInteger());
     }
 
     @Override
