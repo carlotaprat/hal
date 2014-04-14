@@ -27,7 +27,6 @@
 
 package hal.interpreter;
 
-import hal.interpreter.core.Context;
 import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.types.HalObject;
 
@@ -71,8 +70,8 @@ public class Stack extends ReferenceRecord
     }
 
     /** Creates a new activation record on the top of the stack */
-    public void pushContext(String name, HalObject inst, int line) {
-        record = new HashMap<String, Reference>();
+    public void pushContext(String name, HalObject inst, boolean statik, int line) {
+        record = statik ? inst.getRecord().record : new HashMap<String, Reference>();
         defineVariable("self", inst);
         defineVariable("return", null);
         stack.addLast(record);

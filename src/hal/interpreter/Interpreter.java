@@ -49,7 +49,7 @@ public class Interpreter {
             private final ReferenceRecord record = new ReferenceRecord("main", HalClass.record);
             public ReferenceRecord getInstanceRecord() { return record; }
             public ReferenceRecord getRecord() { return record; }
-        }, 0);
+        }, true, 0);
 
         trace = tracefile;
         function_nesting = 0;
@@ -146,7 +146,7 @@ public class Interpreter {
         int nparam = p.getChildCount(); // Number of parameters
 
         // Create the activation record in memory
-        Stack.pushContext(def.name, instance, lineNumber());
+        Stack.pushContext(def.name, instance, false, lineNumber());
 
         // Track line number
         setLineNumber(tree);
@@ -487,7 +487,7 @@ public class Interpreter {
         HalTree block = classdef.getChild(1);
         HalObject self = Stack.getVariable("self");
 
-        Stack.pushContext(name, self.getRecord().getVariable(name), classdef.getLine());
+        Stack.pushContext(name, self.getRecord().getVariable(name), true, classdef.getLine());
 
         HalObject result = executeListInstructions(block);
 

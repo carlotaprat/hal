@@ -11,7 +11,7 @@ public class ReferenceRecord
 {
     public String name;
     public ReferenceRecord parent;
-    protected HashMap<String, Reference> record;
+    public HashMap<String, Reference> record;
     
     public ReferenceRecord() {
         name = null;
