@@ -1,12 +1,12 @@
 package hal.interpreter;
 
+import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.exceptions.NameException;
 import hal.interpreter.types.enumerable.HalArray;
 import hal.interpreter.types.enumerable.HalDictionary;
 import hal.interpreter.types.enumerable.HalString;
 import hal.interpreter.types.numeric.HalInteger;
 import hal.interpreter.types.numeric.HalFloat;
-import hal.interpreter.core.BaseClass;
-import hal.interpreter.core.ClassDefinition;
 import hal.interpreter.core.MethodDefinition;
 import hal.interpreter.types.*;
 import hal.interpreter.exceptions.SyntaxException;
@@ -23,11 +23,9 @@ public class Interpreter {
 
     /** Memory of the virtual machine. */
     private Stack Stack;
-    private BaseClass baseClass;
-    private ClassDefinition currentClass;
 
     /**
-     * Stores the line number of the current statement.
+     * Stores the line number of the record statement.
      * The line number is used to report runtime errors.
      */
     private int linenumber = -1;
@@ -43,9 +41,16 @@ public class Interpreter {
      * data structures for the execution of the main program.
      */
     public Interpreter(PrintWriter tracefile) {
+        HalKernel.init();
         Stack = new Stack(); // Creates the memory of the virtual machine
-        baseClass = new BaseClass();
-        Stack.pushActivationRecord("Base", 0);
+
+        // Create a main container class
+        Stack.pushContext("main", new HalClass("main") {
+            private final ReferenceRecord record = new ReferenceRecord("main", HalClass.record);
+            public ReferenceRecord getInstanceRecord() { return record; }
+            public ReferenceRecord getRecord() { return record; }
+        }, 0);
+
         trace = tracefile;
         function_nesting = 0;
     }
@@ -53,6 +58,7 @@ public class Interpreter {
     /** Runs the program by calling the main function without parameters. */
     public HalObject Run(HalTree t) {
         try {
+            Stack.popUntilFirstLevel();
             PreProcessAST(t); // Some internal pre-processing on the AST
             return executeListInstructions(t);
         } catch(ClassCastException e) {
@@ -88,16 +94,16 @@ public class Interpreter {
     }
 
     /**
-     * Gets the current line number. In case of a runtime error,
+     * Gets the record line number. In case of a runtime error,
      * it returns the line number of the statement causing the
      * error.
      */
     public int lineNumber() { return linenumber; }
 
-    /** Defines the current line number associated to an AST node. */
+    /** Defines the record line number associated to an AST node. */
     private void setLineNumber(HalTree t) { linenumber = t.getLine();}
 
-    /** Defines the current line number with a specific value */
+    /** Defines the record line number with a specific value */
     private void setLineNumber(int l) { linenumber = l;}
     
     /**
@@ -107,12 +113,28 @@ public class Interpreter {
      * @return The data returned by the function.
      */
     private HalObject executeCall(String funcname, HalTree args) {
-        // Get the AST of the function
-        HalObject f = Stack.getVariable(funcname);
-        return f.call(null, listArguments(args));
+        HalObject f;
+        HalObject instance;
+        HalObject self = Stack.getVariable("self");
+
+        try {
+            f = Stack.getVariable(funcname);
+            instance = self;
+        } catch(NameException e) {
+            try {
+                f = self.getRecord().getVariable(funcname);
+                instance = self;
+            } catch (NameException e2) {
+                HalClass klass = self.getKlass();
+                f = klass.getRecord().getVariable(funcname);
+                instance = klass;
+            }
+        }
+
+        return f.call(instance, listArguments(args));
     }
 
-    public HalObject executeMethod(MethodDefinition def, HalObject... args)
+    public HalObject executeMethod(MethodDefinition def, HalObject instance, HalObject... args)
     {
         HalTree tree = def.tree;
 
@@ -124,12 +146,12 @@ public class Interpreter {
         int nparam = p.getChildCount(); // Number of parameters
 
         // Create the activation record in memory
-        Stack.pushActivationRecord(def.name, lineNumber());
+        Stack.pushContext(def.name, instance, lineNumber());
 
         // Track line number
         setLineNumber(tree);
 
-        // Copy the parameters to the current activation record
+        // Copy the parameters to the record activation record
         for (int i = 0; i < nparam; ++i) {
             String param_name = p.getChild(i).getText();
             Stack.defineVariable(param_name, args[i]);
@@ -145,7 +167,7 @@ public class Interpreter {
         if (trace != null) traceReturn(tree, result, args);
 
         // Destroy the activation record
-        Stack.popActivationRecord();
+        Stack.popContext();
 
         return result;
     }
@@ -212,6 +234,13 @@ public class Interpreter {
                         return last;
                     last = executeListInstructions(t.getChild(1));
                 }
+
+            case HalLexer.CLASSDEF:
+                return evaluateClassDefinition(t);
+
+            // Function definition
+            case HalLexer.FUNDEF:
+                return evaluateMethodDefinition(t);
                 
             // Return
             case HalLexer.RETURN:
@@ -243,7 +272,7 @@ public class Interpreter {
         switch(left.getType()) {
             case HalLexer.FUNCALL:
                 if(left.getChild(1).getChildCount() > 0)
-                    throw new TypeException("Funcall with arguments in left hand assignation.");
+                    throw new TypeException("Method call in left hand assignation");
 
                 String id = left.getChild(0).getText();
                 Stack.defineVariable(id, value);
@@ -253,7 +282,7 @@ public class Interpreter {
                 d.methodcall("__setitem__", evaluateExpression(left.getChild(1)), value);
                 break;
             default:
-                throw new TypeException("Impossible to assign to left expression.");
+                throw new TypeException("Impossible to assign to left expression");
         }
 
         return value;
@@ -274,10 +303,6 @@ public class Interpreter {
         HalObject value = null;
         // Atoms
         switch (type) {
-            // A variable
-            case HalLexer.ID:
-                value = Stack.getVariable(t.getText());
-                break;
             // An integer literal
             case HalLexer.INT:
                 value = new HalInteger(t.getIntValue());
@@ -455,6 +480,28 @@ public class Interpreter {
     private HalObject evaluateMethodCall(HalObject obj, HalTree funcall) {
         String name = funcall.getChild(0).getText();
         return obj.methodcall(name, listArguments(funcall.getChild(1)));
+    }
+
+    private HalObject evaluateClassDefinition(HalTree classdef) {
+        String name = classdef.getChild(0).getText();
+        HalTree block = classdef.getChild(1);
+        HalObject self = Stack.getVariable("self");
+
+        Stack.pushContext(name, self.getRecord().getVariable(name), classdef.getLine());
+
+        HalObject result = executeListInstructions(block);
+
+        Stack.popContext();
+
+        return result;
+    }
+
+    private HalObject evaluateMethodDefinition(HalTree fundef) {
+        HalObject klass = Stack.getVariable("self");
+        MethodDefinition def = new MethodDefinition(fundef);
+        HalMethod method = new HalMethod(def);
+        klass.getInstanceRecord().defineVariable(def.name, method);
+        return method;
     }
 
     /**

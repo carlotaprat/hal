@@ -10,14 +10,16 @@ import hal.interpreter.types.enumerable.HalString;
 
 public abstract class HalType
 {
-    public static final String classId = "Type";
-
     public HalString str() {
         throw new NameException("__str__");
     }
 
     public abstract HalBoolean bool();
     public abstract HalBoolean not();
+    public abstract HalClass getKlass();
+    public ReferenceRecord getInstanceRecord() {
+        throw new TypeException("Definition outside a class.");
+    }
 
     private static Reference __repr__ = new Reference(new BuiltinMethod("repr") {
         @Override
@@ -98,7 +100,7 @@ public abstract class HalType
         }
     });
 
-    public static final ReferenceRecord record = new ReferenceRecord(classId, null,
+    public static final ReferenceRecord record = new ReferenceRecord("Type", null,
             __repr__,
             __str__,
             __bool__,

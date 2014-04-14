@@ -9,6 +9,7 @@ tokens
 {
     PARAMS;
     BLOCK;
+    CLASSDEF;
     FUNDEF;
     FUNCALL;
     ARGS;
@@ -182,6 +183,7 @@ compound_stmt
     :   if_stmt
     |   for_stmt
     |   while_stmt
+    |   classdef
     |   fundef
     |   do_lambda
     |   assign_lambda
@@ -216,6 +218,10 @@ block
 
 multiline_block
     :   NEWLINE Indent (stmt)+ Dedent -> ^(BLOCK (stmt)+)
+    ;
+
+classdef
+    :   CLASS ID COLON block -> ^(CLASSDEF ID block)
     ;
 
 fundef
@@ -361,6 +367,7 @@ DEF     : 'def';
 LKW     : 'as';
 RETURN  : 'return';
 YIELD   : 'yield';
+CLASS   : 'class';
 // SPECIAL SYMBOLS
 COLON     : ':' ;
 SEMICOLON : ';';

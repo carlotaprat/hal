@@ -7,7 +7,11 @@ import hal.interpreter.types.enumerable.HalString;
 
 public class HalNone extends HalObject
 {
-    public static final String classId = "None";
+    public static final HalClass klass = new HalClass("None") {
+        public ReferenceRecord getInstanceRecord() { return HalNone.record; }
+    };
+
+    public static final HalNone NONE = new HalNone();
 
     public HalNone() {
         value = null;
@@ -29,9 +33,10 @@ public class HalNone extends HalObject
     });
     
     
-    private static final ReferenceRecord record = new ReferenceRecord(classId, HalObject.record,
+    private static final ReferenceRecord record = new ReferenceRecord(klass.value, HalObject.record,
                 __eq__
     );
     
     public ReferenceRecord getRecord() { return record; }
+    public HalClass getKlass() { return HalNone.klass; }
 }

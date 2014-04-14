@@ -1,5 +1,7 @@
 package hal.interpreter.core;
 
+import hal.interpreter.types.HalClass;
+import hal.interpreter.types.HalMethod;
 import hal.interpreter.types.HalObject;
 
 
@@ -10,4 +12,5 @@ abstract public class BuiltinMethod extends Builtin
     }
 
     abstract public HalObject call(HalObject instance, HalObject... args);
+    public HalClass getKlass() { return HalMethod.klass; }
 }

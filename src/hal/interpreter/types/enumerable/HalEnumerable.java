@@ -12,8 +12,6 @@ import hal.interpreter.types.numeric.HalInteger;
 
 public abstract class HalEnumerable<T> extends HalObject<T>
 {
-    public static final String classId = "Enumerable";
-
     public abstract HalObject getitem(HalObject index);
 
     public void setitem(HalObject index, HalObject item) {
@@ -64,7 +62,7 @@ public abstract class HalEnumerable<T> extends HalObject<T>
         }
     });
 
-    public static final ReferenceRecord record = new ReferenceRecord(classId, HalObject.record,
+    public static final ReferenceRecord record = new ReferenceRecord("Enumerable", HalObject.record,
             __getitem__,
             __setitem__,
             __size__,

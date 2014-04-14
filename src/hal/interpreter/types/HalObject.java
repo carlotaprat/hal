@@ -1,14 +1,18 @@
 package hal.interpreter.types;
 
 import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.exceptions.AbstractClassException;
 import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.exceptions.NameException;
 import hal.interpreter.exceptions.TypeException;
 import hal.interpreter.types.enumerable.HalString;
 
 
-public abstract class HalObject<T> extends HalType {
-    public static final String classId = "Object";
+public abstract class HalObject<T> extends HalType
+{
+    public static final HalClass klass = new HalClass("Object") {
+        public ReferenceRecord getInstanceRecord() { return HalObject.record; }
+    };
 
     public T value;
 
@@ -61,24 +65,18 @@ public abstract class HalObject<T> extends HalType {
 
     public HalObject methodcall(String name, HalObject... args) {
         ReferenceRecord original = getRecord();
-        ReferenceRecord current = original;
 
-        while(true) {
-            try {
-                return current.getVariable(name).call(this, args);
-            } catch (NameException e) {
-                current = current.parent;
-
-                if (current == null)
-                    throw new TypeException(e.getMessage() + " in class " + original.name);
-            } catch (InvalidArgumentsException e) {
+        try {
+            return original.getVariable(name).call(this, args);
+        } catch (NameException e) {
+            throw new TypeException(e.getMessage() + " in class " + original.name);
+        } catch(InvalidArgumentsException e) {
                 throw new TypeException(e.getMessage() + " for " + original.name + "#" + name);
-            }
+        } catch(AbstractClassException e) {
+                throw new TypeException(e.getMessage());
         }
     }
 
-    public static final ReferenceRecord record = new ReferenceRecord(classId, HalType.record);
-    public ReferenceRecord getRecord() {
-        return record;
-    }
+    public static final ReferenceRecord record = new ReferenceRecord(klass.value, HalType.record);
+    public ReferenceRecord getRecord() { return record; }
 }

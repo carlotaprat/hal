@@ -1,4 +1,4 @@
-package hal.interpreter.types.numeric;
+package hal.interpreter.core.data;
 
 public class Rational extends Number {
     private int num;
@@ -30,11 +30,7 @@ public class Rational extends Number {
         if (o == null || getClass() != o.getClass()) return false;
 
         Rational rational = (Rational) o;
-
-        if (den != rational.den) return false;
-        if (num != rational.num) return false;
-
-        return true;
+        return den == rational.den && num == rational.num;
     }
 
     @Override

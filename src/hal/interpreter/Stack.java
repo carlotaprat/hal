@@ -27,7 +27,9 @@
 
 package hal.interpreter;
 
+import hal.interpreter.core.Context;
 import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.types.HalObject;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -40,10 +42,10 @@ import java.util.ListIterator;
  * <name of variable,value>.
  */
  
-public class Stack extends ReferenceRecord {
-
+public class Stack extends ReferenceRecord
+{
     /** Stack of activation records */
-    private LinkedList<HashMap<String, Reference>> Stack;
+    private LinkedList<HashMap<String, Reference>> stack;
 
     /**
      * Class to represent an item of the Stack trace.
@@ -59,43 +61,49 @@ public class Stack extends ReferenceRecord {
     }
 
     /** Stack trace to keep track of function calls */
-    private LinkedList<StackTraceItem> StackTrace;
+    private LinkedList<StackTraceItem> stackTrace;
     
     /** Constructor of the memory */
     public Stack() {
-        Stack = new LinkedList<HashMap<String, Reference>>();
+        stack = new LinkedList<HashMap<String, Reference>>();
         record = null;
-        StackTrace = new LinkedList<StackTraceItem>();
+        stackTrace = new LinkedList<StackTraceItem>();
     }
 
     /** Creates a new activation record on the top of the stack */
-    public void pushActivationRecord(String name, int line) {
+    public void pushContext(String name, HalObject inst, int line) {
         record = new HashMap<String, Reference>();
-        Stack.addLast(record);
-        StackTrace.addLast (new StackTraceItem(name, line));
-        defineReference("return", new Reference(null));
+        defineVariable("self", inst);
+        defineVariable("return", null);
+        stack.addLast(record);
+        stackTrace.addLast(new StackTraceItem(name, line));
     }
 
-    /** Destroys the current activation record */
-    public void popActivationRecord() {
-        Stack.removeLast();
-        if (Stack.isEmpty()) record = null;
-        else record = Stack.getLast();
-        StackTrace.removeLast();
+    /** Destroys the record activation record */
+    public void popContext() {
+        stack.removeLast();
+        if (stack.isEmpty()) record = null;
+        else record = stack.getLast();
+        stackTrace.removeLast();
+    }
+
+    public void popUntilFirstLevel() {
+        while(stack.size() > 1)
+            popContext();
     }
 
     /**
      * Generates a string with the contents of the stack trace.
      * Each line contains a function name and the line number where
      * the next function is called. Finally, the line number in
-     * the current function is written.
+     * the record function is written.
      * @param current_line program line executed when this function
      *        is called.
      * @return A string with the contents of the stack trace.
      */ 
     public String getStackTrace(int current_line) {
-        int size = StackTrace.size();
-        ListIterator<StackTraceItem> itr = StackTrace.listIterator(size);
+        int size = stackTrace.size();
+        ListIterator<StackTraceItem> itr = stackTrace.listIterator(size);
         StringBuffer trace = new StringBuffer("---------------%n| Stack trace |%n---------------%n");
         trace.append("** Depth = ").append(size).append("%n");
         while (itr.hasPrevious()) {
@@ -116,9 +124,9 @@ public class Stack extends ReferenceRecord {
      * @return A string with the contents of the stack trace.
      */ 
     public String getStackTrace(int current_line, int nitems) {
-        int size = StackTrace.size();
+        int size = stackTrace.size();
         if (2*nitems >= size) return getStackTrace(current_line);
-        ListIterator<StackTraceItem> itr = StackTrace.listIterator(size);
+        ListIterator<StackTraceItem> itr = stackTrace.listIterator(size);
         StringBuffer trace = new StringBuffer("---------------%n| Stack trace |%n---------------%n");
         trace.append("** Depth = ").append(size).append("%n");
         int i;
@@ -135,4 +143,3 @@ public class Stack extends ReferenceRecord {
         return trace.toString();
     } 
 }
-    

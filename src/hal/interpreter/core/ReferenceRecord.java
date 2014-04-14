@@ -45,15 +45,17 @@ public class ReferenceRecord
     }
 
     public void defineBuiltin(Reference ref) {
-        Builtin builtin = (Builtin) ref.data;
-        builtin.className = name;
-        defineReference("__" + builtin.getValue() + "__", ref);
-        defineReference(builtin.getValue(), new Reference(ref.data));
+        String name = ref.data.getValue().toString();
+        defineReference("__" + name + "__", ref);
+        defineReference(name, new Reference(ref.data));
     }
 
     public Reference getReference(String name) {
         Reference r = record.get(name);
         if (r == null) {
+            if(parent != null)
+                return parent.getReference(name);
+
             throw new NameException(name);
         }
         return r;

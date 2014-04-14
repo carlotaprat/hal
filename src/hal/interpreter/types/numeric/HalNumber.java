@@ -78,7 +78,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     private static final Reference __add__ = new Reference(new BuiltinMethod("add") {
         @Override
         public HalObject call(HalObject instance, HalObject... args) {
-            if(args.length != 1 || ! (args[0] instanceof HalNumber))
+            if(args.length != 1)
                 throw new InvalidArgumentsException();
 
             return ((HalNumber)instance).add((HalNumber)args[0]);
@@ -151,7 +151,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     });
     
     
-    public static final ReferenceRecord record = new ReferenceRecord(classId, HalObject.record,
+    public static final ReferenceRecord record = new ReferenceRecord("Number", HalObject.record,
             // Conversion
             __int__,
             __float__,

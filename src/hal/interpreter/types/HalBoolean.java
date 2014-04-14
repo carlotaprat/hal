@@ -6,10 +6,11 @@ import hal.interpreter.types.enumerable.HalString;
 
 public class HalBoolean extends HalObject<Boolean>
 {
-    private static final String classId = "Boolean";
+    public static final HalClass klass = new HalClass("Boolean") {
+        public ReferenceRecord getInstanceRecord() { return HalBoolean.record; }
+    };
 
-    public HalBoolean(Boolean b)
-    {
+    public HalBoolean(Boolean b) {
         super(b);
     }
 
@@ -19,8 +20,7 @@ public class HalBoolean extends HalObject<Boolean>
     public HalString str() { return new HalString(value ? "true" : "false"); }
     public HalBoolean bool() { return new HalBoolean(value); }
 
-    private static final ReferenceRecord record = new ReferenceRecord(classId, HalObject.record);
-    public ReferenceRecord getRecord() {
-        return record;
-    }
+    private static final ReferenceRecord record = new ReferenceRecord(klass.value, HalObject.record);
+    public ReferenceRecord getRecord() { return HalBoolean.record; }
+    public HalClass getKlass() { return HalBoolean.klass; }
 }
