@@ -4,6 +4,7 @@ import hal.interpreter.Reference;
 import hal.interpreter.core.BuiltinMethod;
 import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.InvalidArgumentsException;
+import hal.interpreter.exceptions.NameException;
 import hal.interpreter.exceptions.ZeroDivisionException;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalObject;
@@ -31,8 +32,8 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     public abstract HalNumber sub(HalNumber n);
     public abstract HalNumber mul(HalNumber n);
     public abstract HalNumber div(HalNumber n);
-    public HalNumber mod(HalNumber n) { throw new InvalidArgumentsException(); }
-    public HalNumber ddiv(HalNumber n) { throw new InvalidArgumentsException(); }
+    public HalNumber mod(HalNumber n) { throw new NameException("__mod__"); }
+    public HalNumber ddiv(HalNumber n) { throw new NameException("__ddiv__"); }
 
     public abstract HalBoolean eq(HalNumber n);
     public abstract HalBoolean lt(HalNumber n);
@@ -129,6 +130,16 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
         }
     });
 
+    private static final Reference __mod__ = new Reference(new BuiltinMethod("mod") {
+        @Override
+        public HalObject call(HalObject instance, HalObject... args) {
+            if(args.length != 1)
+                throw new InvalidArgumentsException();
+
+            return ((HalNumber) instance).mod((HalNumber) args[0]);
+        }
+    });
+
 
     private static final Reference __lt__ = new Reference(new BuiltinMethod("lt") {
         @Override
@@ -166,6 +177,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
             __mul__,
             __div__,
             __ddiv__,
+            __mod__,
 
             // Relational
             __lt__,
