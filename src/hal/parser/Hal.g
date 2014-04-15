@@ -25,6 +25,8 @@ tokens
     EXPR;
     DICT;
     PAIR;
+    INSTANCE_VAR;
+    KLASS_VAR;
 }
 
 @header
@@ -311,11 +313,21 @@ atom
     |   GLOBAL
     |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
     |   NONE
+    |   instance_var
+    |   klass_var
     |   list
     |   dict
     |   funcall // An ID can be considered a "funcall" with 0 args
     |   y=YIELD expr -> ^(YIELD[$y, "YIELD"] expr)
     |   LPAREN! expr RPAREN!
+    ;
+
+instance_var
+    :   AT ID -> ^(INSTANCE_VAR ID)
+    ;
+
+klass_var
+    :   DOUBLE_AT ID -> ^(KLASS_VAR ID)
     ;
 
 list
@@ -379,6 +391,8 @@ RBRACK  : ']';
 LBRACE  : '{';
 RBRACE  : '}';
 LARROW  : '=>';
+AT      : '@';
+DOUBLE_AT : '@@';
 
 // Useful fragments
 fragment DIGIT : ('0'..'9');

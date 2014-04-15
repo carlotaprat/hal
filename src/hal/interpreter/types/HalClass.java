@@ -13,8 +13,11 @@ public abstract class HalClass extends HalKernel<String>
         public ReferenceRecord getInstanceRecord() { return HalClass.record; }
     };
 
+    private ReferenceRecord instRecord;
+
     public HalClass(String name) {
         value = name;
+        instRecord = new ReferenceRecord(value, HalClass.record);
     }
 
     public HalString str() {
@@ -39,6 +42,6 @@ public abstract class HalClass extends HalKernel<String>
     public static final ReferenceRecord record = new ReferenceRecord(klass.value, HalKernel.record,
             __new__
     );
-    public ReferenceRecord getRecord(){ return record; }
+    public ReferenceRecord getRecord(){ return instRecord; }
     public HalClass getKlass(){ return klass; }
 }
