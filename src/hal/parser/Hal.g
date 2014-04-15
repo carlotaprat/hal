@@ -25,6 +25,7 @@ tokens
     EXPR;
     DICT;
     PAIR;
+    GLOBAL_VAR;
     INSTANCE_VAR;
     KLASS_VAR;
 }
@@ -310,9 +311,9 @@ atom
     :   INT
     |   FLOAT
     |   STRING
-    |   GLOBAL
     |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
     |   NONE
+    |   global_var
     |   instance_var
     |   klass_var
     |   list
@@ -320,6 +321,10 @@ atom
     |   funcall // An ID can be considered a "funcall" with 0 args
     |   y=YIELD expr -> ^(YIELD[$y, "YIELD"] expr)
     |   LPAREN! expr RPAREN!
+    ;
+
+global_var
+    :   DOLLAR ID -> ^(GLOBAL_VAR ID)
     ;
 
 instance_var
@@ -393,6 +398,7 @@ RBRACE  : '}';
 LARROW  : '=>';
 AT      : '@';
 DOUBLE_AT : '@@';
+DOLLAR    : '$';
 
 // Useful fragments
 fragment DIGIT : ('0'..'9');
@@ -404,7 +410,6 @@ fragment SP     : (' ' | '\t')+;
 
 // Identifiers
 ID  : (LETTER|'_') (LETTER|'_'|DIGIT)* (('!'|'?')('_')*)?;
-GLOBAL : '$' ID;
 
 // Integers
 INT : (DIGIT+ (('.' DIGIT)=> '.' DIGIT+ {$type=FLOAT;})?);

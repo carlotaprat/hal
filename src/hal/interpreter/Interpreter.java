@@ -290,8 +290,8 @@ public class Interpreter {
                 Stack.getVariable("self").getKlass().getRecord().defineVariable(
                         left.getChild(0).getText(), value);
                 break;
-            case HalLexer.GLOBAL:
-                globals.defineVariable(left.getText(), value);
+            case HalLexer.GLOBAL_VAR:
+                globals.defineVariable(left.getChild(0).getText(), value);
                 break;
             default:
                 throw new TypeException("Impossible to assign to left expression");
@@ -342,7 +342,13 @@ public class Interpreter {
             case HalLexer.FUNCALL:
                 value = executeCall(t.getChild(0).getText(), t.getChild(1));
                 break;
-            case HalLexer.GLOBAL:
+            case HalLexer.INSTANCE_VAR:
+                value = Stack.getVariable("self").getRecord().getVariable(t.getChild(0).getText());
+                break;
+            case HalLexer.KLASS_VAR:
+                value = Stack.getVariable("self").getKlass().getRecord().getVariable(t.getChild(0).getText());
+                break;
+            case HalLexer.GLOBAL_VAR:
                 value = globals.getVariable(t.getText());
                 break;
                 
