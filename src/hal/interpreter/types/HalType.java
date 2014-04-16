@@ -23,7 +23,7 @@ public abstract class HalType
 
     private static Reference __repr__ = new Reference(new BuiltinMethod("repr") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length > 0)
                 throw new TypeException();
 
@@ -33,7 +33,7 @@ public abstract class HalType
 
     private static Reference __str__ = new Reference(new BuiltinMethod("str") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length > 0)
                 throw new InvalidArgumentsException();
 
@@ -43,7 +43,7 @@ public abstract class HalType
 
     private static final Reference __bool__ = new Reference(new BuiltinMethod("bool") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length > 0)
                 throw new InvalidArgumentsException();
 
@@ -53,7 +53,7 @@ public abstract class HalType
 
     private static final Reference __not__ = new Reference(new BuiltinMethod("not") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length > 0)
                 throw new InvalidArgumentsException();
 
@@ -63,7 +63,7 @@ public abstract class HalType
 
     private static Reference __eq__ = new Reference(new BuiltinMethod("eq") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length != 1)
                 throw new InvalidArgumentsException();
 
@@ -73,14 +73,14 @@ public abstract class HalType
 
     private static Reference __neq__ = new Reference(new BuiltinMethod("neq") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             return instance.methodcall("__eq__", args).methodcall("__not__");
         }
     });
 
     private static final Reference __le__ = new Reference(new BuiltinMethod("le") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             return new HalBoolean(instance.methodcall("__lt__", args).toBoolean() ||
                     instance.methodcall("__eq__", args).toBoolean());
         }
@@ -88,14 +88,14 @@ public abstract class HalType
 
     private static final Reference __gt__ = new Reference(new BuiltinMethod("gt") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             return instance.methodcall("__le__", args).methodcall("__not__");
         }
     });
 
     private static final Reference __ge__ = new Reference(new BuiltinMethod("ge") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             return instance.methodcall("__lt__", args).methodcall("__not__");
         }
     });

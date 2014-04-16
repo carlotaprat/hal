@@ -43,11 +43,12 @@ import java.util.ListIterator;
  * <name of variable,value>.
  */
  
-public class Stack extends ReferenceRecord
+public class Stack
 {
     /** Stack of activation records */
-    private LinkedList<HashMap<String, Reference>> stack;
     private HalModule module;
+    private LinkedList<ReferenceRecord> stack;
+    private ReferenceRecord record;
 
     /**
      * Class to represent an item of the Stack trace.
@@ -67,7 +68,7 @@ public class Stack extends ReferenceRecord
     
     /** Constructor of the memory */
     public Stack(HalModule mod) {
-        stack = new LinkedList<HashMap<String, Reference>>();
+        stack = new LinkedList<ReferenceRecord>();
         module = mod;
         record = null;
         stackTrace = new LinkedList<StackTraceItem>();
@@ -76,9 +77,13 @@ public class Stack extends ReferenceRecord
 
     /** Creates a new activation record on the top of the stack */
     public void pushContext(String name, HalObject inst, int line) {
-        record = new HashMap<String, Reference>();
-        defineVariable("self", inst);
-        defineVariable("return", null);
+        pushContext(name, inst, null, line);
+    }
+
+    public void pushContext(String name, HalObject inst, ReferenceRecord parent, int line) {
+        record = new ReferenceRecord(name, parent);
+        record.defineVariable("self", inst);
+        record.defineVariable("return", null);
         stack.addLast(record);
         stackTrace.addLast(new StackTraceItem(name, line));
     }
@@ -98,10 +103,22 @@ public class Stack extends ReferenceRecord
 
     public HalObject getVariable(String name) {
         try {
-            return super.getVariable(name);
+            return record.getVariable(name);
         } catch(NameException e) {
             return module.getRecord().getVariable(name);
         }
+    }
+
+    public void defineVariable(String name, HalObject obj) {
+        record.defineVariable(name, obj);
+    }
+
+    public Reference getReference(String name) {
+        return record.getReference(name);
+    }
+
+    public ReferenceRecord getCurrentRecord() {
+        return record;
     }
 
     /**

@@ -17,8 +17,8 @@ public class HalMethod extends HalObject<MethodDefinition>
         value = def;
     }
 
-    public HalObject call(HalObject instance, HalObject... args) {
-        return Hal.INTERPRETER.executeMethod(value, instance, args);
+    public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
+        return Hal.INTERPRETER.executeMethod(value, instance, lambda, args);
     }
 
     public HalString str() { return new HalString(value.name); }

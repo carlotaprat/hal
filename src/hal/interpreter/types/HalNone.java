@@ -25,7 +25,7 @@ public class HalNone extends HalObject
     
     private static final Reference __eq__ = new Reference(new BuiltinMethod("eq") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             return new HalBoolean(args[0] instanceof HalNone); 
         }
     });

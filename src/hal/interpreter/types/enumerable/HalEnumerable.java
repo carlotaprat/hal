@@ -26,7 +26,7 @@ public abstract class HalEnumerable<T> extends HalObject<T>
 
     private static final Reference __getitem__ = new Reference(new BuiltinMethod("getitem") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length != 1)
                 throw new InvalidArgumentsException();
 
@@ -36,7 +36,7 @@ public abstract class HalEnumerable<T> extends HalObject<T>
 
     private static final Reference __setitem__ = new Reference(new BuiltinMethod("setitem") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length != 2)
                 throw new InvalidArgumentsException();
 
@@ -47,7 +47,7 @@ public abstract class HalEnumerable<T> extends HalObject<T>
 
     private static final Reference __size__ = new Reference(new BuiltinMethod("size") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length > 0)
                 throw new InvalidArgumentsException();
 
@@ -57,7 +57,7 @@ public abstract class HalEnumerable<T> extends HalObject<T>
 
     private static final Reference __length__ = new Reference(new BuiltinMethod("length") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             return instance.methodcall("__size__");
         }
     });

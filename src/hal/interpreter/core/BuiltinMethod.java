@@ -11,6 +11,6 @@ abstract public class BuiltinMethod extends Builtin
         super(method_name);
     }
 
-    abstract public HalObject call(HalObject instance, HalObject... args);
+    abstract public HalObject call(HalObject instance, HalObject lambda, HalObject... args);
     public HalClass getKlass() { return HalMethod.klass; }
 }

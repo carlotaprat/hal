@@ -53,7 +53,7 @@ public class HalArray extends HalEnumerable<List<HalObject>>
 
     private static final Reference __append__ = new Reference(new BuiltinMethod("append!") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length != 1)
                 throw new InvalidArgumentsException();
 
@@ -64,7 +64,7 @@ public class HalArray extends HalEnumerable<List<HalObject>>
 
     private static final Reference __sum__ = new Reference(new BuiltinMethod("sum") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length > 0)
                 throw new InvalidArgumentsException();
 

@@ -1,5 +1,6 @@
 package hal.interpreter;
 
+import hal.interpreter.core.Lambda;
 import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.exceptions.NameException;
@@ -108,7 +109,7 @@ public class Interpreter
      * @param args The AST node representing the list of arguments of the caller.
      * @return The data returned by the function.
      */
-    private HalObject executeCall(String funcname, HalTree args) {
+    private HalObject executeCall(String funcname, HalObject lambda, HalTree args) {
         HalObject f;
         HalObject instance;
         HalObject self = Stack.getVariable("self");
@@ -127,10 +128,11 @@ public class Interpreter
             }
         }
 
-        return f.call(instance, listArguments(args));
+        return f.call(instance, lambda, listArguments(args));
     }
 
-    public HalObject executeMethod(MethodDefinition def, HalObject instance, HalObject... args)
+    public HalObject executeMethod(MethodDefinition def, HalObject instance, HalObject lambda,
+                                   HalObject... args)
     {
         HalTree tree = def.tree;
 
@@ -145,7 +147,7 @@ public class Interpreter
             throw new InvalidArgumentsException();
 
         // Create the activation record in memory
-        Stack.pushContext(def.name, instance, lineNumber());
+        Stack.pushContext(def.name, instance, def.getLocals(), lineNumber());
 
         // Track line number
         setLineNumber(tree);
@@ -155,6 +157,9 @@ public class Interpreter
             String param_name = p.getChild(i).getText();
             Stack.defineVariable(param_name, args[i]);
         }
+
+        if(lambda != null)
+            Stack.defineVariable("yield", lambda);
 
         // Execute the instructions
         HalObject result = executeListInstructions(def.block);
@@ -240,6 +245,20 @@ public class Interpreter
             // Function definition
             case HalLexer.FUNDEF:
                 return evaluateMethodDefinition(t);
+
+            case HalLexer.LAMBDACALL:
+                HalTree left = t.getChild(0);
+                HalLambda lambda = new HalLambda(new Lambda(t.getChild(1), Stack.getCurrentRecord()));
+
+                switch(left.getType()) {
+                    case HalLexer.FUNCALL:
+                        return executeCall(left.getChild(0).getText(), lambda, left.getChild(1));
+                    case HalLexer.METHCALL:
+                        return evaluateMethodCall(evaluateExpression(left.getChild(0)), left.getChild(1), lambda);
+                    default:
+                        throw new SyntaxException("Lambda call to literal");
+                }
+
                 
             // Return
             case HalLexer.RETURN:
@@ -337,7 +356,7 @@ public class Interpreter
                 break;
             // A function call. Checks that the function returns a result.
             case HalLexer.FUNCALL:
-                value = executeCall(t.getChild(0).getText(), t.getChild(1));
+                value = executeCall(t.getChild(0).getText(), null, t.getChild(1));
                 break;
             case HalLexer.INSTANCE_VAR:
                 value = Stack.getVariable("self").getRecord().getVariable(t.getChild(0).getText());
@@ -390,7 +409,7 @@ public class Interpreter
                 break;
 
             case HalLexer.METHCALL:
-                value2 = evaluateMethodCall(value, t.getChild(1));
+                value2 = evaluateMethodCall(value, t.getChild(1), null);
                 break;
         }
 
@@ -495,9 +514,9 @@ public class Interpreter
         return v;
     }
 
-    private HalObject evaluateMethodCall(HalObject obj, HalTree funcall) {
+    private HalObject evaluateMethodCall(HalObject obj, HalTree funcall, HalLambda lambda) {
         String name = funcall.getChild(0).getText();
-        return obj.methodcall(name, listArguments(funcall.getChild(1)));
+        return obj.methodcall(name, lambda, listArguments(funcall.getChild(1)));
     }
 
     private HalObject evaluateClassDefinition(HalTree classdef) {

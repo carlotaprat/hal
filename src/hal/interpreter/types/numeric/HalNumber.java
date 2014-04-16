@@ -40,7 +40,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     
     private static final Reference __int__ = new Reference(new BuiltinMethod("int") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if (args.length != 0)
                 throw new InvalidArgumentsException();
             return new HalInteger(((HalNumber)instance).toInteger());
@@ -49,7 +49,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
 
     private static final Reference __float__ = new Reference(new BuiltinMethod("float") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if (args.length != 0)
                 throw new InvalidArgumentsException();
             return new HalFloat(((HalNumber)instance).toFloat());
@@ -59,7 +59,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     // Unary
     private static final Reference __neg__ = new Reference(new BuiltinMethod("neg") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if (args.length != 0)
                 throw new InvalidArgumentsException();
             return ((HalNumber)instance).neg();
@@ -68,7 +68,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
 
     private static final Reference __pos__ = new Reference(new BuiltinMethod("pos") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if (args.length != 0)
                 throw new InvalidArgumentsException();
             return ((HalNumber)instance).pos();
@@ -78,7 +78,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     // Binary
     private static final Reference __add__ = new Reference(new BuiltinMethod("add") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length != 1)
                 throw new InvalidArgumentsException();
 
@@ -88,7 +88,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
 
     private static final Reference __sub__ = new Reference(new BuiltinMethod("sub") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length != 1 || ! (args[0] instanceof HalNumber))
                 throw new InvalidArgumentsException();
 
@@ -98,7 +98,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
 
     private static final Reference __mul__ = new Reference(new BuiltinMethod("mul") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length != 1 || ! (args[0] instanceof HalNumber))
                 throw new InvalidArgumentsException();
 
@@ -108,7 +108,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
 
     private static final Reference __div__ = new Reference(new BuiltinMethod("div") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length != 1 || ! (args[0] instanceof HalNumber))
                 throw new InvalidArgumentsException();
             if(((HalNumber) args[0]).isZero())
@@ -120,7 +120,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     
     private static final Reference __ddiv__ = new Reference(new BuiltinMethod("ddiv") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length != 1 || ! (args[0] instanceof HalNumber))
                 throw new InvalidArgumentsException();
             if(((HalNumber) args[0]).isZero())
@@ -132,7 +132,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
 
     private static final Reference __mod__ = new Reference(new BuiltinMethod("mod") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length != 1)
                 throw new InvalidArgumentsException();
 
@@ -143,7 +143,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
 
     private static final Reference __lt__ = new Reference(new BuiltinMethod("lt") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length != 1)
                 throw new InvalidArgumentsException();
 
@@ -153,7 +153,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     
     private static final Reference __eq__ = new Reference(new BuiltinMethod("eq") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length != 1)
                 throw new InvalidArgumentsException();
 

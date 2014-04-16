@@ -10,10 +10,16 @@ public class MethodDefinition
     public HalTree params;
     public HalTree block;
 
+    public MethodDefinition() { }
+
     public MethodDefinition(HalTree t) {
         name = t.getChild(0).getText();
         tree = t;
         params = t.getChild(1);
         block = t.getChild(2);
+    }
+
+    public ReferenceRecord getLocals() {
+        return new ReferenceRecord(name, null);
     }
 }

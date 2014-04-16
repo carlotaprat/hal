@@ -65,18 +65,22 @@ public abstract class HalObject<T> extends HalType
         return new HalBoolean(!((HalBoolean) methodcall("__bool__")).value);
     }
 
-    public HalObject call(HalObject instance, HalObject... args) {
-        if (args.length > 0)
+    public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
+        if (args.length > 0 || lambda != null)
             throw new InvalidArgumentsException();
 
         return this;
     }
 
     public HalObject methodcall(String name, HalObject... args) {
+        return methodcall(name, null, args);
+    }
+
+    public HalObject methodcall(String name, HalLambda lambda, HalObject... args) {
         ReferenceRecord original = getRecord();
 
         try {
-            return original.getVariable(name).call(this, args);
+            return original.getVariable(name).call(this, lambda, args);
         } catch (NameException e) {
             throw new TypeException(e.getMessage() + " in class " + getKlass().value);
         } catch(InvalidArgumentsException e) {

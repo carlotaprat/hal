@@ -48,7 +48,7 @@ abstract public class HalKernel<T> extends HalObject<T>
 
     private static final Reference __print__ = new Reference(new BuiltinMethod("print") {
         @Override
-        public HalObject call(HalObject instance, HalObject... args) {
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
             if(args.length > 0) {
                 for(HalObject arg : args)
                     System.out.println(arg);

@@ -12,6 +12,7 @@ tokens
     CLASSDEF;
     FUNDEF;
     FUNCALL;
+    LAMBDACALL;
     ARGS;
     IF_STMT;
     FOR_STMT;
@@ -146,6 +147,17 @@ tokens
 
     return directlyFollows(input.LT(-1), input.LT(1));
   }
+
+  public boolean nextIs(int... types) {
+    int type = input.LT(1).getType();
+
+    for(int i = 0; i < types.length; ++i) {
+        if(types[i] == type)
+            return true;
+    }
+
+    return false;
+  }
 }
 
 // GRAMMAR
@@ -259,8 +271,13 @@ arglist
     ;
 
 do_lambda
-    :   {input.LT(1).getType()==ID && before(NEWLINE, COLON) && !before(COLON, EQUAL)}?
-        ID args lambda -> ^(FUNCALL ID args lambda)
+    :   {!nextIs(FOR, WHILE, IF, ELSE, ELIF, DEF, CLASS)
+        && before(NEWLINE, COLON) && !before(COLON, EQUAL)}?
+        methcalls lambda -> ^(LAMBDACALL methcalls lambda)
+    ;
+
+methcalls
+    :   (atom -> atom) ('.' f=funcall -> ^(METHCALL $methcalls $f))*
     ;
 
 assign_lambda
@@ -319,7 +336,6 @@ atom
     |   list
     |   dict
     |   funcall // An ID can be considered a "funcall" with 0 args
-    |   y=YIELD expr -> ^(YIELD[$y, "YIELD"] expr)
     |   LPAREN! expr RPAREN!
     ;
 
@@ -382,9 +398,8 @@ FOR     : 'for';
 WHILE   : 'while';
 IN      : 'in';
 DEF     : 'def';
-LKW     : 'as';
+LKW     : 'with';
 RETURN  : 'return';
-YIELD   : 'yield';
 CLASS   : 'class';
 // SPECIAL SYMBOLS
 COLON     : ':' ;
