@@ -21,6 +21,5 @@ public class HalBoolean extends HalObject<Boolean>
     public HalBoolean bool() { return new HalBoolean(value); }
 
     private static final ReferenceRecord record = new ReferenceRecord(klass.value, HalObject.record);
-    public ReferenceRecord getRecord() { return HalBoolean.record; }
     public HalClass getKlass() { return HalBoolean.klass; }
 }

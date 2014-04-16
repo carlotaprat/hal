@@ -24,7 +24,6 @@ public class HalInteger extends HalNumber<Integer>
     }
 
     private static final ReferenceRecord record = new ReferenceRecord(klass.value, HalNumber.record);
-    public ReferenceRecord getRecord() { return HalInteger.record; }
     public HalClass getKlass() { return HalInteger.klass; }
 
 

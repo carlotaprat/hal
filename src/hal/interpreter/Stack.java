@@ -28,6 +28,8 @@
 package hal.interpreter;
 
 import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.exceptions.NameException;
+import hal.interpreter.types.HalModule;
 import hal.interpreter.types.HalObject;
 
 import java.util.HashMap;
@@ -45,6 +47,7 @@ public class Stack extends ReferenceRecord
 {
     /** Stack of activation records */
     private LinkedList<HashMap<String, Reference>> stack;
+    private HalModule module;
 
     /**
      * Class to represent an item of the Stack trace.
@@ -63,10 +66,12 @@ public class Stack extends ReferenceRecord
     private LinkedList<StackTraceItem> stackTrace;
     
     /** Constructor of the memory */
-    public Stack() {
+    public Stack(HalModule mod) {
         stack = new LinkedList<HashMap<String, Reference>>();
+        module = mod;
         record = null;
         stackTrace = new LinkedList<StackTraceItem>();
+        pushContext(module.value, module, 0);
     }
 
     /** Creates a new activation record on the top of the stack */
@@ -89,6 +94,14 @@ public class Stack extends ReferenceRecord
     public void popUntilFirstLevel() {
         while(stack.size() > 1)
             popContext();
+    }
+
+    public HalObject getVariable(String name) {
+        try {
+            return super.getVariable(name);
+        } catch(NameException e) {
+            return module.getRecord().getVariable(name);
+        }
     }
 
     /**

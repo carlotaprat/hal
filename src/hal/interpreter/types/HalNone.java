@@ -11,8 +11,6 @@ public class HalNone extends HalObject
         public ReferenceRecord getInstanceRecord() { return HalNone.record; }
     };
 
-    public static final HalNone NONE = new HalNone();
-
     public HalNone() {
         value = null;
     }
@@ -33,10 +31,10 @@ public class HalNone extends HalObject
     });
     
     
-    private static final ReferenceRecord record = new ReferenceRecord(klass.value, HalObject.record,
+    public static final ReferenceRecord record = new ReferenceRecord(klass.value, HalObject.record,
                 __eq__
     );
-    
-    public ReferenceRecord getRecord() { return record; }
+    public static final HalNone NONE = new HalNone();
+
     public HalClass getKlass() { return HalNone.klass; }
 }

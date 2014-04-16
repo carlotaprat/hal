@@ -21,7 +21,6 @@ public class HalRational extends HalNumber<Rational>
     }
     
     private static final ReferenceRecord record = new ReferenceRecord(klass.value, HalNumber.record);
-    public ReferenceRecord getRecord() { return record; }
     public HalClass getKlass() { return klass; }
     
     private static HalNumber RorI(Rational r) {

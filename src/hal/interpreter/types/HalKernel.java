@@ -15,7 +15,7 @@ abstract public class HalKernel<T> extends HalObject<T>
 {
     public static void init(){
         // Resolves circular dependency
-        record.parent = HalObject.record;
+        HalClass.klass.solveDependency();
 
         HalClass[] klasses = new HalClass[]{
                 // Class
@@ -60,8 +60,7 @@ abstract public class HalKernel<T> extends HalObject<T>
         }
     });
 
-    public static final ReferenceRecord record = new ReferenceRecord("Kernel", null,
+    public static final ReferenceRecord record = new ReferenceRecord("Kernel", HalObject.record,
             __print__
     );
-    public ReferenceRecord getRecord() { return record; }
 }

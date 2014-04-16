@@ -53,5 +53,4 @@ public class HalDictionary extends HalEnumerable<HashMap<HalObject, HalObject>>
     }
 
     private static final ReferenceRecord record = new ReferenceRecord(klass.value, HalEnumerable.record);
-    public ReferenceRecord getRecord() { return record; }
 }

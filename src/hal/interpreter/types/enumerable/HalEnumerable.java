@@ -68,5 +68,4 @@ public abstract class HalEnumerable<T> extends HalObject<T>
             __size__,
             __length__
     );
-    public ReferenceRecord getRecord() { return record; }
 }

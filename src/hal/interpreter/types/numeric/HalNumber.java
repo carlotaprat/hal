@@ -183,6 +183,4 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
             __lt__,
             __eq__
     );
-
-    public ReferenceRecord getRecord() { return record; }
 }

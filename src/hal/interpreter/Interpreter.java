@@ -1,6 +1,7 @@
 package hal.interpreter;
 
 import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.exceptions.NameException;
 import hal.interpreter.types.enumerable.HalArray;
 import hal.interpreter.types.enumerable.HalDictionary;
@@ -17,10 +18,8 @@ import java.io.*;
 
 /** Class that implements the interpreter of the language. */
 
-public class Interpreter {
-    /** Singleton Hal None value **/
-    private static final HalNone NONE = new HalNone();
-
+public class Interpreter
+{
     /** Memory of the virtual machine. */
     private Stack Stack;
     private ReferenceRecord globals;
@@ -42,16 +41,11 @@ public class Interpreter {
      * data structures for the execution of the main program.
      */
     public Interpreter(PrintWriter tracefile) {
+        // Initialize and solve dependency cycles
         HalKernel.init();
-        Stack = new Stack(); // Creates the memory of the virtual machine
-        globals = new ReferenceRecord("globals", null);
 
-        // Create a main container class
-        Stack.pushContext("main", new HalClass("main") {
-            private final ReferenceRecord record = new ReferenceRecord("main", HalClass.record);
-            public ReferenceRecord getInstanceRecord() { return record; }
-            public ReferenceRecord getRecord() { return record; }
-        }, 0);
+        Stack = new Stack(new HalModule("main")); // Creates the memory of the virtual machine
+        globals = new ReferenceRecord("globals", null);
 
         trace = tracefile;
         function_nesting = 0;
@@ -147,6 +141,9 @@ public class Interpreter {
         HalTree p = def.params;
         int nparam = p.getChildCount(); // Number of parameters
 
+        if(nparam != args.length)
+            throw new InvalidArgumentsException();
+
         // Create the activation record in memory
         Stack.pushContext(def.name, instance, lineNumber());
 
@@ -185,7 +182,7 @@ public class Interpreter {
     private HalObject executeListInstructions (HalTree t) {
         assert t != null;
         Reference result = Stack.getReference("return");
-        HalObject last = NONE;
+        HalObject last = HalNone.NONE;
 
         int ninstr = t.getChildCount();
         for (int i = 0; i < ninstr; ++i) {
@@ -229,7 +226,7 @@ public class Interpreter {
 
             // While
             case HalLexer.WHILE_STMT:
-                HalObject last = NONE;
+                HalObject last = HalNone.NONE;
                 while (true) {
                     value = evaluateExpression(t.getChild(0));
                     if(!value.toBoolean())
@@ -327,7 +324,7 @@ public class Interpreter {
                 value = new HalBoolean(t.getBooleanValue());
                 break;
             case HalLexer.NONE:
-                value = NONE;
+                value = HalNone.NONE;
                 break;
             case HalLexer.STRING:
                 value = new HalString(t.getStringValue());

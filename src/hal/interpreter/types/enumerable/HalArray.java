@@ -82,6 +82,4 @@ public class HalArray extends HalEnumerable<List<HalObject>>
             __append__,
             __sum__
     );
-    
-    public ReferenceRecord getRecord() { return record; }
 }

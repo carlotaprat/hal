@@ -15,17 +15,26 @@ public abstract class HalObject<T> extends HalType
     };
 
     public T value;
+    private ReferenceRecord obj_record;
 
-    public HalObject() {}
+    public HalObject() {
+        initRecord();
+    }
 
     public HalObject(T d) {
         this();
         value = d;
     }
 
+    protected void initRecord() {
+        obj_record = new ReferenceRecord("instance", getKlass().getInstanceRecord());
+    }
+
     public T getValue() {
         return value;
     }
+
+    public final ReferenceRecord getRecord() { return obj_record; }
 
     @Override
     public boolean equals(Object o) {
@@ -69,14 +78,13 @@ public abstract class HalObject<T> extends HalType
         try {
             return original.getVariable(name).call(this, args);
         } catch (NameException e) {
-            throw new TypeException(e.getMessage() + " in class " + original.name);
+            throw new TypeException(e.getMessage() + " in class " + getKlass().value);
         } catch(InvalidArgumentsException e) {
-                throw new TypeException(e.getMessage() + " for " + original.name + "#" + name);
+                throw new TypeException(e.getMessage() + " for " + getKlass().value + "#" + name);
         } catch(AbstractClassException e) {
                 throw new TypeException(e.getMessage());
         }
     }
 
     public static final ReferenceRecord record = new ReferenceRecord(klass.value, HalType.record);
-    public ReferenceRecord getRecord() { return record; }
 }

@@ -40,5 +40,4 @@ public class HalString extends HalEnumerable<String>
     }
 
     public static final ReferenceRecord record = new ReferenceRecord(klass.value, HalEnumerable.record);
-    public ReferenceRecord getRecord() { return record; }
 }
