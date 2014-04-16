@@ -36,6 +36,7 @@ public class Interpreter
 
     /** Nested levels of function calls. */
     private int function_nesting = 0;
+    private int calls = 0;
     
     /**
      * Constructor of the interpreter. It prepares the main
@@ -148,6 +149,7 @@ public class Interpreter
 
         // Create the activation record in memory
         Stack.pushContext(def.name, instance, def.getLocals(), lineNumber());
+        calls++;
 
         // Track line number
         setLineNumber(tree);
@@ -172,6 +174,7 @@ public class Interpreter
 
         // Destroy the activation record
         Stack.popContext();
+        calls--;
 
         return result;
     }
@@ -222,12 +225,12 @@ public class Interpreter
                 return evaluateExpression(t.getChild(0));
 
             // If-then-else
-            case HalLexer.IF:
+            case HalLexer.IF_STMT:
                 value = evaluateExpression(t.getChild(0));
                 if (value.toBoolean()) return executeListInstructions(t.getChild(1));
                 // Is there else statement ?
                 if (t.getChildCount() == 3) return executeListInstructions(t.getChild(2));
-                return null;
+                return HalNone.NONE;
 
             // While
             case HalLexer.WHILE_STMT:
@@ -258,11 +261,10 @@ public class Interpreter
                     default:
                         throw new SyntaxException("Lambda call to literal");
                 }
-
                 
             // Return
             case HalLexer.RETURN:
-                if(function_nesting == 0)
+                if(calls == 0)
                     throw new SyntaxException("return outside method");
 
                 HalObject result;
@@ -285,7 +287,13 @@ public class Interpreter
 
     private HalObject evaluateAssign(HalTree t) {
         HalTree left = t.getChild(0);
-        HalObject value = evaluateExpression(t.getChild(1).getChild(0));
+        HalTree right = t.getChild(1);
+        HalObject value;
+
+        if(right.getType() == HalLexer.EXPR)
+            value = evaluateExpression(t.getChild(1).getChild(0));
+        else
+            value = evaluateAssign(right);
 
         switch(left.getType()) {
             case HalLexer.FUNCALL:
