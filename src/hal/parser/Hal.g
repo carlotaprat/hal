@@ -18,6 +18,7 @@ tokens
     IF_STMT;
     FOR_STMT;
     WHILE_STMT;
+    IMPORT_STMT;
     BOOLEAN;
     ARRAY;
     LAMBDA;
@@ -199,6 +200,7 @@ compound_stmt
     :   if_stmt
     |   for_stmt
     |   while_stmt
+    |   import_stmt
     |   classdef
     |   fundef
     |   do_lambda
@@ -225,6 +227,15 @@ for_stmt
 
 while_stmt
     :  WHILE expr COLON block -> ^(WHILE_STMT expr block)
+    ;
+
+import_stmt
+    :  IMPORT module -> ^(IMPORT_STMT module)
+    |  FROM module IMPORT ID (',' ID)* -> ^(IMPORT_STMT module ID+)
+    ;
+
+module
+    :  ID ('.'! ID^)*
     ;
 
 block
@@ -402,6 +413,8 @@ DEF     : 'def';
 LKW     : 'with';
 RETURN  : 'return';
 CLASS   : 'class';
+IMPORT  : 'import';
+FROM    : 'from';
 // SPECIAL SYMBOLS
 COLON     : ':' ;
 SEMICOLON : ';';

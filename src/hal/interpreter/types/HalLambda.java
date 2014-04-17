@@ -9,7 +9,7 @@ public class HalLambda extends HalMethod
 
     public HalLambda(Lambda lambda) {
         super(lambda);
-        self = lambda.instance;
+        self = lambda.getInstance();
     }
 
     public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {

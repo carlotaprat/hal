@@ -7,7 +7,6 @@ import hal.interpreter.types.HalObject;
 public class Lambda extends MethodDefinition
 {
     public ReferenceRecord context;
-    public HalObject instance;
 
     public Lambda(HalTree t, ReferenceRecord contxt) {
         name = "yield";
