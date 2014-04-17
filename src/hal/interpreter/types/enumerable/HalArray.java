@@ -4,6 +4,7 @@ import hal.interpreter.Reference;
 import hal.interpreter.core.BuiltinMethod;
 import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.types.HalClass;
+import hal.interpreter.types.HalNone;
 import hal.interpreter.types.HalObject;
 import hal.interpreter.types.numeric.HalInteger;
 
@@ -70,11 +71,28 @@ public class HalArray extends HalEnumerable<List<HalObject>>
             return sum;
         }
     });
+    
+    private static final Reference __each__ = new Reference(new BuiltinMethod("each") {
+        @Override
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
+            if (args.length != 0)
+                throw new InvalidArgumentsException();
+            
+            HalObject last = HalNone.NONE;
+            HalArray i = (HalArray) instance;
+            for (HalObject element: i.value) {
+                last = lambda.call(instance, null, element);
+            }
+            return last;
+        }
+    });
 
     public static final HalClass klass = new HalClass("Array", HalEnumerable.klass,
             __append__,
-            __sum__
+            __sum__,
+            __each__
     );
 
     public HalClass getKlass() { return HalArray.klass; }
+
 }

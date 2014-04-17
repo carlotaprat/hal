@@ -222,7 +222,7 @@ if_extension
 
 for_stmt
     :  FOR paramlist IN expr COLON block
-        -> ^(FOR_STMT ^(PARAMS paramlist) expr block)
+        -> ^(FOR_STMT expr ^(LAMBDA ^(PARAMS paramlist) block))
     ;
 
 while_stmt

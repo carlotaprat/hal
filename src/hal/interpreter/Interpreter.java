@@ -1,18 +1,10 @@
 package hal.interpreter;
 
-import hal.interpreter.core.Lambda;
-import hal.interpreter.core.ReferenceRecord;
-import hal.interpreter.exceptions.InvalidArgumentsException;
-import hal.interpreter.exceptions.NameException;
-import hal.interpreter.types.enumerable.HalArray;
-import hal.interpreter.types.enumerable.HalDictionary;
-import hal.interpreter.types.enumerable.HalString;
-import hal.interpreter.types.numeric.HalInteger;
-import hal.interpreter.types.numeric.HalFloat;
-import hal.interpreter.core.MethodDefinition;
+import hal.interpreter.core.*;
+import hal.interpreter.exceptions.*;
+import hal.interpreter.types.enumerable.*;
+import hal.interpreter.types.numeric.*;
 import hal.interpreter.types.*;
-import hal.interpreter.exceptions.SyntaxException;
-import hal.interpreter.exceptions.TypeException;
 import hal.parser.*;
 
 import java.io.*;
@@ -242,7 +234,7 @@ public class Interpreter
                 return HalNone.NONE;
 
             // While
-            case HalLexer.WHILE_STMT:
+            case HalLexer.WHILE_STMT: {
                 HalObject last = HalNone.NONE;
                 while (true) {
                     value = evaluateExpression(t.getChild(0));
@@ -250,6 +242,13 @@ public class Interpreter
                         return last;
                     last = executeListInstructions(t.getChild(1));
                 }
+            }
+                
+            case HalLexer.FOR_STMT: {
+                HalLambda lambda = new HalLambda(new Lambda(t.getChild(1), Stack.getCurrentRecord()));
+                HalObject obj = evaluateExpression(t.getChild(0));
+                return obj.methodcall("__each__", lambda);
+            }
 
             case HalLexer.CLASSDEF:
                 return evaluateClassDefinition(t);
