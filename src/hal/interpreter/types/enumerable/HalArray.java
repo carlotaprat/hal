@@ -2,24 +2,17 @@ package hal.interpreter.types.enumerable;
 
 import hal.interpreter.Reference;
 import hal.interpreter.core.BuiltinMethod;
-import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.InvalidArgumentsException;
-
 import hal.interpreter.types.HalClass;
 import hal.interpreter.types.HalObject;
 import hal.interpreter.types.numeric.HalInteger;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class HalArray extends HalEnumerable<List<HalObject>>
 {
-    public static final HalClass klass = new HalClass("Array") {
-        public ReferenceRecord getInstanceRecord() { return HalArray.record; }
-    };
-
-    public HalClass getKlass() { return klass; }
-
     public HalArray() {
         value = new ArrayList<HalObject>();
     }
@@ -77,9 +70,11 @@ public class HalArray extends HalEnumerable<List<HalObject>>
             return sum;
         }
     });
-    
-    private static final ReferenceRecord record = new ReferenceRecord(klass.value, HalEnumerable.record,
+
+    public static final HalClass klass = new HalClass("Array", HalEnumerable.klass,
             __append__,
             __sum__
     );
+
+    public HalClass getKlass() { return HalArray.klass; }
 }

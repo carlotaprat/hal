@@ -1,15 +1,12 @@
 package hal.interpreter.types.numeric;
 
-import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalClass;
 
 
 public class HalFloat extends HalNumber<Double>
 {
-    public static final HalClass klass = new HalClass("Float") {
-        public ReferenceRecord getInstanceRecord() { return HalFloat.record; }
-    };
+    public static final HalClass klass = new HalClass("Float", HalNumber.klass);
 
     public HalFloat(float f) {
         super((double) f);
@@ -18,9 +15,10 @@ public class HalFloat extends HalNumber<Double>
     public HalFloat(double d) {
         super(d);
     }
-    
-    private static final ReferenceRecord record = new ReferenceRecord(klass.value, HalNumber.record);
-    public HalClass getKlass() { return HalFloat.klass; }
+
+    public HalClass getKlass() {
+        return HalFloat.klass;
+    }
 
     @Override
     public boolean isZero() {

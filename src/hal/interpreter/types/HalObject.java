@@ -10,9 +10,7 @@ import hal.interpreter.types.enumerable.HalString;
 
 public abstract class HalObject<T> extends HalType
 {
-    public static final HalClass klass = new HalClass("Object") {
-        public ReferenceRecord getInstanceRecord() { return HalObject.record; }
-    };
+    public static final HalClass klass = new HalClass("Object", HalType.klass);
 
     public T value;
     private ReferenceRecord obj_record;
@@ -89,6 +87,4 @@ public abstract class HalObject<T> extends HalType
                 throw new TypeException(e.getMessage());
         }
     }
-
-    public static final ReferenceRecord record = new ReferenceRecord(klass.value, HalType.record);
 }

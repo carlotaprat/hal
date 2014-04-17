@@ -2,10 +2,10 @@ package hal.interpreter.types.enumerable;
 
 import hal.interpreter.Reference;
 import hal.interpreter.core.BuiltinMethod;
-import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.exceptions.NameException;
 import hal.interpreter.types.HalBoolean;
+import hal.interpreter.types.HalClass;
 import hal.interpreter.types.HalObject;
 import hal.interpreter.types.numeric.HalInteger;
 
@@ -62,7 +62,7 @@ public abstract class HalEnumerable<T> extends HalObject<T>
         }
     });
 
-    public static final ReferenceRecord record = new ReferenceRecord("Enumerable", HalObject.record,
+    public static final HalClass klass = new HalClass("Enumerable", HalObject.klass,
             __getitem__,
             __setitem__,
             __size__,

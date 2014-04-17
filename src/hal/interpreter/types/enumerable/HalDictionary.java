@@ -1,6 +1,5 @@
 package hal.interpreter.types.enumerable;
 
-import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.KeyException;
 import hal.interpreter.types.HalClass;
 import hal.interpreter.types.HalObject;
@@ -12,10 +11,8 @@ import java.util.Map;
 
 public class HalDictionary extends HalEnumerable<HashMap<HalObject, HalObject>>
 {
-    public static final HalClass klass = new HalClass("Dictionary") {
-        public ReferenceRecord getInstanceRecord() { return HalDictionary.record; }
-    };
-    public HalClass getKlass() { return klass; }
+    public static final HalClass klass = new HalClass("Dictionary", HalEnumerable.klass);
+    public HalClass getKlass() { return HalDictionary.klass; }
 
     public HalDictionary() {
         value = new HashMap<HalObject, HalObject>();
@@ -51,6 +48,4 @@ public class HalDictionary extends HalEnumerable<HashMap<HalObject, HalObject>>
     public HalInteger size() {
         return new HalInteger(value.size());
     }
-
-    private static final ReferenceRecord record = new ReferenceRecord(klass.value, HalEnumerable.record);
 }

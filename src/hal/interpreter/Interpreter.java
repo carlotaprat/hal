@@ -291,7 +291,7 @@ public class Interpreter
         HalObject value;
 
         if(right.getType() == HalLexer.EXPR)
-            value = evaluateExpression(t.getChild(1).getChild(0));
+            value = evaluateExpression(right.getChild(0));
         else
             value = evaluateAssign(right);
 
@@ -362,7 +362,6 @@ public class Interpreter
             case HalLexer.DICT:
                 value = evaluateDict(t);
                 break;
-            // A function call. Checks that the function returns a result.
             case HalLexer.FUNCALL:
                 value = executeCall(t.getChild(0).getText(), null, t.getChild(1));
                 break;
@@ -531,8 +530,16 @@ public class Interpreter
         String name = classdef.getChild(0).getText();
         HalTree block = classdef.getChild(1);
         HalObject self = Stack.getVariable("self");
+        HalObject klass;
 
-        Stack.pushContext(name, self.getRecord().getVariable(name), classdef.getLine());
+        try {
+            klass = self.getRecord().getVariable(name);
+        } catch(NameException e) {
+            klass = new HalClass(name, HalObject.klass);
+            self.getRecord().defineVariable(name, klass);
+        }
+
+        Stack.pushContext(name, klass, classdef.getLine());
 
         HalObject result = executeListInstructions(block);
 

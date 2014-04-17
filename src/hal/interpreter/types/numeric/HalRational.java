@@ -1,16 +1,13 @@
 package hal.interpreter.types.numeric;
 
 import hal.interpreter.core.data.Rational;
-import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalClass;
 
 
 public class HalRational extends HalNumber<Rational>
 {
-    public static final HalClass klass = new HalClass("Rational") {
-        public ReferenceRecord getInstanceRecord() { return HalRational.record; }
-    };
+    public static final HalClass klass = new HalClass("Rational", HalNumber.klass);
 
     public HalRational(Integer i) {
         super(new Rational(i));
@@ -19,9 +16,8 @@ public class HalRational extends HalNumber<Rational>
     public HalRational(Rational r) {
         super(r);
     }
-    
-    private static final ReferenceRecord record = new ReferenceRecord(klass.value, HalNumber.record);
-    public HalClass getKlass() { return klass; }
+
+    public HalClass getKlass() { return HalRational.klass; }
     
     private static HalNumber RorI(Rational r) {
         if (r.isInt())

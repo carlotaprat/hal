@@ -1,16 +1,13 @@
 package hal.interpreter.types.enumerable;
 
 
-import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.types.HalClass;
 import hal.interpreter.types.HalObject;
 import hal.interpreter.types.numeric.HalInteger;
 
 public class HalString extends HalEnumerable<String>
 {
-    public static final HalClass klass = new HalClass("String") {
-        public ReferenceRecord getInstanceRecord() { return HalString.record; }
-    };
+    public static final HalClass klass = new HalClass("String", HalEnumerable.klass);
     public HalClass getKlass() { return klass; }
 
     public HalString(String s) {
@@ -38,6 +35,4 @@ public class HalString extends HalEnumerable<String>
     public HalInteger size() {
         return new HalInteger(value.length());
     }
-
-    public static final ReferenceRecord record = new ReferenceRecord(klass.value, HalEnumerable.record);
 }

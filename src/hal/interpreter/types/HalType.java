@@ -100,7 +100,7 @@ public abstract class HalType
         }
     });
 
-    public static final ReferenceRecord record = new ReferenceRecord("Type", null,
+    public static final HalClass klass = new HalClass("Type", null,
             __repr__,
             __str__,
             __bool__,
@@ -109,6 +109,5 @@ public abstract class HalType
             __neq__,
             __le__,
             __gt__,
-            __ge__
-    );
+            __ge__);
 }
