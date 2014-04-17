@@ -41,6 +41,7 @@ INTERP_SRC := $(shell find $(INTERP) -name '*.java')
 ALL_SRC     = $(MAIN_SRC) $(PARSER_SRC) $(INTERP_SRC)
 
 TIMESTAMP  = $(shell date +'%Y %b %d, %H:%M')
+LASTCOMMIT   = $(shell git rev-parse HEAD | cut -c -8)
 MAINFILE   = $(MAIN)/Hal.java
 
 all: compile exec
@@ -51,6 +52,7 @@ compile:
 	  mkdir $(CLASSDIR);\
 	fi
 	sed -i.bkp "s|\$$DATE|$(TIMESTAMP)|" $(MAINFILE)
+	sed -i "s|\$$GIT|$(LASTCOMMIT)|" $(MAINFILE)
 	-javac $(JFLAGS) $(ALL_SRC)
 	mv $(MAINFILE).bkp $(MAINFILE);
 

@@ -25,7 +25,7 @@ import jline.console.ConsoleReader;
 
 public class Hal
 {
-    public static final String VERSION = "0.0.1";
+    public static final String VERSION = "0.0.1@$GIT";
     public static final String DATE = "$DATE";
 
     public static Interpreter INTERPRETER = null;
