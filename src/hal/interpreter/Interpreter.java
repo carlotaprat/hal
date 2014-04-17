@@ -14,8 +14,10 @@ import hal.interpreter.types.enumerable.HalString;
 import hal.interpreter.types.numeric.HalFloat;
 import hal.interpreter.types.numeric.HalInteger;
 import hal.parser.HalLexer;
+import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CharStream;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 
 /** Class that implements the interpreter of the language. */
@@ -49,7 +51,7 @@ public class Interpreter
         HalKernel.init();
 
         parser = parsr;
-        stack = new Stack(new HalModule("main")); // Creates the memory of the virtual machine
+        stack = new Stack(new HalModule("main", null)); // Creates the memory of the virtual machine
         globals = new ReferenceRecord("globals", null);
 
         trace = tracefile;
@@ -57,9 +59,9 @@ public class Interpreter
     }
 
     /** Runs the program by calling the main function without parameters. */
-    public HalObject run(CharStream input) {
+    public HalObject run(CharStream input) throws IOException {
         stack.popUntilFirstLevel();
-        HalTree t = parser.getTree(input);
+        HalTree t = parser.process(input);
         return evaluate(t);
     }
 
@@ -300,6 +302,9 @@ public class Interpreter
 
                 stack.defineVariable("return", result);
                 return result;
+
+            case HalLexer.IMPORT_STMT:
+                return evaluateImport(t);
 
             default: assert false; // Should never happen
         }
@@ -589,6 +594,57 @@ public class Interpreter
         HalMethod method = new HalMethod(def);
         klass.getInstanceRecord().defineVariable(def.name, method);
         return method;
+    }
+
+    private HalModule evaluateImport(HalTree imp) {
+        HalTree mod = imp.getChild(0);
+
+        HalPackage pkg = null;
+        if(mod.getChildCount() > 0)
+            pkg = evaluatePackage(mod.getChild(0));
+
+        HalModule module = new HalModule(mod.getText(), pkg);
+        CharStream modfile;
+
+        try {
+            modfile = new ANTLRFileStream(module.path + ".hal");
+        } catch(IOException e) {
+            throw new RuntimeException("Import error: " + e.getMessage());
+        }
+
+        HalTree tree = parser.getTree(modfile);
+        stack.pushContext(module.value, module, imp.getLine());
+        evaluate(tree);
+        stack.popContext();
+
+        ReferenceRecord importRecord;
+
+        try {
+            importRecord = stack.getVariable("self").getInstanceRecord();
+        } catch(TypeException e) {
+            importRecord = stack.getCurrentRecord();
+        }
+
+        int n = imp.getChildCount();
+        if(n > 1) {
+            for(int i = 1; i < n; ++i) {
+                String name = imp.getChild(i).getText();
+                importRecord.defineVariable(name, module.getRecord().getVariable(name));
+            }
+        }
+        else
+            importRecord.defineVariable(module.root.value, module);
+
+        return module;
+    }
+
+    private HalPackage evaluatePackage(HalTree pkg) {
+        HalPackage parent = null;
+
+        if(pkg.getChildCount() > 0)
+            parent = evaluatePackage(pkg.getChild(0));
+
+        return new HalPackage(pkg.getText(), parent);
     }
 
     /**

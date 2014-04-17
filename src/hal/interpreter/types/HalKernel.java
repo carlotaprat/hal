@@ -68,7 +68,6 @@ abstract public class HalKernel<T> extends HalObject<T>
         }
     });
     
-    
     private static final Reference range = new Reference(new BuiltinMethod("range") {
         @Override
         public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
