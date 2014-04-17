@@ -1,20 +1,30 @@
 package hal.interpreter;
 
-import hal.interpreter.core.*;
-import hal.interpreter.exceptions.*;
-import hal.interpreter.types.enumerable.*;
-import hal.interpreter.types.numeric.*;
+import hal.interpreter.core.Lambda;
+import hal.interpreter.core.MethodDefinition;
+import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.exceptions.InvalidArgumentsException;
+import hal.interpreter.exceptions.NameException;
+import hal.interpreter.exceptions.SyntaxException;
+import hal.interpreter.exceptions.TypeException;
 import hal.interpreter.types.*;
-import hal.parser.*;
+import hal.interpreter.types.enumerable.HalArray;
+import hal.interpreter.types.enumerable.HalDictionary;
+import hal.interpreter.types.enumerable.HalString;
+import hal.interpreter.types.numeric.HalFloat;
+import hal.interpreter.types.numeric.HalInteger;
+import hal.parser.HalLexer;
+import org.antlr.runtime.CharStream;
 
-import java.io.*;
+import java.io.PrintWriter;
 
 /** Class that implements the interpreter of the language. */
 
 public class Interpreter
 {
+    private Parser parser;
     /** Memory of the virtual machine. */
-    private Stack Stack;
+    private Stack stack;
     private ReferenceRecord globals;
 
     /**
@@ -34,11 +44,12 @@ public class Interpreter
      * Constructor of the interpreter. It prepares the main
      * data structures for the execution of the main program.
      */
-    public Interpreter(PrintWriter tracefile) {
+    public Interpreter(Parser parsr, PrintWriter tracefile) {
         // Initialize and solve dependency cycles
         HalKernel.init();
 
-        Stack = new Stack(new HalModule("main")); // Creates the memory of the virtual machine
+        parser = parsr;
+        stack = new Stack(new HalModule("main")); // Creates the memory of the virtual machine
         globals = new ReferenceRecord("globals", null);
 
         trace = tracefile;
@@ -46,9 +57,14 @@ public class Interpreter
     }
 
     /** Runs the program by calling the main function without parameters. */
-    public HalObject Run(HalTree t) {
+    public HalObject run(CharStream input) {
+        stack.popUntilFirstLevel();
+        HalTree t = parser.getTree(input);
+        return evaluate(t);
+    }
+
+    public HalObject evaluate(HalTree t) {
         try {
-            Stack.popUntilFirstLevel();
             PreProcessAST(t); // Some internal pre-processing on the AST
             return executeListInstructions(t);
         } catch(ClassCastException e) {
@@ -58,12 +74,12 @@ public class Interpreter
 
     /** Returns the contents of the stack trace */
     public String getStackTrace() {
-        return Stack.getStackTrace(lineNumber());
+        return stack.getStackTrace(lineNumber());
     }
 
     /** Returns a summarized contents of the stack trace */
     public String getStackTrace(int nitems) {
-        return Stack.getStackTrace(lineNumber(), nitems);
+        return stack.getStackTrace(lineNumber(), nitems);
     }
 
     /**
@@ -105,10 +121,10 @@ public class Interpreter
     private HalObject executeCall(String funcname, HalObject lambda, HalTree args) {
         HalObject f;
         HalObject instance;
-        HalObject self = Stack.getVariable("self");
+        HalObject self = stack.getVariable("self");
 
         try {
-            f = Stack.getVariable(funcname);
+            f = stack.getVariable(funcname);
             instance = self;
         } catch(NameException e) {
             try {
@@ -140,7 +156,7 @@ public class Interpreter
             throw new InvalidArgumentsException();
 
         // Create the activation record in memory
-        Stack.pushContext(def.name, instance, def.getLocals(), lineNumber());
+        stack.pushContext(def.name, instance, def.getLocals(), lineNumber());
         calls++;
 
         HalObject superkw;
@@ -150,7 +166,7 @@ public class Interpreter
             superkw = HalNone.NONE;
         }
 
-        Stack.defineVariable("super", superkw);
+        stack.defineVariable("super", superkw);
 
         // Track line number
         setLineNumber(tree);
@@ -158,11 +174,11 @@ public class Interpreter
         // Copy the parameters to the record activation record
         for (int i = 0; i < nparam; ++i) {
             String param_name = p.getChild(i).getText();
-            Stack.defineVariable(param_name, args[i]);
+            stack.defineVariable(param_name, args[i]);
         }
 
         if(lambda != null)
-            Stack.defineVariable("yield", lambda);
+            stack.defineVariable("yield", lambda);
 
         // Execute the instructions
         HalObject result = executeListInstructions(def.block);
@@ -174,7 +190,7 @@ public class Interpreter
         if (trace != null) traceReturn(tree, result, args);
 
         // Destroy the activation record
-        Stack.popContext();
+        stack.popContext();
         calls--;
 
         return result;
@@ -190,7 +206,7 @@ public class Interpreter
      */
     private HalObject executeListInstructions (HalTree t) {
         assert t != null;
-        Reference result = Stack.getReference("return");
+        Reference result = stack.getReference("return");
         HalObject last = HalNone.NONE;
 
         int ninstr = t.getChildCount();
@@ -245,7 +261,7 @@ public class Interpreter
             }
                 
             case HalLexer.FOR_STMT: {
-                HalLambda lambda = new HalLambda(new Lambda(t.getChild(1), Stack.getCurrentRecord()));
+                HalLambda lambda = new HalLambda(new Lambda(t.getChild(1), stack.getCurrentRecord()));
                 HalObject obj = evaluateExpression(t.getChild(0));
                 return obj.methodcall("__each__", lambda);
             }
@@ -259,7 +275,7 @@ public class Interpreter
 
             case HalLexer.LAMBDACALL:
                 HalTree left = t.getChild(0);
-                HalLambda lambda = new HalLambda(new Lambda(t.getChild(1), Stack.getCurrentRecord()));
+                HalLambda lambda = new HalLambda(new Lambda(t.getChild(1), stack.getCurrentRecord()));
 
                 switch(left.getType()) {
                     case HalLexer.FUNCALL:
@@ -282,7 +298,7 @@ public class Interpreter
                 else
                     result = new HalNone(); // No expression: returns void data
 
-                Stack.defineVariable("return", result);
+                stack.defineVariable("return", result);
                 return result;
 
             default: assert false; // Should never happen
@@ -309,17 +325,17 @@ public class Interpreter
                     throw new TypeException("Method call in left hand assignation");
 
                 String id = left.getChild(0).getText();
-                Stack.defineVariable(id, value);
+                stack.defineVariable(id, value);
                 break;
             case HalLexer.GET_ITEM:
                 HalObject d = evaluateExpression(left.getChild(0));
                 d.methodcall("__setitem__", evaluateExpression(left.getChild(1)), value);
                 break;
             case HalLexer.INSTANCE_VAR:
-                Stack.getVariable("self").getRecord().defineVariable(left.getChild(0).getText(), value);
+                stack.getVariable("self").getRecord().defineVariable(left.getChild(0).getText(), value);
                 break;
             case HalLexer.KLASS_VAR:
-                Stack.getVariable("self").getKlass().getRecord().defineVariable(
+                stack.getVariable("self").getKlass().getRecord().defineVariable(
                         left.getChild(0).getText(), value);
                 break;
             case HalLexer.GLOBAL_VAR:
@@ -374,10 +390,10 @@ public class Interpreter
                 value = executeCall(t.getChild(0).getText(), null, t.getChild(1));
                 break;
             case HalLexer.INSTANCE_VAR:
-                value = Stack.getVariable("self").getRecord().getVariable(t.getChild(0).getText());
+                value = stack.getVariable("self").getRecord().getVariable(t.getChild(0).getText());
                 break;
             case HalLexer.KLASS_VAR:
-                value = Stack.getVariable("self").getKlass().getRecord().getVariable(t.getChild(0).getText());
+                value = stack.getVariable("self").getKlass().getRecord().getVariable(t.getChild(0).getText());
                 break;
             case HalLexer.GLOBAL_VAR:
                 value = globals.getVariable(t.getText());
@@ -538,7 +554,7 @@ public class Interpreter
         String name = classdef.getChild(0).getText();
         HalTree inherit = classdef.getChild(1);
         HalTree block = classdef.getChild(2);
-        HalObject self = Stack.getVariable("self");
+        HalObject self = stack.getVariable("self");
         HalObject klass;
 
         try {
@@ -558,17 +574,17 @@ public class Interpreter
             self.getRecord().defineVariable(name, klass);
         }
 
-        Stack.pushContext(name, klass, classdef.getLine());
+        stack.pushContext(name, klass, classdef.getLine());
 
         HalObject result = executeListInstructions(block);
 
-        Stack.popContext();
+        stack.popContext();
 
         return result;
     }
 
     private HalObject evaluateMethodDefinition(HalTree fundef) {
-        HalObject klass = Stack.getVariable("self");
+        HalObject klass = stack.getVariable("self");
         MethodDefinition def = new MethodDefinition(fundef);
         HalMethod method = new HalMethod(def);
         klass.getInstanceRecord().defineVariable(def.name, method);

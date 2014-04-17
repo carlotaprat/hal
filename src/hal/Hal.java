@@ -1,20 +1,23 @@
 package hal;
 
 // Imports for ANTLR
+import hal.interpreter.Interpreter;
+import hal.interpreter.Parser;
 import hal.interpreter.types.HalObject;
-import org.antlr.runtime.*;
-import org.antlr.runtime.tree.*;
+import jline.console.ConsoleReader;
+import org.antlr.runtime.ANTLRFileStream;
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CharStream;
+import org.apache.commons.cli.*;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 // Imports from Java
-import org.apache.commons.cli.*; // Command Language Interface
-import java.io.*;
-
 // Parser and Interpreter
-import hal.parser.*;
-import hal.interpreter.*;
-
 // Interactive mode
-import jline.console.ConsoleReader;
 
 /**
  * The class <code>Hal</code> implement the main function of the
@@ -49,7 +52,8 @@ public class Hal
             if (!readOptions (args))
                 System.exit(1);
 
-            INTERPRETER = new Interpreter(tracefile); // prepares the interpreter
+            Parser parser = new Parser(astfile, dotformat);
+            INTERPRETER = new Interpreter(parser, tracefile); // prepares the interpreter
 
             if(interactive)
                 interactiveMode();
@@ -96,7 +100,7 @@ public class Hal
                 break;
 
             try {
-                HalObject d = process(new ANTLRStringStream(input));
+                HalObject d = evaluate(new ANTLRStringStream(input));
 
                 if (d != null)
                     System.out.println("=> " + d.methodcall("__repr__"));
@@ -107,65 +111,23 @@ public class Hal
     }
 
     private static void fileMode() throws IOException {
-        CharStream input = null;
+        CharStream input;
 
         try {
             input = new ANTLRFileStream(infile);
-            process(input);
+            evaluate(input);
         } catch(RuntimeException e) {
             System.err.println(e.getMessage());
             System.exit(1);
         }
     }
 
-    private static HalObject process(CharStream source) throws IOException {
-        HalTree tree = getTree(source);
+    private static HalObject evaluate(CharStream input) {
+        if(!execute)
+            return null;
 
-        if(astfile != null)
-            writeASTFile(tree);
-
-        if(execute)
-            return evaluate(tree);
-
-        return null;
-    }
-
-    private static HalTree getTree(CharStream source) {
-        // Creates the lexer
-        HalLexer lex = new HalLexer(source);
-        CommonTokenStream tokens = new CommonTokenStream(lex);
-
-        // Creates and runs the parser. As a result, an AST is created
-        HalParser parser = new HalParser(tokens);
-        HalTreeAdaptor adaptor = new HalTreeAdaptor();
-        parser.setTreeAdaptor(adaptor);
-        HalParser.prog_return result = null;
         try {
-            result = parser.prog();
-        } catch (Exception e) {} // Just catch the exception (nothing to do)
-
-        // Check for parsing errors
-        int nerrors = parser.getNumberOfSyntaxErrors();
-        if (nerrors > 0)
-            throw new RuntimeException(nerrors + " syntax error" + (nerrors > 1 ? "s" : ""));
-
-        return (HalTree)result.getTree();
-    }
-
-    private static void writeASTFile(HalTree t) throws IOException {
-        BufferedWriter output = new BufferedWriter(new FileWriter(astfile, true));
-        if (dotformat) {
-            DOTTreeGenerator gen = new DOTTreeGenerator();
-            output.write(gen.toDOT(t).toString());
-        } else {
-            output.write(t.toStringTree());
-        }
-        output.close();
-    }
-
-    private static HalObject evaluate(HalTree t) {
-        try {
-            return INTERPRETER.Run(t);                  // Executes the code
+            return INTERPRETER.run(input);
         } catch(Throwable e) {
             handleException(e);
         }
