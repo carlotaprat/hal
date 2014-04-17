@@ -65,7 +65,7 @@ public abstract class HalObject<T> extends HalType
 
     public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
         if (args.length > 0 || lambda != null)
-            throw new InvalidArgumentsException();
+            throw new TypeException(getKlass().value + " type is not callable");
 
         return this;
     }

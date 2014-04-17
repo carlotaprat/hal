@@ -48,8 +48,6 @@ abstract public class HalKernel<T> extends HalObject<T>
                 // TODO: Add klasses of HalNumber and HalEnumerable too!
         };
 
-        System.out.println(HalMethod.klass.getInstanceRecord().parent);
-
         ReferenceRecord record = HalKernel.klass.getInstanceRecord();
         for(HalClass klass : klasses)
             record.defineVariable(klass.value, klass);

@@ -10,6 +10,7 @@ tokens
     PARAMS;
     BLOCK;
     CLASSDEF;
+    PARENT;
     FUNDEF;
     FUNCALL;
     LAMBDACALL;
@@ -236,7 +237,7 @@ multiline_block
     ;
 
 classdef
-    :   CLASS ID COLON block -> ^(CLASSDEF ID block)
+    :   CLASS ID ('<<' expr)? COLON block -> ^(CLASSDEF ID ^(PARENT expr?) block)
     ;
 
 fundef

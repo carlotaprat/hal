@@ -151,6 +151,15 @@ public class Interpreter
         Stack.pushContext(def.name, instance, def.getLocals(), lineNumber());
         calls++;
 
+        HalObject superkw;
+        try {
+            superkw = instance.getKlass().getInstanceRecord().parent.getVariable(def.name);
+        } catch(NameException e) {
+            superkw = HalNone.NONE;
+        }
+
+        Stack.defineVariable("super", superkw);
+
         // Track line number
         setLineNumber(tree);
 
@@ -528,14 +537,25 @@ public class Interpreter
 
     private HalObject evaluateClassDefinition(HalTree classdef) {
         String name = classdef.getChild(0).getText();
-        HalTree block = classdef.getChild(1);
+        HalTree inherit = classdef.getChild(1);
+        HalTree block = classdef.getChild(2);
         HalObject self = Stack.getVariable("self");
         HalObject klass;
 
         try {
             klass = self.getRecord().getVariable(name);
+
+            if(inherit.getChildCount() != 0)
+                throw new TypeException("Parent class can not be updated");
         } catch(NameException e) {
-            klass = new HalClass(name, HalObject.klass);
+            HalClass parent;
+
+            if(inherit.getChildCount() == 0)
+                parent = HalObject.klass;
+            else
+                parent = (HalClass) evaluateExpression(inherit.getChild(0));
+
+            klass = new HalClass(name, parent);
             self.getRecord().defineVariable(name, klass);
         }
 

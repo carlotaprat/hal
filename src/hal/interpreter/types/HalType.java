@@ -18,7 +18,7 @@ public abstract class HalType
     public abstract HalBoolean not();
     public abstract HalClass getKlass();
     public ReferenceRecord getInstanceRecord() {
-        throw new TypeException("Definition outside a class/module.");
+        throw new TypeException("Not a class/module.");
     }
 
     private static Reference __repr__ = new Reference(new BuiltinMethod("repr") {
