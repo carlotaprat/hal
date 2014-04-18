@@ -477,6 +477,8 @@ public class Interpreter
                 value = value.methodcall("__sub__", value2); break;
             case HalLexer.MUL:
                 value = value.methodcall("__mul__", value2); break;
+            case HalLexer.POW:
+                value = value.methodcall("__pow__", value2); break;
             case HalLexer.DIV:
                 value = value.methodcall("__div__", value2); break;
             case HalLexer.DDIV:

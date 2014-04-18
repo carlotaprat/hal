@@ -19,7 +19,7 @@ public class HalRational extends HalNumber<Rational>
 
     public HalClass getKlass() { return HalRational.klass; }
     
-    private static HalNumber RorI(Rational r) {
+    public static HalNumber RorI(Rational r) {
         if (r.isInt())
             return new HalInteger(r.getNum());
         return new HalRational(r);
@@ -57,6 +57,19 @@ public class HalRational extends HalNumber<Rational>
     public HalNumber mul(HalNumber n) {
         Rational r = value.mul(toR(n));
         return RorI(r);
+    }
+
+    @Override
+    public HalNumber pow(HalNumber n) {
+        if(n instanceof HalInteger) {
+            int p = n.toInteger();
+            return new HalRational(new Rational(
+                    HalInteger.power(value.getNum(), p),
+                    HalInteger.power(value.getDen(), p)
+            ));
+        }
+
+        return new HalFloat(Math.pow(toFloat(), n.toFloat()));
     }
 
     @Override

@@ -75,12 +75,20 @@ public class HalInteger extends HalNumber<Integer>
     }
 
     @Override
+    public HalNumber pow(HalNumber n) {
+        if(n instanceof HalInteger)
+            return new HalInteger(power(value, ((HalInteger) n).value));
+
+        return new HalFloat(Math.pow(toFloat(), n.toFloat()));
+    }
+
+    @Override
     public HalNumber div(HalNumber n) {
         if (n instanceof HalFloat) {
             return new HalFloat(toInteger() / n.toFloat());
         }
 
-        return new HalRational(new Rational(toInteger(), n.toInteger()));
+        return HalRational.RorI(new Rational(toInteger(), n.toInteger()));
     }
 
     @Override
@@ -101,5 +109,12 @@ public class HalInteger extends HalNumber<Integer>
     @Override
     public HalBoolean lt(HalNumber n) {
         return ((HalBoolean)(new HalRational(toInteger())).methodcall("__lt__", n));
+    }
+
+    public static int power(int a, int n) {
+        if(n == 0) return 1;
+        if(n == 1) return a;
+        if(n % 2 == 0) return power(a*a, n/2);
+        return a * power(a*a, n/2);
     }
 }

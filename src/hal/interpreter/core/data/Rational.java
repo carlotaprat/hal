@@ -116,9 +116,6 @@ public class Rational extends Number {
     
     @Override
     public String toString() {
-        if (den != 1)
-            return Integer.toString(num)+"/"+Integer.toString(den);
-        else
-            return Integer.toString(num);
+        return Integer.toString(num)+"/"+Integer.toString(den);
     }
 }

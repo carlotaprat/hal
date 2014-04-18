@@ -46,6 +46,11 @@ public class HalFloat extends HalNumber<Double>
     }
 
     @Override
+    public HalNumber pow(HalNumber n) {
+        return new HalFloat(Math.pow(toFloat(), n.toFloat()));
+    }
+
+    @Override
     public HalNumber div(HalNumber n) {
         return new HalFloat(toFloat() / n.toFloat());
     }

@@ -320,7 +320,11 @@ num_expr
     ;
 
 term
-    :   factor (options {greedy=true;}: (MUL^ | DIV^ | DDIV^ | MOD^) factor)*
+    :   power (options {greedy=true;}: (MUL^ | DIV^ | DDIV^ | MOD^) power)*
+    ;
+
+power
+    :   factor (options {greedy=true;}: POW^ factor)*
     ;
 
 factor
@@ -383,8 +387,8 @@ access
 // LEXICAL RULES
 
 // OPERATORS
-EQUAL   : '==';
 ASSIGN	: '=' ;
+EQUAL   : '==';
 NOT_EQUAL: '!=' ;
 LT      : '<' ;
 LE      : '<=';
@@ -393,6 +397,7 @@ GE      : '>=';
 PLUS    : '+' ;
 MINUS   : '-' ;
 MUL     : '*';
+POW     : '**';
 DIV     : '/';
 DDIV    : '//';
 MOD     : '%' ;
