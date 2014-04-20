@@ -27,6 +27,7 @@ public class Interpreter
     private Parser parser;
     /** Memory of the virtual machine. */
     private Stack stack;
+    private HalModule module;
     private ReferenceRecord globals;
 
     /**
@@ -51,11 +52,13 @@ public class Interpreter
         HalKernel.init();
 
         parser = parsr;
-        stack = new Stack(new HalModule("main", null)); // Creates the memory of the virtual machine
+        module = new HalModule("main", null);
         globals = new ReferenceRecord("globals", null);
-
         trace = tracefile;
         function_nesting = 0;
+
+        stack = new Stack(); // Creates the memory of the virtual machine
+        stack.pushContext(module.value, module, 0);
     }
 
     /** Runs the program by calling the main function without parameters. */
@@ -133,9 +136,14 @@ public class Interpreter
                 f = self.getRecord().getVariable(funcname);
                 instance = self;
             } catch (NameException e2) {
-                HalClass klass = self.getKlass();
-                f = klass.getRecord().getVariable(funcname);
-                instance = klass;
+                try {
+                    HalClass klass = self.getKlass();
+                    f = klass.getRecord().getVariable(funcname);
+                    instance = klass;
+                } catch(NameException e3) {
+                    f = module.getRecord().getVariable(funcname);
+                    instance = module;
+                }
             }
         }
 
@@ -319,10 +327,7 @@ public class Interpreter
         HalTree right = t.getChild(1);
         HalObject value;
 
-        if(right.getType() == HalLexer.EXPR)
-            value = evaluateExpression(right.getChild(0));
-        else
-            value = evaluateAssign(right);
+        value = executeInstruction(right);
 
         switch(left.getType()) {
             case HalLexer.FUNCALL:

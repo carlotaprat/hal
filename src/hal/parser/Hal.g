@@ -284,7 +284,7 @@ arglist
 
 do_lambda
     :   {!nextIs(FOR, WHILE, IF, ELSE, ELIF, DEF, CLASS)
-        && before(NEWLINE, COLON) && !before(COLON, EQUAL)}?
+        && before(NEWLINE, COLON) && !before(COLON, ASSIGN)}?
         methcalls lambda -> ^(LAMBDACALL methcalls lambda)
     ;
 
@@ -293,8 +293,8 @@ methcalls
     ;
 
 assign_lambda
-    :   {before(NEWLINE, COLON) && before(COLON, EQUAL)}?
-        expr EQUAL^ do_lambda
+    :   {before(NEWLINE, COLON) && before(COLON, ASSIGN)}?
+        expr ASSIGN^ do_lambda
     ;
 
 lambda

@@ -28,11 +28,8 @@
 package hal.interpreter;
 
 import hal.interpreter.core.ReferenceRecord;
-import hal.interpreter.exceptions.NameException;
-import hal.interpreter.types.HalModule;
 import hal.interpreter.types.HalObject;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -46,7 +43,6 @@ import java.util.ListIterator;
 public class Stack
 {
     /** Stack of activation records */
-    private HalModule module;
     private LinkedList<ReferenceRecord> stack;
     private ReferenceRecord record;
 
@@ -67,12 +63,10 @@ public class Stack
     private LinkedList<StackTraceItem> stackTrace;
     
     /** Constructor of the memory */
-    public Stack(HalModule mod) {
+    public Stack() {
         stack = new LinkedList<ReferenceRecord>();
-        module = mod;
         record = null;
         stackTrace = new LinkedList<StackTraceItem>();
-        pushContext(module.value, module, 0);
     }
 
     /** Creates a new activation record on the top of the stack */
@@ -102,11 +96,7 @@ public class Stack
     }
 
     public HalObject getVariable(String name) {
-        try {
-            return record.getVariable(name);
-        } catch(NameException e) {
-            return module.getRecord().getVariable(name);
-        }
+        return record.getVariable(name);
     }
 
     public void defineVariable(String name, HalObject obj) {
