@@ -475,6 +475,12 @@ public class Interpreter
             case HalLexer.GE:
                 value = value.methodcall("__ge__", value2); break;
 
+            // Shift operators
+            case HalLexer.LSHIFT:
+                value = value.methodcall("__lshift__", value2); break;
+            case HalLexer.RSHIFT:
+                value = value.methodcall("__rshift__", value2); break;
+
             // Arithmetic operators
             case HalLexer.PLUS:
                 value = value.methodcall("__add__", value2); break;

@@ -311,8 +311,12 @@ boolterm
     ;
 
 boolfact
-    :   num_expr (options {greedy=true;}:
-            (EQUAL^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) num_expr)?
+    :   shift_expr (options {greedy=true;}:
+            (EQUAL^ | NOT_EQUAL^ | LT^ | LE^ | GT^ | GE^) shift_expr)?
+    ;
+
+shift_expr
+    :   num_expr (options {greedy=true;}: (LSHIFT^ | RSHIFT^) num_expr)*
     ;
 
 num_expr
@@ -401,6 +405,8 @@ POW     : '**';
 DIV     : '/';
 DDIV    : '//';
 MOD     : '%' ;
+LSHIFT  : '<<';
+RSHIFT  : '>>';
 // KEYWORDS
 NOT     : 'not';
 AND     : 'and' ;
