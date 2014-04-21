@@ -30,6 +30,8 @@ abstract public class HalKernel<T> extends HalObject<T>
                 HalObject.klass,
                 HalMethod.klass,
                 HalNone.klass,
+                HalPackage.klass,
+                HalModule.klass,
 
                 // Boolean
                 HalBoolean.klass,
@@ -45,8 +47,6 @@ abstract public class HalKernel<T> extends HalObject<T>
                 HalInteger.klass,
                 HalFloat.klass,
                 HalRational.klass
-
-                // TODO: Add klasses of HalNumber and HalEnumerable too!
         };
 
         ReferenceRecord record = HalKernel.klass.getInstanceRecord();

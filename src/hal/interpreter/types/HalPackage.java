@@ -1,6 +1,7 @@
 package hal.interpreter.types;
 
 
+import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.types.enumerable.HalString;
 
 import java.io.File;
@@ -20,7 +21,8 @@ public class HalPackage extends HalObject<String>
             root = this;
         else {
             path = parent.path + File.separator + path;
-            root = parent;
+            root = parent.root;
+            parent.getInstanceRecord().defineVariable(value, this);
         }
     }
 
@@ -30,6 +32,10 @@ public class HalPackage extends HalObject<String>
 
     public HalBoolean bool() {
         return new HalBoolean(true);
+    }
+
+    public ReferenceRecord getInstanceRecord() {
+        return getRecord();
     }
 
     public HalClass getKlass() {

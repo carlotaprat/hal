@@ -27,7 +27,8 @@ public class Interpreter
     private Parser parser;
     /** Memory of the virtual machine. */
     private Stack stack;
-    private HalModule module;
+    private HalModule mainModule;
+    private HalModule currentModule;
     private ReferenceRecord globals;
 
     /**
@@ -52,17 +53,18 @@ public class Interpreter
         HalKernel.init();
 
         parser = parsr;
-        module = new HalModule("main", null);
+        mainModule = new HalModule("main", null);
         globals = new ReferenceRecord("globals", null);
         trace = tracefile;
         function_nesting = 0;
 
         stack = new Stack(); // Creates the memory of the virtual machine
-        stack.pushContext(module.value, module, 0);
+        stack.pushContext(mainModule.value, mainModule, 0);
     }
 
     /** Runs the program by calling the main function without parameters. */
     public HalObject run(CharStream input) throws IOException {
+        currentModule = mainModule;
         stack.popUntilFirstLevel();
         HalTree t = parser.process(input);
         return evaluate(t);
@@ -141,8 +143,8 @@ public class Interpreter
                     f = klass.getRecord().getVariable(funcname);
                     instance = klass;
                 } catch(NameException e3) {
-                    f = module.getRecord().getVariable(funcname);
-                    instance = module;
+                    f = currentModule.getRecord().getVariable(funcname);
+                    instance = currentModule;
                 }
             }
         }
@@ -616,6 +618,7 @@ public class Interpreter
         if(mod.getChildCount() > 0)
             pkg = evaluatePackage(mod.getChild(0));
 
+        HalModule old = this.mainModule;
         HalModule module = new HalModule(mod.getText(), pkg);
         CharStream modfile;
 
@@ -626,12 +629,14 @@ public class Interpreter
         }
 
         HalTree tree = parser.getTree(modfile);
+
+        currentModule = module;
         stack.pushContext(module.value, module, imp.getLine());
         evaluate(tree);
         stack.popContext();
+        currentModule = old;
 
         ReferenceRecord importRecord;
-
         try {
             importRecord = stack.getVariable("self").getInstanceRecord();
         } catch(TypeException e) {
@@ -646,7 +651,7 @@ public class Interpreter
             }
         }
         else
-            importRecord.defineVariable(module.root.value, module);
+            importRecord.defineVariable(module.root.value, module.root);
 
         return module;
     }
