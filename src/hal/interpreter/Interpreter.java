@@ -27,8 +27,6 @@ public class Interpreter
     private Parser parser;
     /** Memory of the virtual machine. */
     private Stack stack;
-    private HalModule mainModule;
-    private HalModule currentModule;
     private ReferenceRecord globals;
 
     /**
@@ -53,7 +51,7 @@ public class Interpreter
         HalKernel.init();
 
         parser = parsr;
-        mainModule = new HalModule("main", null);
+        HalModule mainModule = new HalModule("main", null);
         globals = new ReferenceRecord("globals", null);
         trace = tracefile;
         function_nesting = 0;
@@ -64,7 +62,6 @@ public class Interpreter
 
     /** Runs the program by calling the main function without parameters. */
     public HalObject run(CharStream input) throws IOException {
-        currentModule = mainModule;
         stack.popUntilFirstLevel();
         HalTree t = parser.process(input);
         return evaluate(t);
@@ -143,6 +140,7 @@ public class Interpreter
                     f = klass.getRecord().getVariable(funcname);
                     instance = klass;
                 } catch(NameException e3) {
+                    HalModule currentModule = stack.getCurrentModule();
                     f = currentModule.getRecord().getVariable(funcname);
                     instance = currentModule;
                 }
@@ -152,9 +150,7 @@ public class Interpreter
         return f.call(instance, lambda, listArguments(args));
     }
 
-    public HalObject executeMethod(MethodDefinition def, HalObject instance, HalObject lambda,
-                                   HalObject... args)
-    {
+    public HalObject executeMethod(MethodDefinition def, HalObject instance, HalObject lambda, HalObject... args) {
         HalTree tree = def.tree;
 
         // Dumps trace information (function call and arguments)
@@ -168,7 +164,7 @@ public class Interpreter
             throw new InvalidArgumentsException();
 
         // Create the activation record in memory
-        stack.pushContext(def.name, instance, def.getLocals(), lineNumber());
+        stack.pushContext(def.name, instance, def.module, def.getLocals(), lineNumber());
         calls++;
 
         HalObject superkw;
@@ -605,7 +601,7 @@ public class Interpreter
 
     private HalObject evaluateMethodDefinition(HalTree fundef) {
         HalObject klass = stack.getVariable("self");
-        MethodDefinition def = new MethodDefinition(fundef);
+        MethodDefinition def = new MethodDefinition(stack.getCurrentModule(), fundef);
         HalMethod method = new HalMethod(def);
         klass.getInstanceRecord().defineVariable(def.name, method);
         return method;
@@ -618,7 +614,6 @@ public class Interpreter
         if(mod.getChildCount() > 0)
             pkg = evaluatePackage(mod.getChild(0));
 
-        HalModule old = this.mainModule;
         HalModule module = new HalModule(mod.getText(), pkg);
         CharStream modfile;
 
@@ -630,11 +625,9 @@ public class Interpreter
 
         HalTree tree = parser.getTree(modfile);
 
-        currentModule = module;
-        stack.pushContext(module.value, module, imp.getLine());
+        stack.pushContext(module.value, module, module, null, imp.getLine());
         evaluate(tree);
         stack.popContext();
-        currentModule = old;
 
         ReferenceRecord importRecord;
         try {

@@ -22,4 +22,5 @@ class Array:
     q = self.pop
     a = q.filter with x: x < p
     b = q.filter with x: x >= p
+    print something
     a.sort + [p] + b.sort

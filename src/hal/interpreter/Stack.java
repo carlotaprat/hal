@@ -27,7 +27,9 @@
 
 package hal.interpreter;
 
+import hal.interpreter.core.Context;
 import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.types.HalModule;
 import hal.interpreter.types.HalObject;
 
 import java.util.LinkedList;
@@ -42,8 +44,9 @@ import java.util.ListIterator;
  
 public class Stack
 {
-    /** Stack of activation records */
-    private LinkedList<ReferenceRecord> stack;
+    /** Stack of contexts */
+    private LinkedList<Context> stack;
+    private HalModule module;
     private ReferenceRecord record;
 
     /**
@@ -64,30 +67,38 @@ public class Stack
     
     /** Constructor of the memory */
     public Stack() {
-        stack = new LinkedList<ReferenceRecord>();
+        stack = new LinkedList<Context>();
         record = null;
         stackTrace = new LinkedList<StackTraceItem>();
     }
 
     /** Creates a new activation record on the top of the stack */
     public void pushContext(String name, HalObject inst, int line) {
-        pushContext(name, inst, null, line);
+        pushContext(name, inst, module, null, line);
     }
 
-    public void pushContext(String name, HalObject inst, ReferenceRecord parent, int line) {
+    public void pushContext(String name, HalObject inst, HalModule mod, ReferenceRecord parent, int line) {
+        module = mod;
         record = new ReferenceRecord(name, parent);
         record.defineVariable("self", inst);
         record.defineVariable("return", null);
-        stack.addLast(record);
+        stack.addLast(new Context(mod, record));
         stackTrace.addLast(new StackTraceItem(name, line));
     }
 
     /** Destroys the record activation record */
     public void popContext() {
         stack.removeLast();
-        if (stack.isEmpty()) record = null;
-        else record = stack.getLast();
         stackTrace.removeLast();
+
+        if (stack.isEmpty()) {
+            module = null;
+            record = null;
+        } else {
+            Context last = stack.getLast();
+            module = last.module;
+            record = last.record;
+        }
     }
 
     public void popUntilFirstLevel() {
@@ -105,6 +116,10 @@ public class Stack
 
     public Reference getReference(String name) {
         return record.getReference(name);
+    }
+
+    public HalModule getCurrentModule() {
+        return module;
     }
 
     public ReferenceRecord getCurrentRecord() {
