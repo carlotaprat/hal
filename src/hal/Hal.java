@@ -136,27 +136,15 @@ public class Hal
     }
 
     private static void handleException(Throwable ex) {
-        int linenumber = -1;
-        try {
-            throw ex;
-        } catch(RuntimeException e) {
-            if (INTERPRETER != null) linenumber = INTERPRETER.lineNumber();
-            System.err.print (e.getClass().getSimpleName());
-            if (linenumber < 0) System.err.print (": ");
-            else System.err.print(" (" + infile + ", line " + linenumber + "): ");
-            System.err.println(e.getMessage() + ".");
+        System.err.println(ex.getClass().getSimpleName() + ": " + ex.getMessage());
+
+        if(ex instanceof StackOverflowError)
+            System.err.format(INTERPRETER.getStackTrace(5));
+        else
             System.err.format(INTERPRETER.getStackTrace());
-            if(e instanceof NullPointerException)
-                e.printStackTrace(System.err);
-        } catch (StackOverflowError e) {
-            if (INTERPRETER != null) linenumber = INTERPRETER.lineNumber();
-            System.err.print("Stack overflow error");
-            if (linenumber < 0) System.err.print (".");
-            else System.err.println (" (" + infile + ", line " + linenumber + ").");
-            System.err.format (INTERPRETER.getStackTrace(5));
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+
+        if(ex instanceof NullPointerException)
+            ex.printStackTrace();
     }
 
     /**

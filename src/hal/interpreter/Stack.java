@@ -138,11 +138,14 @@ public class Stack
     public String getStackTrace(int current_line) {
         int size = stackTrace.size();
         ListIterator<StackTraceItem> itr = stackTrace.listIterator(size);
+        ListIterator<Context> itr2 = stack.listIterator(size);
         StringBuffer trace = new StringBuffer("---------------%n| Stack trace |%n---------------%n");
         trace.append("** Depth = ").append(size).append("%n");
         while (itr.hasPrevious()) {
             StackTraceItem it = itr.previous();
-            trace.append("|> ").append(it.fname).append(": line ").append(current_line).append("%n");
+            Context c = itr2.previous();
+            trace.append("|> ").append(it.fname).append(": line ").append(current_line);
+            trace.append(" (").append(c.module.getFullPath()).append(")%n");
             current_line = it.line;
         }
         return trace.toString();

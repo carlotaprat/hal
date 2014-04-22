@@ -26,6 +26,10 @@ public class HalPackage extends HalObject<String>
         }
     }
 
+    public String getFullPath() {
+        return path + ".hal";
+    }
+
     public HalString str() {
         return new HalString("<Package: " + value + ">");
     }

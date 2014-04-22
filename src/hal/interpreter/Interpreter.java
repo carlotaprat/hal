@@ -57,7 +57,7 @@ public class Interpreter
         function_nesting = 0;
 
         stack = new Stack(); // Creates the memory of the virtual machine
-        stack.pushContext(mainModule.value, mainModule, 0);
+        stack.pushContext(mainModule.value, mainModule, mainModule, null, 0);
     }
 
     /** Runs the program by calling the main function without parameters. */
@@ -74,6 +74,15 @@ public class Interpreter
         } catch(ClassCastException e) {
             throw TypeException.fromCastException(e);
         }
+    }
+
+    public String getCurrentFilePath() {
+        HalModule current = stack.getCurrentModule();
+
+        if(current == null)
+            return "none";
+
+        return current.getFullPath();
     }
 
     /** Returns the contents of the stack trace */
@@ -187,6 +196,8 @@ public class Interpreter
 
         if(lambda != null)
             stack.defineVariable("yield", lambda);
+
+        stack.defineVariable("block_given?", new HalBoolean(lambda != null));
 
         // Execute the instructions
         HalObject result = executeListInstructions(def.block);
@@ -618,7 +629,7 @@ public class Interpreter
         CharStream modfile;
 
         try {
-            modfile = new ANTLRFileStream(module.path + ".hal");
+            modfile = new ANTLRFileStream(module.getFullPath());
         } catch(IOException e) {
             throw new RuntimeException("Import error: " + e.getMessage());
         }
