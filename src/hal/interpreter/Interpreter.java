@@ -280,7 +280,8 @@ public class Interpreter
             }
                 
             case HalLexer.FOR_STMT: {
-                HalLambda lambda = new HalLambda(new Lambda(t.getChild(1), stack.getCurrentRecord()));
+                HalLambda lambda = new HalLambda(new Lambda(stack.getCurrentModule(), t.getChild(1),
+                        stack.getCurrentRecord()));
                 HalObject obj = evaluateExpression(t.getChild(0));
                 return obj.methodcall("__each__", lambda);
             }
@@ -294,7 +295,8 @@ public class Interpreter
 
             case HalLexer.LAMBDACALL:
                 HalTree left = t.getChild(0);
-                HalLambda lambda = new HalLambda(new Lambda(t.getChild(1), stack.getCurrentRecord()));
+                HalLambda lambda = new HalLambda(new Lambda(stack.getCurrentModule(), t.getChild(1),
+                        stack.getCurrentRecord()));
 
                 switch(left.getType()) {
                     case HalLexer.FUNCALL:
@@ -418,7 +420,8 @@ public class Interpreter
                 value = globals.getVariable(t.getText());
                 break;
             case HalLexer.LIST_EXPR:
-                HalLambda lambda = new HalLambda(new Lambda(t.getChild(1), stack.getCurrentRecord()));
+                HalLambda lambda = new HalLambda(new Lambda(stack.getCurrentModule(), t.getChild(1),
+                        stack.getCurrentRecord()));
                 HalObject obj = evaluateExpression(t.getChild(0));
                 value = obj.methodcall("__map__", lambda);
                 break;
