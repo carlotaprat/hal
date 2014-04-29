@@ -1,13 +1,16 @@
 package hal.interpreter.types.numeric;
 
+import hal.interpreter.Reference;
+import hal.interpreter.core.BuiltinMethod;
 import hal.interpreter.core.data.Rational;
+import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalClass;
+import hal.interpreter.types.HalObject;
 
 
 public class HalRational extends HalNumber<Rational>
 {
-    public static final HalClass klass = new HalClass("Rational", HalNumber.klass);
 
     public HalRational(Integer i) {
         super(new Rational(i));
@@ -88,5 +91,27 @@ public class HalRational extends HalNumber<Rational>
     public HalBoolean lt(HalNumber n) {
         return new HalBoolean(toFloat() < n.toFloat());
     }
+ 
+    private static final Reference den = new Reference(new BuiltinMethod("den") {
+        @Override
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
+            if (args.length != 0)
+                throw new InvalidArgumentsException();
+            return new HalInteger(((Rational)instance.value).getDen());
+        }
+    });
     
+    private static final Reference num = new Reference(new BuiltinMethod("num") {
+        @Override
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
+            if (args.length != 0)
+                throw new InvalidArgumentsException();
+            return new HalInteger(((Rational)instance.value).getNum());
+        }
+    });
+    
+    public static final HalClass klass = new HalClass("Rational", HalNumber.klass, 
+            den,
+            num
+    );
 }
