@@ -375,7 +375,7 @@ klass_var
 list
     @init{boolean f = false;}
     :   LBRACK (e1=expr ((',' expr)* | FOR paramlist IN e2=expr {f=true;}))? RBRACK
-        -> {f}? ^(LIST_EXPR $e2 ^(LAMBDA ^(PARAMS paramlist) ^(BLOCK $e1)))
+        -> {f}? ^(LIST_EXPR $e2 ^(LAMBDA ^(PARAMS paramlist) ^(BLOCK ^(EXPR $e1))))
         -> ^(ARRAY expr*)
     ;
 

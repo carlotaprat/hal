@@ -143,7 +143,7 @@ public class Hal
         else
             System.err.format(INTERPRETER.getStackTrace());
 
-        if(ex instanceof NullPointerException)
+        if(ex instanceof NullPointerException || ex instanceof AssertionError)
             ex.printStackTrace();
     }
 
