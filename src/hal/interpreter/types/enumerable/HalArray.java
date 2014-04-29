@@ -107,13 +107,28 @@ public class HalArray extends HalEnumerable<List<HalObject>>
             return last;
         }
     });
+    
+    private static final Reference __map__ = new Reference(new BuiltinMethod("map") {
+        @Override
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
+            if (args.length != 0)
+                throw new InvalidArgumentsException();
+            HalArray n = new HalArray();
+            HalArray i = (HalArray) instance;
+            for (HalObject element: i.value) {
+                n.methodcall("__append!__", lambda.call(instance, null, element));
+            }
+            return n;
+        }
+    });
 
     public static final HalClass klass = new HalClass("Array", HalEnumerable.klass,
             __append__,
             __pop__,
             __lshift__,
             __sum__,
-            __each__
+            __each__,
+            __map__
     );
 
     public HalClass getKlass() { return HalArray.klass; }

@@ -31,6 +31,7 @@ tokens
     GLOBAL_VAR;
     INSTANCE_VAR;
     KLASS_VAR;
+    LIST_EXPR;
 }
 
 @header
@@ -372,7 +373,10 @@ klass_var
     ;
 
 list
-    :   LBRACK (expr (',' expr)*)? RBRACK -> ^(ARRAY expr*)
+    @init{boolean f = false;}
+    :   LBRACK (e1=expr ((',' expr)* | FOR paramlist IN e2=expr {f=true;}))? RBRACK
+        -> {f}? ^(LIST_EXPR $e2 ^(LAMBDA ^(PARAMS paramlist) ^(BLOCK $e1)))
+        -> ^(ARRAY expr*)
     ;
 
 dict

@@ -417,6 +417,11 @@ public class Interpreter
             case HalLexer.GLOBAL_VAR:
                 value = globals.getVariable(t.getText());
                 break;
+            case HalLexer.LIST_EXPR:
+                HalLambda lambda = new HalLambda(new Lambda(t.getChild(1), stack.getCurrentRecord()));
+                HalObject obj = evaluateExpression(t.getChild(0));
+                value = obj.methodcall("__map__", lambda);
+                break;
                 
             default: break;
         }
