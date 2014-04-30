@@ -101,7 +101,9 @@ public class HalInteger extends HalNumber<Integer>
 
     @Override
     public HalNumber mod(HalNumber n) {
-        return new HalInteger(toInteger() % n.toInteger());
+        int r = toInteger() % n.toInteger();
+        // Positive modulus
+        return new HalInteger((r < 0)? r + n.toInteger(): r);
     }
 
     @Override
