@@ -14,6 +14,7 @@ import hal.interpreter.types.enumerable.HalDictionary;
 import hal.interpreter.types.enumerable.HalString;
 import hal.interpreter.types.numeric.HalFloat;
 import hal.interpreter.types.numeric.HalInteger;
+import hal.interpreter.types.numeric.HalLong;
 import hal.parser.HalLexer;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CharStream;
@@ -104,7 +105,6 @@ public class Interpreter
     private void PreProcessAST(HalTree T) {
         if (T == null) return;
         switch(T.getType()) {
-            case HalLexer.INT: T.setIntValue(); break;
             case HalLexer.STRING: T.setStringValue(); break;
             case HalLexer.BOOLEAN: T.setBooleanValue(); break;
             default: break;
@@ -398,7 +398,11 @@ public class Interpreter
         switch (type) {
             // An integer literal
             case HalLexer.INT:
-                value = new HalInteger(t.getIntValue());
+                try {
+                    value = new HalInteger(Integer.parseInt(t.getText()));
+                } catch (NumberFormatException e) {
+                    value = new HalLong(t.getText());
+                }
                 break;
             case HalLexer.FLOAT:
                 value = new HalFloat(Float.parseFloat(t.getText()));

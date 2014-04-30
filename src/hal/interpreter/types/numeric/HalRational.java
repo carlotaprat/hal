@@ -64,8 +64,8 @@ public class HalRational extends HalNumber<Rational>
         Rational r = ((HalRational) n).value;
         if (r.isInt()) {
             return new HalRational(new Rational(
-                    HalInteger.power(value.getNum(), r.intValue()),
-                    HalInteger.power(value.getDen(), r.intValue())
+                    HalInteger.power(value.getNum(), r.intValue()).toInteger(),
+                    HalInteger.power(value.getDen(), r.intValue()).toInteger()
             ));
         }
 
