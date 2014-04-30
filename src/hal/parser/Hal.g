@@ -16,6 +16,7 @@ tokens
     FUNCALL;
     LAMBDACALL;
     ARGS;
+    FLATTEN_ARG;
     IF_STMT;
     FOR_STMT;
     WHILE_STMT;
@@ -285,7 +286,11 @@ space_arglist
     ;
 
 arglist
-    :  expr (options {greedy=true;}: ','! expr)*
+    :  (flatten_arg | expr) (options {greedy=true;}: ','! (flatten_arg | expr))*
+    ;
+
+flatten_arg
+    :  '*' expr -> ^(FLATTEN_ARG expr)
     ;
 
 do_lambda

@@ -1,5 +1,6 @@
 package hal.interpreter;
 
+import hal.interpreter.core.InternalLambda;
 import hal.interpreter.core.LambdaDefinition;
 import hal.interpreter.core.MethodDefinition;
 import hal.interpreter.core.ReferenceRecord;
@@ -702,17 +703,46 @@ public class Interpreter
 
         // Create the list of parameters
         int n = args.getChildCount();
-        HalObject[] Params = new HalObject[n];
+        HalObject[] arg_expr = new HalObject[n];
+        int total_args = 0;
 
-        // Checks the compatibility of the parameters passed by
-        // reference and calculates the values and references of
-        // the parameters.
+        for(int i = 0; i < n; ++i) {
+            HalTree arg = args.getChild(i);
+
+            if(arg.getType() == HalLexer.FLATTEN_ARG) {
+                HalObject items = evaluateExpression(arg.getChild(0));
+                arg_expr[i] = items;
+                total_args += ((HalInteger) items.methodcall("__size__")).value;
+            } else {
+                arg_expr[i] = evaluateExpression(arg);
+                total_args++;
+            }
+        }
+
+        final HalObject[] Params = new HalObject[total_args];
+        final int[] current = {0};
+
         for (int i = 0; i < n; ++i) {
             HalTree a = args.getChild(i); // Arguments passed by the caller
             setLineNumber(a);
-            // Pass by value: evaluate the expression
-            Params[i] = evaluateExpression(a);
+
+            if(a.getType() == HalLexer.FLATTEN_ARG) {
+                arg_expr[i].methodcall_lambda("__each__", new InternalLambda() {
+                    @Override
+                    public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
+                        if (args.length < 1)
+                            throw new InvalidArgumentsException();
+
+                        HalObject value = args[args.length - 1];
+                        Params[current[0]++] = value;
+                        return value;
+                    }
+                });
+            } else {
+                Params[current[0]++] = arg_expr[i];
+            }
         }
+
         return Params;
     }
 
