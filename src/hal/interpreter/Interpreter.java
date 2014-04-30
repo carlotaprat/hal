@@ -166,10 +166,10 @@ public class Interpreter
         if (trace != null) traceFunctionCall(tree, args);
 
         // List of parameters of the callee
-        HalTree p = def.params;
-        int nparam = p.getChildCount(); // Number of parameters
+        MethodDefinition.Params params = def.params;
+        int num_pos_params = params.positional_params.size();
 
-        if(nparam != args.length)
+        if(num_pos_params > args.length)
             throw new InvalidArgumentsException();
 
         // Create the activation record in memory
@@ -189,9 +189,20 @@ public class Interpreter
         setLineNumber(tree);
 
         // Copy the parameters to the record activation record
-        for (int i = 0; i < nparam; ++i) {
-            String param_name = p.getChild(i).getText();
-            stack.defineVariable(param_name, args[i]);
+        for(int i = 0; i < params.before_group; ++i)
+            stack.defineVariable(params.positional_params.get(i), args[i]);
+
+        for(int i = 0; i < params.after_group; ++i)
+            stack.defineVariable(params.positional_params.get(num_pos_params-i-1), args[args.length-i-1]);
+
+        if(params.group_params != null) {
+            HalArray group = new HalArray();
+
+            int last_group_param = args.length - num_pos_params + params.before_group;
+            for(int i = params.before_group; i < last_group_param; ++i)
+                group.methodcall("__append!__", args[i]);
+
+            stack.defineVariable(params.group_params, group);
         }
 
         if(lambda != null)

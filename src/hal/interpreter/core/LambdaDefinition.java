@@ -13,7 +13,7 @@ public class LambdaDefinition extends MethodDefinition
         module = mod;
         name = "yield";
         tree = t;
-        params = t.getChild(0);
+        params = new Params(t.getChild(0));
         block = t.getChild(1);
         context = contxt;
     }

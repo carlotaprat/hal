@@ -8,6 +8,7 @@ options
 tokens
 {
     PARAMS;
+    PARAM_GROUP;
     BLOCK;
     CLASSDEF;
     PARENT;
@@ -261,7 +262,11 @@ params
     ;
 
 paramlist
-    :   ID (','! ID)*
+    :   (ID | param_group) (','! (ID | param_group))*
+    ;
+
+param_group
+    :   '*' ID -> ^(PARAM_GROUP ID)
     ;
 
 funcall
