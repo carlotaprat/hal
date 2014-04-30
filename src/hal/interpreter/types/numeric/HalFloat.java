@@ -2,6 +2,7 @@ package hal.interpreter.types.numeric;
 
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalClass;
+import hal.interpreter.types.HalObject;
 
 
 public class HalFloat extends HalNumber<Double>
@@ -11,7 +12,7 @@ public class HalFloat extends HalNumber<Double>
     public HalFloat(float f) {
         super((double) f);
     }
-    
+
     public HalFloat(double d) {
         super(d);
     }
@@ -64,5 +65,14 @@ public class HalFloat extends HalNumber<Double>
     public HalBoolean lt(HalNumber n) {
         return new HalBoolean(toFloat() < n.toFloat());
     }
-    
+
+    @Override
+    public boolean canCoerce(HalObject n) {
+        return n instanceof HalNumber;
+    }
+
+    @Override
+    public HalNumber coerce(HalObject n) {
+        return new HalFloat(((HalNumber) n).toFloat());
+    }
 }

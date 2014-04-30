@@ -3,6 +3,7 @@ package hal.interpreter.types.numeric;
 import hal.interpreter.core.data.Rational;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalClass;
+import hal.interpreter.types.HalObject;
 
 public class HalInteger extends HalNumber<Integer>
 {
@@ -12,8 +13,8 @@ public class HalInteger extends HalNumber<Integer>
         super(i);
     }
 
-    public HalInteger(float f) {
-        super((int) f);
+    public HalInteger(Float f) {
+        super(f.intValue());
     }
 
     public HalInteger(double d) {
@@ -34,60 +35,26 @@ public class HalInteger extends HalNumber<Integer>
 
     @Override
     public HalNumber add(HalNumber n) {
-        // TODO: Pensar en alguna cosa per tal que la conversió la faci java
-        // alguna cosa com getValue per evitar de fer l'if
-        if (n instanceof HalFloat) {
-            return new HalFloat(toInteger() + n.toFloat());
-        }
-
-        if (n instanceof HalRational) {
-            return new HalRational((new Rational(toInteger())).add(((HalRational) n).value));
-        }
-
         return new HalInteger(toInteger() + n.toInteger());
-
     }
 
     @Override
     public HalNumber sub(HalNumber n) {
-        if (n instanceof HalFloat) {
-            return new HalFloat(toInteger() - n.toFloat());
-        }
-
-        if (n instanceof HalRational) {
-            return new HalRational((new Rational(toInteger())).sub(((HalRational) n).value));
-        }
-
         return new HalInteger(toInteger() - n.toInteger());
     }
 
     @Override
     public HalNumber mul(HalNumber n) {
-        if (n instanceof HalFloat) {
-            return new HalFloat(toInteger() * n.toFloat());
-        }
-
-        if (n instanceof HalRational) {
-            return new HalRational((new Rational(toInteger())).mul(((HalRational) n).value));
-        }
-
         return new HalInteger(toInteger() * n.toInteger());
     }
 
     @Override
     public HalNumber pow(HalNumber n) {
-        if(n instanceof HalInteger)
-            return new HalInteger(power(value, ((HalInteger) n).value));
-
-        return new HalFloat(Math.pow(toFloat(), n.toFloat()));
+        return new HalInteger(power(value, ((HalInteger) n).value));
     }
 
     @Override
     public HalNumber div(HalNumber n) {
-        if (n instanceof HalFloat) {
-            return new HalFloat(toInteger() / n.toFloat());
-        }
-
         return HalRational.RorI(new Rational(toInteger(), n.toInteger()));
     }
 
@@ -116,5 +83,15 @@ public class HalInteger extends HalNumber<Integer>
         if(n == 1) return a;
         if(n % 2 == 0) return power(a*a, n/2);
         return a * power(a*a, n/2);
+    }
+
+    @Override
+    public boolean canCoerce(HalObject n) {
+        return n instanceof HalInteger;
+    }
+
+    @Override
+    public HalNumber coerce(HalObject n) {
+        return ((HalInteger) n);
     }
 }

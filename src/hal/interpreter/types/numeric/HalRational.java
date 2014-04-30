@@ -15,25 +15,25 @@ public class HalRational extends HalNumber<Rational>
     public HalRational(Integer i) {
         super(new Rational(i));
     }
-    
+
     public HalRational(Rational r) {
         super(r);
     }
 
     public HalClass getKlass() { return HalRational.klass; }
-    
+
     public static HalNumber RorI(Rational r) {
         if (r.isInt())
             return new HalInteger(r.getNum());
         return new HalRational(r);
     }
-    
+
     private static Rational toR(HalNumber n) {
         if (n instanceof HalInteger)
             return new Rational(n.toInteger());
         return ((HalRational)n).value;
     }
-        
+
     @Override
     public boolean isZero() {
         return value.getNum() == 0;
@@ -46,29 +46,26 @@ public class HalRational extends HalNumber<Rational>
 
     @Override
     public HalNumber add(HalNumber n) {
-        Rational r = value.add(toR(n));
-        return RorI(r);
+        return RorI(value.add(((HalRational) n).value));
     }
 
     @Override
     public HalNumber sub(HalNumber n) {
-        Rational r = value.sub(toR(n));
-        return RorI(r);
+        return RorI(value.sub(((HalRational) n).value));
     }
 
     @Override
     public HalNumber mul(HalNumber n) {
-        Rational r = value.mul(toR(n));
-        return RorI(r);
+        return RorI(value.mul(((HalRational) n).value));
     }
 
     @Override
     public HalNumber pow(HalNumber n) {
-        if(n instanceof HalInteger) {
-            int p = n.toInteger();
+        Rational r = ((HalRational) n).value;
+        if (r.isInt()) {
             return new HalRational(new Rational(
-                    HalInteger.power(value.getNum(), p),
-                    HalInteger.power(value.getDen(), p)
+                    HalInteger.power(value.getNum(), r.intValue()),
+                    HalInteger.power(value.getDen(), r.intValue())
             ));
         }
 
@@ -77,8 +74,19 @@ public class HalRational extends HalNumber<Rational>
 
     @Override
     public HalNumber div(HalNumber n) {
-        Rational r = value.div(toR(n));
-        return RorI(r);
+        return RorI(value.div(((HalRational) n).value));
+    }
+
+    @Override
+    public boolean canCoerce(HalObject n) {
+        return n instanceof HalRational || n instanceof HalInteger;
+    }
+
+    @Override
+    public HalNumber coerce(HalObject n) {
+        if (n instanceof HalInteger)
+            return new HalRational(((HalInteger) n).toInteger());
+        return (HalRational) n;
     }
 
     @Override
@@ -91,7 +99,7 @@ public class HalRational extends HalNumber<Rational>
     public HalBoolean lt(HalNumber n) {
         return new HalBoolean(toFloat() < n.toFloat());
     }
- 
+
     private static final Reference den = new Reference(new BuiltinMethod("den") {
         @Override
         public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
@@ -100,7 +108,7 @@ public class HalRational extends HalNumber<Rational>
             return new HalInteger(((Rational)instance.value).getDen());
         }
     });
-    
+
     private static final Reference num = new Reference(new BuiltinMethod("num") {
         @Override
         public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
@@ -109,9 +117,10 @@ public class HalRational extends HalNumber<Rational>
             return new HalInteger(((Rational)instance.value).getNum());
         }
     });
-    
-    public static final HalClass klass = new HalClass("Rational", HalNumber.klass, 
+
+    public static final HalClass klass = new HalClass("Rational", HalNumber.klass,
             den,
             num
     );
+
 }
