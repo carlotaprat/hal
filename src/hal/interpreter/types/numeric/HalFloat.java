@@ -58,7 +58,7 @@ public class HalFloat extends HalNumber<Double>
 
     @Override
     public HalBoolean eq(HalNumber n) {
-        return new HalBoolean(toFloat() == n.toFloat());
+        return new HalBoolean(toFloat().equals(n.toFloat()));
     }
 
     @Override

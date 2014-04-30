@@ -91,8 +91,12 @@ public class HalRational extends HalNumber<Rational>
 
     @Override
     public HalBoolean eq(HalNumber n) {
-        Rational r = toR(n);
-        return new HalBoolean(value.getNum() == r.getNum() && value.getDen() == r.getDen());
+        if (canCoerce(n)) {
+            Rational r = toR(n);
+            return new HalBoolean(value.getNum() == r.getNum() && value.getDen() == r.getDen());
+        }
+        else
+            return new HalBoolean(value.doubleValue() == n.toFloat());
     }
 
     @Override
