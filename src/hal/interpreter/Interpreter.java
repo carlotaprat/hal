@@ -169,7 +169,7 @@ public class Interpreter
         MethodDefinition.Params params = def.params;
         int num_pos_params = params.positional_params.size();
 
-        if(num_pos_params > args.length)
+        if(num_pos_params > args.length || (num_pos_params < args.length && params.group_params == null))
             throw new InvalidArgumentsException();
 
         // Create the activation record in memory
