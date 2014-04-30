@@ -2,6 +2,7 @@ package hal.interpreter.types.enumerable;
 
 import hal.interpreter.Reference;
 import hal.interpreter.core.BuiltinMethod;
+import hal.interpreter.core.InternalLambda;
 import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.exceptions.NameException;
 import hal.interpreter.types.HalBoolean;
@@ -62,10 +63,29 @@ public abstract class HalEnumerable<T> extends HalObject<T>
         }
     });
 
+    private static final Reference __map__ = new Reference(new BuiltinMethod("map") {
+        @Override
+        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
+            if (args.length != 0)
+                throw new InvalidArgumentsException();
+            HalArray n = new HalArray();
+
+            instance.methodcall_lambda("__each__", new InternalLambda(n, lambda) {
+                @Override
+                public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
+                    return data[0].methodcall("__append!__", data[1].call(data[0], null, args));
+                }
+            });
+
+            return n;
+        }
+    });
+
     public static final HalClass klass = new HalClass("Enumerable", HalObject.klass,
             __getitem__,
             __setitem__,
             __size__,
-            __length__
+            __length__,
+            __map__
     );
 }

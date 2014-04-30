@@ -1,6 +1,6 @@
 package hal.interpreter;
 
-import hal.interpreter.core.Lambda;
+import hal.interpreter.core.LambdaDefinition;
 import hal.interpreter.core.MethodDefinition;
 import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.InvalidArgumentsException;
@@ -280,10 +280,10 @@ public class Interpreter
             }
                 
             case HalLexer.FOR_STMT: {
-                HalLambda lambda = new HalLambda(new Lambda(stack.getCurrentModule(), t.getChild(1),
+                HalLambda lambda = new HalLambda(new LambdaDefinition(stack.getCurrentModule(), t.getChild(1),
                         stack.getCurrentRecord()));
                 HalObject obj = evaluateExpression(t.getChild(0));
-                return obj.methodcall("__each__", lambda);
+                return obj.methodcall_lambda("__each__", lambda);
             }
 
             case HalLexer.CLASSDEF:
@@ -295,7 +295,7 @@ public class Interpreter
 
             case HalLexer.LAMBDACALL:
                 HalTree left = t.getChild(0);
-                HalLambda lambda = new HalLambda(new Lambda(stack.getCurrentModule(), t.getChild(1),
+                HalLambda lambda = new HalLambda(new LambdaDefinition(stack.getCurrentModule(), t.getChild(1),
                         stack.getCurrentRecord()));
 
                 switch(left.getType()) {
@@ -420,10 +420,10 @@ public class Interpreter
                 value = globals.getVariable(t.getText());
                 break;
             case HalLexer.LIST_EXPR:
-                HalLambda lambda = new HalLambda(new Lambda(stack.getCurrentModule(), t.getChild(1),
+                HalLambda lambda = new HalLambda(new LambdaDefinition(stack.getCurrentModule(), t.getChild(1),
                         stack.getCurrentRecord()));
                 HalObject obj = evaluateExpression(t.getChild(0));
-                value = obj.methodcall("__map__", lambda);
+                value = obj.methodcall_lambda("__map__", lambda);
                 break;
                 
             default: break;
@@ -582,7 +582,7 @@ public class Interpreter
 
     private HalObject evaluateMethodCall(HalObject obj, HalTree funcall, HalLambda lambda) {
         String name = funcall.getChild(0).getText();
-        return obj.methodcall(name, lambda, listArguments(funcall.getChild(1)));
+        return obj.methodcall_lambda(name, lambda, listArguments(funcall.getChild(1)));
     }
 
     private HalObject evaluateClassDefinition(HalTree classdef) {

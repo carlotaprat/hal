@@ -71,10 +71,10 @@ public abstract class HalObject<T> extends HalType
     }
 
     public HalObject methodcall(String name, HalObject... args) {
-        return methodcall(name, null, args);
+        return methodcall_lambda(name, null, args);
     }
 
-    public HalObject methodcall(String name, HalLambda lambda, HalObject... args) {
+    public HalObject methodcall_lambda(String name, HalObject lambda, HalObject... args) {
         ReferenceRecord original = getRecord();
 
         try {

@@ -1,13 +1,13 @@
 package hal.interpreter.types;
 
-import hal.interpreter.core.Lambda;
+import hal.interpreter.core.LambdaDefinition;
 
 
 public class HalLambda extends HalMethod
 {
     private HalObject self;
 
-    public HalLambda(Lambda lambda) {
+    public HalLambda(LambdaDefinition lambda) {
         super(lambda);
         self = lambda.getInstance();
     }
