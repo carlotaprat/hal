@@ -234,7 +234,7 @@ while_stmt
 
 import_stmt
     :  IMPORT module -> ^(IMPORT_STMT module)
-    |  FROM module IMPORT ID (',' ID)* -> ^(IMPORT_STMT module ID+)
+    |  FROM module IMPORT ID (COMMA ID)* -> ^(IMPORT_STMT module ID+)
     ;
 
 module
@@ -263,7 +263,7 @@ params
     ;
 
 paramlist
-    :   (ID | param_group) (','! (ID | param_group))*
+    :   (ID | param_group) (COMMA! (ID | param_group))*
     ;
 
 param_group
@@ -286,7 +286,7 @@ space_arglist
     ;
 
 arglist
-    :  (flatten_arg | expr) (options {greedy=true;}: ','! (flatten_arg | expr))*
+    :  (flatten_arg | expr) (options {greedy=true;}: COMMA! (flatten_arg | expr))*
     ;
 
 flatten_arg
@@ -384,13 +384,13 @@ klass_var
 
 list
     @init{boolean f = false;}
-    :   LBRACK (e1=expr ((',' expr)* | FOR paramlist IN e2=expr {f=true;}))? RBRACK
+    :   LBRACK (e1=expr ((COMMA expr)* | FOR paramlist IN e2=expr {f=true;}))? RBRACK
         -> {f}? ^(LIST_EXPR $e2 ^(LAMBDA ^(PARAMS paramlist) ^(BLOCK ^(EXPR $e1))))
         -> ^(ARRAY expr*)
     ;
 
 dict
-    :   LBRACE (entry (',' entry)*)? RBRACE -> ^(DICT entry*)
+    :   LBRACE (entry (COMMA entry)*)? RBRACE -> ^(DICT entry*)
     ;
 
 entry
@@ -453,6 +453,7 @@ LARROW  : '=>';
 AT      : '@';
 DOUBLE_AT : '@@';
 DOLLAR    : '$';
+COMMA: ',' NL?;
 
 // Useful fragments
 fragment DIGIT : ('0'..'9');
@@ -495,8 +496,8 @@ NEWLINE
         int next = input.LA(1);
         int currentIndent = indentStack[indentLevel];
 
-        // Skip if same indentation or empty line
-        if(n == currentIndent || next == '\n' || next == '\r' || next == -1)
+        // Skip if same indentation or empty line or comment
+        if(n == currentIndent || next == '\n' || next == '\r' || next == -1 || next=='#')
         {
             skip();
         }
