@@ -453,7 +453,8 @@ LARROW  : '=>';
 AT      : '@';
 DOUBLE_AT : '@@';
 DOLLAR    : '$';
-COMMA: ',' NL?;
+COMMA     : ',' NL?;
+
 
 // Useful fragments
 fragment DIGIT : ('0'..'9');
@@ -478,9 +479,11 @@ fragment ESC_SEQ
         :   '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
         ;
 
-WS
-    : SP {skip();}
+WS  : SP {skip();}
     ;
+
+LINEBREAK : '\\' NL {skip();}
+          ;
 
 COMMENT: '#' ~('\n'|'\r')* {skip();};
 

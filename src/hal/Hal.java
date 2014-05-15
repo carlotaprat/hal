@@ -82,7 +82,7 @@ public class Hal
             }
 
             if(input.endsWith(":") || input.endsWith(",") || input.endsWith("[") ||
-                input.endsWith("{")) {
+                input.endsWith("{") || input.endsWith("\\")) {
                 String block;
                 do {
                     console.setPrompt("... ");
