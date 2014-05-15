@@ -81,7 +81,8 @@ public class Hal
                 break;
             }
 
-            if(input.endsWith(":") || input.endsWith(",")) {
+            if(input.endsWith(":") || input.endsWith(",") || input.endsWith("[") ||
+                input.endsWith("{")) {
                 String block;
                 do {
                     console.setPrompt("... ");
