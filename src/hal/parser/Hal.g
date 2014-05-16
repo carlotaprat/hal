@@ -17,6 +17,7 @@ tokens
     LAMBDACALL;
     ARGS;
     FLATTEN_ARG;
+    KEYWORD;
     IF_STMT;
     FOR_STMT;
     WHILE_STMT;
@@ -163,6 +164,10 @@ tokens
 
     return false;
   }
+
+  public boolean keywordIsNext() {
+    return input.LT(1).getType() == ID && input.LT(2).getType() == LARROW;
+  }
 }
 
 // GRAMMAR
@@ -263,15 +268,21 @@ params
     ;
 
 paramlist
-    :   (ID | param_group) (COMMA! (ID | param_group))*
+    :   (ID | param_group) (COMMA! (ID | param_group))* (COMMA! keyword)*
+    |   keyword (COMMA! keyword)*
     ;
 
 param_group
     :   '*' ID -> ^(PARAM_GROUP ID)
     ;
 
+keyword
+    :   {keywordIsNext()}?
+        ID LARROW expr -> ^(KEYWORD ID expr)
+    ;
+
 funcall
-    :   ID args -> ^(FUNCALL ID args)
+    :   (options {greedy=true;}: ID args) -> ^(FUNCALL ID args)
     ;
 
 args
@@ -286,7 +297,11 @@ space_arglist
     ;
 
 arglist
-    :  (flatten_arg | expr) (options {greedy=true;}: COMMA! (flatten_arg | expr))*
+    @init{boolean keywords=false;}
+    :  (flatten_arg | expr | keyword {keywords=true;}) (options {greedy=true;}: COMMA! (
+            {keywords==false}?=> (flatten_arg | expr | keyword {keywords=true;})
+        |   keyword {keywords=true;}
+        ))*
     ;
 
 flatten_arg
@@ -479,13 +494,9 @@ fragment ESC_SEQ
         :   '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
         ;
 
-WS  : SP {skip();}
-    ;
-
-LINEBREAK : '\\' NL {skip();}
-          ;
-
-COMMENT: '#' ~('\n'|'\r')* {skip();};
+WS        : SP {skip();};
+LINEBREAK : '\\' NL {skip();};
+COMMENT   : '#' ~('\n'|'\r')* {skip();};
 
 NEWLINE
     @init
