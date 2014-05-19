@@ -28,7 +28,7 @@ import java.io.PrintWriter;
 
 public class Hal
 {
-    public static final String VERSION = "0.0.2@$GIT";
+    public static final String VERSION = "0.0.3@$GIT";
     public static final String DATE = "$DATE";
 
     public static Interpreter INTERPRETER = null;
