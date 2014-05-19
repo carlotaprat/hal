@@ -1,7 +1,9 @@
 package hal.interpreter.types;
 
 import hal.interpreter.Reference;
-import hal.interpreter.core.BuiltinMethod;
+import hal.interpreter.core.Arguments;
+import hal.interpreter.core.Builtin;
+import hal.interpreter.core.Params;
 import hal.interpreter.types.enumerable.HalString;
 
 public class HalNone extends HalObject
@@ -20,10 +22,10 @@ public class HalNone extends HalObject
 
     public HalClass getKlass() { return HalNone.klass; }
     
-    private static final Reference __eq__ = new Reference(new BuiltinMethod("eq") {
+    private static final Reference __eq__ = new Reference(new Builtin("eq", new Params.Param("e1")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            return new HalBoolean(args[0] instanceof HalNone); 
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            return new HalBoolean(args.get("e1") instanceof HalNone);
         }
     });
 

@@ -2,9 +2,10 @@ package hal.interpreter.types;
 
 
 import hal.interpreter.Reference;
-import hal.interpreter.core.BuiltinMethod;
+import hal.interpreter.core.Arguments;
+import hal.interpreter.core.Builtin;
+import hal.interpreter.core.Params;
 import hal.interpreter.core.ReferenceRecord;
-import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.types.enumerable.HalArray;
 import hal.interpreter.types.enumerable.HalDictionary;
 import hal.interpreter.types.enumerable.HalEnumerable;
@@ -54,11 +55,13 @@ abstract public class HalKernel<T> extends HalObject<T>
             record.defineVariable(klass.value, klass);
     }
 
-    private static final Reference __print__ = new Reference(new BuiltinMethod("print") {
+    private static final Reference __print__ = new Reference(new Builtin("print", new Params.Group("args")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if(args.length > 0) {
-                for(HalObject arg : args)
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            HalArray a = (HalArray) args.get("args");
+
+            if(a.value.size() > 0) {
+                for(HalObject arg : a.value)
                     System.out.println(arg);
             } else {
                 System.out.println();
@@ -68,28 +71,17 @@ abstract public class HalKernel<T> extends HalObject<T>
         }
     });
     
-    private static final Reference range = new Reference(new BuiltinMethod("range") {
+    private static final Reference range = new Reference(new Builtin("range",
+            new Params.Param("end"),
+            new Params.Keyword("start", new HalInteger(0)),
+            new Params.Keyword("step", new HalInteger(1)))
+    {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            int ini = 0;
-            int end = -1;
-            int step = 1;
-            
-            switch (args.length) {
-                case 1:
-                    end = ((HalInteger)args[0]).toInteger(); break;
-                case 2:
-                    ini = ((HalInteger)args[0]).toInteger();
-                    end = ((HalInteger)args[1]).toInteger();
-                    break;
-                case 3:
-                    ini = ((HalInteger)args[0]).toInteger();
-                    end = ((HalInteger)args[1]).toInteger();
-                    step = ((HalInteger)args[2]).toInteger();
-                    break;
-                default:
-                    throw new InvalidArgumentsException();
-            }
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            int ini = ((HalInteger)args.get("start")).getValue();
+            int end = ((HalInteger)args.get("end")).getValue();
+            int step = ((HalInteger)args.get("step")).getValue();
+
             HalArray arr = new HalArray();
             for (int i = ini; i < end; i+=step) {
                 arr.methodcall("__append!__", new HalInteger(i));

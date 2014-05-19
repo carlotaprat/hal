@@ -79,7 +79,7 @@ public class Stack
 
     public void pushContext(String name, HalObject inst, HalModule mod, ReferenceRecord parent, int line) {
         module = mod;
-        record = new ReferenceRecord(name, parent);
+        record = new ReferenceRecord(parent);
         record.defineVariable("self", inst);
         record.defineVariable("return", null);
         stack.addLast(new Context(mod, record));

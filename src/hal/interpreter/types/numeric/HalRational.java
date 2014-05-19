@@ -1,11 +1,12 @@
 package hal.interpreter.types.numeric;
 
 import hal.interpreter.Reference;
-import hal.interpreter.core.BuiltinMethod;
+import hal.interpreter.core.Arguments;
+import hal.interpreter.core.Builtin;
 import hal.interpreter.core.data.Rational;
-import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalClass;
+import hal.interpreter.types.HalMethod;
 import hal.interpreter.types.HalObject;
 
 
@@ -104,20 +105,16 @@ public class HalRational extends HalNumber<Rational>
         return new HalBoolean(toFloat() < n.toFloat());
     }
 
-    private static final Reference den = new Reference(new BuiltinMethod("den") {
+    private static final Reference den = new Reference(new Builtin("den") {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 0)
-                throw new InvalidArgumentsException();
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             return new HalInteger(((Rational)instance.value).getDen());
         }
     });
 
-    private static final Reference num = new Reference(new BuiltinMethod("num") {
+    private static final Reference num = new Reference(new Builtin("num") {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 0)
-                throw new InvalidArgumentsException();
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             return new HalInteger(((Rational)instance.value).getNum());
         }
     });

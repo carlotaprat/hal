@@ -1,26 +1,24 @@
 package hal.interpreter.core;
 
-import hal.interpreter.exceptions.NameException;
-import hal.interpreter.types.HalObject;
 import hal.interpreter.Reference;
+import hal.interpreter.exceptions.NameException;
+import hal.interpreter.types.HalMethod;
+import hal.interpreter.types.HalObject;
 
 import java.util.HashMap;
 
 
 public class ReferenceRecord
 {
-    public String name;
     public ReferenceRecord parent;
     public HashMap<String, Reference> record;
 
     public ReferenceRecord() {
-        name = null;
         parent = null;
         record = null;
     }
 
-    public ReferenceRecord(String name, ReferenceRecord parent, Reference... builtins) {
-        this.name = name;
+    public ReferenceRecord(ReferenceRecord parent, Reference... builtins) {
         this.parent = parent;
         record = new HashMap<String, Reference>();
 
@@ -44,8 +42,12 @@ public class ReferenceRecord
         else r.data = value; // Use the previous data
     }
 
+    public boolean hasVariable(String name) {
+        return record.containsKey(name);
+    }
+
     public void defineBuiltin(Reference ref) {
-        String name = ref.data.getValue().toString();
+        String name = ((HalMethod)ref.data).getValue().name;
         defineReference("__" + name + "__", ref);
         defineReference(name, new Reference(ref.data));
     }

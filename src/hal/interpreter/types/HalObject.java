@@ -1,5 +1,6 @@
 package hal.interpreter.types;
 
+import hal.interpreter.core.Arguments;
 import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.AbstractClassException;
 import hal.interpreter.exceptions.InvalidArgumentsException;
@@ -25,7 +26,7 @@ public abstract class HalObject<T> extends HalType
     }
 
     protected void initRecord() {
-        obj_record = new ReferenceRecord("instance", getKlass().getInstanceRecord());
+        obj_record = new ReferenceRecord(getKlass().getInstanceRecord());
     }
 
     public T getValue() {
@@ -63,18 +64,30 @@ public abstract class HalObject<T> extends HalType
         return new HalBoolean(!((HalBoolean) methodcall("__bool__")).value);
     }
 
-    public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-        if (args.length > 0 || lambda != null)
+    public HalObject call(HalObject instance, HalMethod lambda, HalObject...args) {
+        return call(instance, lambda, new Arguments(args));
+    }
+
+    public HalObject call(HalObject instance, HalMethod lambda, Arguments args) {
+        if (!args.isEmpty() || lambda != null)
             throw new TypeException(getKlass().value + " type is not callable");
 
         return this;
     }
 
     public HalObject methodcall(String name, HalObject... args) {
+        return methodcall_lambda(name, null, new Arguments(args));
+    }
+
+    public HalObject methodcall(String name, Arguments args) {
         return methodcall_lambda(name, null, args);
     }
 
-    public HalObject methodcall_lambda(String name, HalObject lambda, HalObject... args) {
+    public HalObject methodcall_lambda(String name, HalMethod lambda) {
+        return methodcall_lambda(name, lambda, new Arguments());
+    }
+
+    public HalObject methodcall_lambda(String name, HalMethod lambda, Arguments args) {
         ReferenceRecord original = getRecord();
 
         try {

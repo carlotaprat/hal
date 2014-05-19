@@ -1,15 +1,16 @@
 package hal.interpreter.types.numeric;
 
 import hal.interpreter.Reference;
-import hal.interpreter.core.BuiltinMethod;
-import hal.interpreter.exceptions.InvalidArgumentsException;
+import hal.interpreter.core.Arguments;
+import hal.interpreter.core.Builtin;
+import hal.interpreter.core.Params;
 import hal.interpreter.exceptions.NameException;
 import hal.interpreter.exceptions.ZeroDivisionException;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalClass;
+import hal.interpreter.types.HalMethod;
 import hal.interpreter.types.HalObject;
 import hal.interpreter.types.enumerable.HalString;
-import java.math.BigInteger;
 
 
 public abstract class HalNumber<T extends Number> extends HalObject<T> {
@@ -52,257 +53,218 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     public abstract HalBoolean lt(HalNumber n);
 
 
-    private static final Reference __int__ = new Reference(new BuiltinMethod("int") {
+    private static final Reference __int__ = new Reference(new Builtin("int") {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 0)
-                throw new InvalidArgumentsException();
-
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             return new HalInteger(((HalNumber) instance).toInteger());
         }
     });
 
-    private static final Reference __float__ = new Reference(new BuiltinMethod("float") {
+    private static final Reference __float__ = new Reference(new Builtin("float") {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 0)
-                throw new InvalidArgumentsException();
-
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             return new HalFloat(((HalNumber) instance).toFloat());
         }
     });
 
     // Unary
-    private static final Reference __neg__ = new Reference(new BuiltinMethod("neg") {
+    private static final Reference __neg__ = new Reference(new Builtin("neg") {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 0)
-                throw new InvalidArgumentsException();
-
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             return ((HalNumber) instance).neg();
         }
     });
 
-    private static final Reference __pos__ = new Reference(new BuiltinMethod("pos") {
+    private static final Reference __pos__ = new Reference(new Builtin("pos") {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 0)
-                throw new InvalidArgumentsException();
-
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             return ((HalNumber) instance).pos();
         }
     });
 
     // Binary left
-    private static final Reference __add__ = new Reference(new BuiltinMethod("add") {
+    private static final Reference __add__ = new Reference(new Builtin("add", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1)
-                throw new InvalidArgumentsException();
-
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalNumber i = ((HalNumber) instance);
-            if (!i.canCoerce(args[0]))
-                return args[0].methodcall("__radd__", i);
+            HalObject x = args.get("x");
 
-            return i.add(i.coerce((HalNumber) args[0]));
+            if (!i.canCoerce(x))
+                return x.methodcall("__radd__", i);
+
+            return i.add(i.coerce(x));
         }
     });
 
-    private static final Reference __sub__ = new Reference(new BuiltinMethod("sub") {
+    private static final Reference __sub__ = new Reference(new Builtin("sub", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1 || !(args[0] instanceof HalNumber))
-                throw new InvalidArgumentsException();
-
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalNumber i = ((HalNumber) instance);
-            if (!i.canCoerce((HalNumber) args[0]))
-                return args[0].methodcall("__rsub__", i);
+            HalObject x = args.get("x");
 
-            return i.sub(i.coerce((HalNumber) args[0]));
+            if (!i.canCoerce(x))
+                return x.methodcall("__rsub__", i);
+
+            return i.sub(i.coerce(x));
         }
     });
 
-    private static final Reference __mul__ = new Reference(new BuiltinMethod("mul") {
+    private static final Reference __mul__ = new Reference(new Builtin("mul", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1 || !(args[0] instanceof HalNumber))
-                throw new InvalidArgumentsException();
-
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalNumber i = ((HalNumber) instance);
-            if (!i.canCoerce((HalNumber) args[0]))
-                return args[0].methodcall("__rmul__", i);
+            HalObject x = args.get("x");
 
-            return i.mul(i.coerce((HalNumber) args[0]));
+            if (!i.canCoerce(x))
+                return x.methodcall("__rmul__", i);
+
+            return i.mul(i.coerce(x));
         }
     });
 
-    private static final Reference __div__ = new Reference(new BuiltinMethod("div") {
+    private static final Reference __div__ = new Reference(new Builtin("div", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1 || !(args[0] instanceof HalNumber))
-                throw new InvalidArgumentsException();
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            HalNumber x = (HalNumber) args.get("x");
 
-            if (((HalNumber) args[0]).isZero())
+            if (x.isZero())
                 throw new ZeroDivisionException();
 
             HalNumber i = ((HalNumber) instance);
-            if (!i.canCoerce((HalNumber) args[0]))
-                return args[0].methodcall("__rdiv__", i);
+            if (!i.canCoerce(x))
+                return x.methodcall("__rdiv__", i);
 
-            return i.div(i.coerce((HalNumber) args[0]));
+            return i.div(i.coerce(x));
         }
     });
 
-    private static final Reference __ddiv__ = new Reference(new BuiltinMethod("ddiv") {
+    private static final Reference __ddiv__ = new Reference(new Builtin("ddiv", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1 || !(args[0] instanceof HalNumber))
-                throw new InvalidArgumentsException();
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            HalNumber x = (HalNumber) args.get("x");
 
-            if (((HalNumber) args[0]).isZero())
+            if (x.isZero())
                 throw new ZeroDivisionException();
 
             HalNumber i = ((HalNumber) instance);
-            if (!i.canCoerce((HalNumber) args[0]))
-                return args[0].methodcall("__rddiv__", i);
+            if (!i.canCoerce(x))
+                return x.methodcall("__rddiv__", i);
 
-            return i.ddiv(i.coerce((HalNumber) args[0]));
+            return i.ddiv(i.coerce(x));
         }
     });
 
-    private static final Reference __mod__ = new Reference(new BuiltinMethod("mod") {
+    private static final Reference __mod__ = new Reference(new Builtin("mod", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1)
-                throw new InvalidArgumentsException();
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            HalNumber x = (HalNumber) args.get("x");
 
-            if (((HalNumber) args[0]).isZero())
+            if (x.isZero())
                 throw new ZeroDivisionException();
 
             HalNumber i = ((HalNumber) instance);
-            if (!i.canCoerce((HalNumber) args[0]))
-                return args[0].methodcall("__rmod__", i);
-            return i.mod(i.coerce((HalNumber) args[0]));
+            if (!i.canCoerce(x))
+                return x.methodcall("__rmod__", i);
+            return i.mod(i.coerce(x));
         }
     });
 
-    private static final Reference __pow__ = new Reference(new BuiltinMethod("pow") {
+    private static final Reference __pow__ = new Reference(new Builtin("pow", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1)
-                throw new InvalidArgumentsException();
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            HalNumber x = (HalNumber) args.get("x");
             HalNumber i = ((HalNumber) instance);
-            if (!i.canCoerce((HalNumber) args[0]))
-                return args[0].methodcall("__rpow__", i);
 
-            return i.pow(i.coerce((HalNumber) args[0]));
+            if (!i.canCoerce(x))
+                return x.methodcall("__rpow__", i);
+
+            return i.pow(i.coerce(x));
         }
     });
 
     // Binary right (fallbacks for when left version fails)
-    private static final Reference __radd__ = new Reference(new BuiltinMethod("radd") {
+    private static final Reference __radd__ = new Reference(new Builtin("radd", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1 || !((HalNumber) instance).canCoerce((HalNumber) args[0]))
-                throw new InvalidArgumentsException();
-
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalNumber i = (HalNumber) instance;
-            return i.radd(i.coerce(args[0]));
+            return i.radd(i.coerce(args.get("x")));
         }
     });
 
-    private static final Reference __rsub__ = new Reference(new BuiltinMethod("rsub") {
+    private static final Reference __rsub__ = new Reference(new Builtin("rsub", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1 || !((HalNumber) instance).canCoerce((HalNumber) args[0]))
-                throw new InvalidArgumentsException();
-
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalNumber i = (HalNumber) instance;
-            return i.rsub(i.coerce(args[0]));
+            return i.rsub(i.coerce(args.get("x")));
         }
     });
 
-    private static final Reference __rmul__ = new Reference(new BuiltinMethod("rmul") {
+    private static final Reference __rmul__ = new Reference(new Builtin("rmul", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1 || !((HalNumber) instance).canCoerce((HalNumber) args[0]))
-                throw new InvalidArgumentsException();
-
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalNumber i = (HalNumber) instance;
-            return i.rmul(i.coerce(args[0]));
+            return i.rmul(i.coerce(args.get("x")));
         }
     });
 
-    private static final Reference __rdiv__ = new Reference(new BuiltinMethod("rdiv") {
+    private static final Reference __rdiv__ = new Reference(new Builtin("rdiv", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1 || !((HalNumber) instance).canCoerce((HalNumber) args[0]))
-                throw new InvalidArgumentsException();
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            HalNumber x = (HalNumber) args.get("x");
 
-            if (((HalNumber) args[0]).isZero())
+            if (x.isZero())
                 throw new ZeroDivisionException();
 
             HalNumber i = (HalNumber) instance;
-            return i.rdiv(i.coerce(args[0]));
+            return i.rdiv(i.coerce(x));
         }
     });
 
-    private static final Reference __rddiv__ = new Reference(new BuiltinMethod("rddiv") {
+    private static final Reference __rddiv__ = new Reference(new Builtin("rddiv", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1 || !((HalNumber) instance).canCoerce((HalNumber) args[0]))
-                throw new InvalidArgumentsException();
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            HalNumber x = (HalNumber) args.get("x");
 
-            if (((HalNumber) args[0]).isZero())
+            if (x.isZero())
                 throw new ZeroDivisionException();
 
             HalNumber i = (HalNumber) instance;
-            return i.rddiv(i.coerce(args[0]));
+            return i.rddiv(i.coerce(x));
         }
     });
 
-    private static final Reference __rmod__ = new Reference(new BuiltinMethod("rmod") {
+    private static final Reference __rmod__ = new Reference(new Builtin("rmod", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1 || !((HalNumber) instance).canCoerce((HalNumber) args[0]))
-                throw new InvalidArgumentsException();
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            HalNumber x = (HalNumber) args.get("x");
 
-            if (((HalNumber) args[0]).isZero())
+            if (x.isZero())
                 throw new ZeroDivisionException();
 
             HalNumber i = (HalNumber) instance;
-            return i.rmod(i.coerce(args[0]));
+            return i.rmod(i.coerce(x));
         }
     });
 
-    private static final Reference __rpow__ = new Reference(new BuiltinMethod("rpow") {
+    private static final Reference __rpow__ = new Reference(new Builtin("rpow", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1 || !((HalNumber) instance).canCoerce((HalNumber) args[0]))
-                throw new InvalidArgumentsException();
-
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalNumber i = (HalNumber) instance;
-            return i.rpow(i.coerce(args[0]));
+            return i.rpow(i.coerce(args.get("x")));
         }
     });
 
-    private static final Reference __lt__ = new Reference(new BuiltinMethod("lt") {
+    private static final Reference __lt__ = new Reference(new Builtin("lt", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1)
-                throw new InvalidArgumentsException();
-
-            return ((HalNumber) instance).lt(((HalNumber) args[0]));
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            return ((HalNumber) instance).lt(((HalNumber) args.get("x")));
         }
     });
 
-    private static final Reference __eq__ = new Reference(new BuiltinMethod("eq") {
+    private static final Reference __eq__ = new Reference(new Builtin("eq", new Params.Param("x")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 1)
-                throw new InvalidArgumentsException();
-
-            return ((HalNumber) instance).eq(((HalNumber) args[0]));
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            return ((HalNumber) instance).eq(((HalNumber) args.get("x")));
         }
     });
 

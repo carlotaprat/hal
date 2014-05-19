@@ -1,16 +1,16 @@
 package hal.interpreter.types.enumerable;
 
 import hal.interpreter.Reference;
-import hal.interpreter.core.BuiltinMethod;
-import hal.interpreter.exceptions.InvalidArgumentsException;
+import hal.interpreter.core.Arguments;
+import hal.interpreter.core.Builtin;
 import hal.interpreter.exceptions.KeyException;
 import hal.interpreter.types.HalClass;
+import hal.interpreter.types.HalMethod;
 import hal.interpreter.types.HalNone;
 import hal.interpreter.types.HalObject;
 import hal.interpreter.types.numeric.HalInteger;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 
@@ -68,26 +68,23 @@ public class HalDictionary extends HalEnumerable<HashMap<HalObject, HalObject>>
         return arr; 
     }
     
-    private static final Reference __keys__ = new Reference(new BuiltinMethod("keys") {
+    private static final Reference __keys__ = new Reference(new Builtin("keys") {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             return ((HalDictionary) instance).keys();
         }
     });
     
-    private static final Reference __values__ = new Reference(new BuiltinMethod("values") {
+    private static final Reference __values__ = new Reference(new Builtin("values") {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             return ((HalDictionary) instance).values();
         }
     });
     
-    private static final Reference __each__ = new Reference(new BuiltinMethod("each") {
+    private static final Reference __each__ = new Reference(new Builtin("each") {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 0)
-                throw new InvalidArgumentsException();
-            
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalObject last = HalNone.NONE;
             HalDictionary d = (HalDictionary) instance;
             for(Map.Entry<HalObject, HalObject> e : d.value.entrySet()) {
@@ -102,7 +99,6 @@ public class HalDictionary extends HalEnumerable<HashMap<HalObject, HalObject>>
             __keys__,
             __values__
     );
+
     public HalClass getKlass() { return HalDictionary.klass; }
-
-
 }

@@ -1,10 +1,6 @@
 package hal.interpreter;
 
-import hal.interpreter.core.InternalLambda;
-import hal.interpreter.core.LambdaDefinition;
-import hal.interpreter.core.MethodDefinition;
-import hal.interpreter.core.ReferenceRecord;
-import hal.interpreter.exceptions.InvalidArgumentsException;
+import hal.interpreter.core.*;
 import hal.interpreter.exceptions.NameException;
 import hal.interpreter.exceptions.SyntaxException;
 import hal.interpreter.exceptions.TypeException;
@@ -54,7 +50,7 @@ public class Interpreter
 
         parser = parsr;
         HalModule mainModule = new HalModule("main", null);
-        globals = new ReferenceRecord("globals", null);
+        globals = new ReferenceRecord(null);
         trace = tracefile;
         function_nesting = 0;
 
@@ -132,7 +128,7 @@ public class Interpreter
      * @param args The AST node representing the list of arguments of the caller.
      * @return The data returned by the function.
      */
-    private HalObject executeCall(String funcname, HalObject lambda, HalTree args) {
+    private HalObject executeCall(String funcname, HalMethod lambda, HalTree args) {
         HalObject f;
         HalObject instance;
         HalObject self = stack.getVariable("self");
@@ -160,18 +156,11 @@ public class Interpreter
         return f.call(instance, lambda, listArguments(args));
     }
 
-    public HalObject executeMethod(MethodDefinition def, HalObject instance, HalObject lambda, HalObject... args) {
-        HalTree tree = def.tree;
-
+    public HalObject executeMethod(MethodDefinition def, HalTree block, HalObject instance, HalMethod lambda,
+                                   Arguments args)
+    {
         // Dumps trace information (function call and arguments)
-        if (trace != null) traceFunctionCall(tree, args);
-
-        // List of parameters of the callee
-        MethodDefinition.Params params = def.params;
-        int num_pos_params = params.positional_params.size();
-
-        if(num_pos_params > args.length || (num_pos_params < args.length && params.group_params == null))
-            throw new InvalidArgumentsException();
+        //if (trace != null) traceFunctionCall(tree, args);
 
         // Create the activation record in memory
         stack.pushContext(def.name, instance, def.module, def.getLocals(), lineNumber());
@@ -187,24 +176,10 @@ public class Interpreter
         stack.defineVariable("super", superkw);
 
         // Track line number
-        setLineNumber(tree);
+        setLineNumber(block);
 
-        // Copy the parameters to the record activation record
-        for(int i = 0; i < params.before_group; ++i)
-            stack.defineVariable(params.positional_params.get(i), args[i]);
-
-        for(int i = 0; i < params.after_group; ++i)
-            stack.defineVariable(params.positional_params.get(num_pos_params-i-1), args[args.length-i-1]);
-
-        if(params.group_params != null) {
-            HalArray group = new HalArray();
-
-            int last_group_param = args.length - num_pos_params + params.before_group;
-            for(int i = params.before_group; i < last_group_param; ++i)
-                group.methodcall("__append!__", args[i]);
-
-            stack.defineVariable(params.group_params, group);
-        }
+        for(String arg : args.keys())
+            stack.defineVariable(arg, args.get(arg));
 
         if(lambda != null)
             stack.defineVariable("yield", lambda);
@@ -212,13 +187,13 @@ public class Interpreter
         stack.defineVariable("block_given?", new HalBoolean(lambda != null));
 
         // Execute the instructions
-        HalObject result = executeListInstructions(def.block);
+        HalObject result = executeListInstructions(block);
 
         // If the result is null, then the function returns void
         if (result == null) result = new HalNone();
 
         // Dumps trace information
-        if (trace != null) traceReturn(tree, result, args);
+        //if (trace != null) traceReturn(tree, result, args);
 
         // Destroy the activation record
         stack.popContext();
@@ -292,10 +267,8 @@ public class Interpreter
             }
                 
             case HalLexer.FOR_STMT: {
-                HalLambda lambda = new HalLambda(new LambdaDefinition(stack.getCurrentModule(), t.getChild(1),
-                        stack.getCurrentRecord()));
                 HalObject obj = evaluateExpression(t.getChild(0));
-                return obj.methodcall_lambda("__each__", lambda);
+                return obj.methodcall_lambda("__each__", extractLambda(t.getChild(1)));
             }
 
             case HalLexer.CLASSDEF:
@@ -307,8 +280,7 @@ public class Interpreter
 
             case HalLexer.LAMBDACALL:
                 HalTree left = t.getChild(0);
-                HalLambda lambda = new HalLambda(new LambdaDefinition(stack.getCurrentModule(), t.getChild(1),
-                        stack.getCurrentRecord()));
+                HalLambda lambda = extractLambda(t.getChild(1));
 
                 switch(left.getType()) {
                     case HalLexer.FUNCALL:
@@ -436,10 +408,8 @@ public class Interpreter
                 value = globals.getVariable(t.getText());
                 break;
             case HalLexer.LIST_EXPR:
-                HalLambda lambda = new HalLambda(new LambdaDefinition(stack.getCurrentModule(), t.getChild(1),
-                        stack.getCurrentRecord()));
                 HalObject obj = evaluateExpression(t.getChild(0));
-                value = obj.methodcall_lambda("__map__", lambda);
+                value = obj.methodcall_lambda("__map__", extractLambda(t.getChild(1)));
                 break;
                 
             default: break;
@@ -636,10 +606,41 @@ public class Interpreter
 
     private HalObject evaluateMethodDefinition(HalTree fundef) {
         HalObject klass = stack.getVariable("self");
-        MethodDefinition def = new MethodDefinition(stack.getCurrentModule(), fundef);
-        HalMethod method = new HalMethod(def);
+        String name = fundef.getChild(0).getText();
+        Params.Param[] params = extractParams(fundef.getChild(1));
+        MethodDefinition def = new MethodDefinition(stack.getCurrentModule(), name, params);
+        HalMethod method = new HalDefinedMethod(def, fundef.getChild(2));
         klass.getInstanceRecord().defineVariable(def.name, method);
         return method;
+    }
+
+    private Params.Param[] extractParams(HalTree tparams) {
+        int nparams = tparams.getChildCount();
+        Params.Param[] params = new Params.Param[nparams];
+
+        for(int i = 0; i < nparams; ++i) {
+            HalTree param = tparams.getChild(i);
+
+            switch(param.getType()) {
+                case HalLexer.PARAM_GROUP:
+                    params[i] = new Params.Group(param.getChild(0).getText());
+                    break;
+                case HalLexer.KEYWORD:
+                    params[i] = new Params.Keyword(param.getChild(0).getText(),
+                            evaluateExpression(param.getChild(1)));
+                    break;
+                default:
+                    params[i] = new Params.Param(param.getText());
+                    break;
+            }
+        }
+
+        return params;
+    }
+
+    private HalLambda extractLambda(HalTree tlambda) {
+        return new HalLambda(new LambdaDefinition(stack.getCurrentModule(), stack.getCurrentRecord(),
+                extractParams(tlambda.getChild(0))), tlambda.getChild(1));
     }
 
     private HalModule evaluateImport(HalTree imp) {
@@ -702,52 +703,65 @@ public class Interpreter
      * @return The list of evaluated arguments.
      */
 
-    private HalObject[] listArguments(HalTree args) {
+    private Arguments listArguments(HalTree args) {
         setLineNumber(args);
 
         // Create the list of parameters
         int n = args.getChildCount();
         HalObject[] arg_expr = new HalObject[n];
-        int total_args = 0;
+        int pos_args = 0;
+        int kw_args = 0;
 
         for(int i = 0; i < n; ++i) {
             HalTree arg = args.getChild(i);
 
-            if(arg.getType() == HalLexer.FLATTEN_ARG) {
-                HalObject items = evaluateExpression(arg.getChild(0));
-                arg_expr[i] = items;
-                total_args += ((HalInteger) items.methodcall("__size__")).value;
-            } else {
-                arg_expr[i] = evaluateExpression(arg);
-                total_args++;
+            switch(arg.getType()) {
+                case HalLexer.FLATTEN_ARG:
+                    HalObject items = evaluateExpression(arg.getChild(0));
+                    arg_expr[i] = items;
+                    pos_args += ((HalInteger) items.methodcall("__size__")).value;
+                    break;
+                case HalLexer.KEYWORD:
+                    arg_expr[i] = evaluateExpression(arg.getChild(1));
+                    kw_args++;
+                    break;
+                default:
+                    arg_expr[i] = evaluateExpression(arg);
+                    pos_args++;
+                    break;
             }
         }
 
-        final HalObject[] Params = new HalObject[total_args];
-        final int[] current = {0};
+        final HalObject[] pos = new HalObject[pos_args];
+        final Params.Keyword[] keywords = new Params.Keyword[kw_args];
+        final int[] current_pos = {0};
+        final int[] current_kw = {0};
 
         for (int i = 0; i < n; ++i) {
-            HalTree a = args.getChild(i); // Arguments passed by the caller
+            HalTree a = args.getChild(i);
             setLineNumber(a);
 
-            if(a.getType() == HalLexer.FLATTEN_ARG) {
-                arg_expr[i].methodcall_lambda("__each__", new InternalLambda() {
-                    @Override
-                    public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-                        if (args.length < 1)
-                            throw new InvalidArgumentsException();
-
-                        HalObject value = args[args.length - 1];
-                        Params[current[0]++] = value;
-                        return value;
-                    }
-                });
-            } else {
-                Params[current[0]++] = arg_expr[i];
+            switch (a.getType()) {
+                case HalLexer.FLATTEN_ARG:
+                    arg_expr[i].methodcall_lambda("__each__", new InternalLambda(new Params.Param("value")) {
+                        @Override
+                        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+                            HalObject value = args.get("value");
+                            pos[current_pos[0]++] = value;
+                            return value;
+                        }
+                    });
+                    break;
+                case HalLexer.KEYWORD:
+                    keywords[current_kw[0]++] = new Params.Keyword(a.getChild(0).getText(), arg_expr[i]);
+                    break;
+                default:
+                    pos[current_pos[0]++] = arg_expr[i];
+                    break;
             }
         }
 
-        return Params;
+        return new Arguments(pos, keywords);
     }
 
     /**
@@ -755,9 +769,9 @@ public class Interpreter
      * The information is the name of the function, the value of the
      * parameters and the line number where the function call is produced.
      * @param f AST of the function
-     * @param arg_values Values of the parameters passed to the function
+     * @param args Record with the arguments
      */
-    private void traceFunctionCall(HalTree f, HalObject... arg_values) {
+    private void traceFunctionCall(HalTree f, ReferenceRecord args) {
         function_nesting++;
         HalTree params = f.getChild(1);
         int nargs = params.getChildCount();
@@ -769,7 +783,7 @@ public class Interpreter
         for (int i = 0; i < nargs; ++i) {
             if (i > 0) trace.print(", ");
             HalTree p = params.getChild(i);
-            trace.print(p.getText() + "=" + arg_values[i]);
+            trace.print(p.getText() + "=" + args.getVariable(p.getText()));
         }
         trace.print(") ");
         
@@ -784,9 +798,9 @@ public class Interpreter
      * of the return.
      * @param f AST of the function
      * @param result The value of the result
-     * @param arg_values The value of the parameters passed to the function
+     * @param args Record with the arguments
      */
-    private void traceReturn(HalTree f, HalObject result, HalObject... arg_values) {
+    private void traceReturn(HalTree f, HalObject result, ReferenceRecord args) {
         for (int i=0; i < function_nesting; ++i) trace.print("|   ");
         function_nesting--;
         trace.print("return");
@@ -797,7 +811,7 @@ public class Interpreter
         int nargs = params.getChildCount();
         for (int i = 0; i < nargs; ++i) {
             HalTree p = params.getChild(i);
-            trace.print(", " + p.getText() + "=" + arg_values[i]);
+            trace.print(", " + p.getText() + "=" + args.getVariable(p.getText()));
         }
         
         trace.println(" <line " + lineNumber() + ">");

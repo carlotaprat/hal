@@ -2,7 +2,8 @@ package hal.interpreter.types;
 
 
 import hal.interpreter.Reference;
-import hal.interpreter.core.BuiltinMethod;
+import hal.interpreter.core.Arguments;
+import hal.interpreter.core.Builtin;
 import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.types.enumerable.HalString;
 
@@ -17,10 +18,10 @@ public class HalClass extends HalObject<String>
     public HalClass(String name, HalClass parent, Reference... builtins) {
         value = name;
         ReferenceRecord inherit = (parent == null) ? null : parent.getInstanceRecord();
-        instRecord = new ReferenceRecord(name, inherit, builtins);
+        instRecord = new ReferenceRecord(inherit, builtins);
     }
 
-    public HalObject _new(HalObject... args) {
+    public HalObject _new(Arguments args) {
         HalObject instance = new HalInstance(this);
         instance.methodcall("init", args);
 
@@ -38,9 +39,9 @@ public class HalClass extends HalObject<String>
         instRecord.parent = HalObject.klass.getInstanceRecord();
 
         Reference[] builtins = new Reference[] {
-            new Reference(new BuiltinMethod("new") {
+            new Reference(new Builtin("new") {
                 @Override
-                public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
+                public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
                     return ((HalClass)instance)._new(args);
                 }
             })

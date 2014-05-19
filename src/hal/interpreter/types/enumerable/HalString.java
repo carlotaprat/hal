@@ -2,13 +2,13 @@ package hal.interpreter.types.enumerable;
 
 
 import hal.interpreter.Reference;
-import hal.interpreter.core.BuiltinMethod;
-import hal.interpreter.exceptions.InvalidArgumentsException;
+import hal.interpreter.core.Arguments;
+import hal.interpreter.core.Builtin;
 import hal.interpreter.types.HalClass;
+import hal.interpreter.types.HalMethod;
 import hal.interpreter.types.HalNone;
 import hal.interpreter.types.HalObject;
 import hal.interpreter.types.numeric.HalInteger;
-import java.util.Iterator;
 
 public class HalString extends HalEnumerable<String>
 {
@@ -43,12 +43,9 @@ public class HalString extends HalEnumerable<String>
         return new HalInteger(value.length());
     }
     
-    private static final Reference __each__ = new Reference(new BuiltinMethod("each") {
+    private static final Reference __each__ = new Reference(new Builtin("each") {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 0)
-                throw new InvalidArgumentsException();
-            
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalObject last = HalNone.NONE;
             HalString s = (HalString) instance;
             for (int i=0; i < s.value.length(); i++) {
@@ -63,5 +60,4 @@ public class HalString extends HalEnumerable<String>
     );
     
     public HalClass getKlass() { return klass; }
-
 }

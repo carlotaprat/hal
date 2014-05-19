@@ -1,9 +1,11 @@
 package hal.interpreter.types.enumerable;
 
 import hal.interpreter.Reference;
-import hal.interpreter.core.BuiltinMethod;
-import hal.interpreter.exceptions.InvalidArgumentsException;
+import hal.interpreter.core.Arguments;
+import hal.interpreter.core.Builtin;
+import hal.interpreter.core.Params;
 import hal.interpreter.types.HalClass;
+import hal.interpreter.types.HalMethod;
 import hal.interpreter.types.HalNone;
 import hal.interpreter.types.HalObject;
 import hal.interpreter.types.numeric.HalInteger;
@@ -45,44 +47,32 @@ public class HalArray extends HalEnumerable<List<HalObject>>
     }
 
 
-    private static final Reference __append__ = new Reference(new BuiltinMethod("append!") {
+    private static final Reference __append__ = new Reference(new Builtin("append!", new Params.Param("element")) {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if(args.length != 1)
-                throw new InvalidArgumentsException();
-
-            ((HalArray) instance).value.add(args[0]);
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            ((HalArray) instance).value.add(args.get("element"));
             return instance;
         }
     });
     
-    private static final Reference __pop__ = new Reference(new BuiltinMethod("pop!") {
+    private static final Reference __pop__ = new Reference(new Builtin("pop!") {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if(args.length != 0)
-                throw new InvalidArgumentsException();
-
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             ((HalArray) instance).value.remove(0);
             return instance;
         }
     });
 
-    private static final Reference __lshift__ = new Reference(new BuiltinMethod("lshift") {
+    private static final Reference __lshift__ = new Reference(new Builtin("lshift") {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if(args.length != 1)
-                throw new InvalidArgumentsException();
-
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             return instance.methodcall("__append!__", args);
         }
     });
 
-    private static final Reference __sum__ = new Reference(new BuiltinMethod("sum") {
+    private static final Reference __sum__ = new Reference(new Builtin("sum") {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if(args.length > 0)
-                throw new InvalidArgumentsException();
-
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalObject sum = new HalInteger(0);
 
             HalArray i = (HalArray) instance;
@@ -93,12 +83,9 @@ public class HalArray extends HalEnumerable<List<HalObject>>
         }
     });
     
-    private static final Reference __each__ = new Reference(new BuiltinMethod("each") {
+    private static final Reference __each__ = new Reference(new Builtin("each") {
         @Override
-        public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-            if (args.length != 0)
-                throw new InvalidArgumentsException();
-            
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalObject last = HalNone.NONE;
             HalArray i = (HalArray) instance;
             for (HalObject element: i.value) {

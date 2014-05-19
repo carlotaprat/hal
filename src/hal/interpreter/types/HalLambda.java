@@ -1,18 +1,12 @@
 package hal.interpreter.types;
 
+import hal.interpreter.HalTree;
 import hal.interpreter.core.LambdaDefinition;
 
 
-public class HalLambda extends HalMethod
+public class HalLambda extends HalDefinedMethod
 {
-    private HalObject self;
-
-    public HalLambda(LambdaDefinition lambda) {
-        super(lambda);
-        self = lambda.getInstance();
-    }
-
-    public HalObject call(HalObject instance, HalObject lambda, HalObject... args) {
-        return super.call(self, lambda, args);
+    public HalLambda(LambdaDefinition lambda, HalTree block) {
+        super(lambda, block);
     }
 }
