@@ -15,6 +15,7 @@ public class Params {
     public String group_params;
     public int before_group;
     public int after_group;
+    public int unpositional_keywords;
 
     static public class Param {
         public String name;
@@ -45,6 +46,7 @@ public class Params {
         group_params = null;
         before_group = 0;
         after_group = 0;
+        unpositional_keywords = 0;
 
         for (Param param : params) {
             if (param instanceof Group) {
@@ -52,17 +54,23 @@ public class Params {
                     throw new SyntaxException("More than one param group not allowed.");
 
                 group_params = param.name;
-            } else {
+            } else if(group_params == null) {
                 positional.add(param.name);
-
-                if (group_params == null)
-                    before_group++;
-                else
-                    after_group++;
 
                 if(param instanceof Keyword) {
                     Keyword kw = (Keyword) param;
                     keywords.put(kw.name, kw.value);
+                }
+
+                before_group++;
+            } else {
+                if(param instanceof Keyword) {
+                    Keyword kw = (Keyword) param;
+                    keywords.put(kw.name, kw.value);
+                    unpositional_keywords++;
+                } else {
+                    positional.add(param.name);
+                    after_group++;
                 }
             }
         }
@@ -72,6 +80,9 @@ public class Params {
         int num_pos_params = positional.size();
         int num_pos_args = args.pos.length;
         int total = 0;
+
+        if(group_params == null && num_pos_args > positional.size())
+            throw new InvalidArgumentsException();
 
         // Copy the parameters to the record activation record
         for(int i = 0; i < before_group && i < num_pos_args; ++i) {
@@ -108,7 +119,7 @@ public class Params {
     }
 
     public int size() {
-        int size = positional.size();
+        int size = positional.size() + unpositional_keywords;
 
         if(group_params == null)
             return size;
