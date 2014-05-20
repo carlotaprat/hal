@@ -6,6 +6,7 @@ import hal.interpreter.core.Arguments;
 import hal.interpreter.core.Builtin;
 import hal.interpreter.core.Params;
 import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.exceptions.NameException;
 import hal.interpreter.types.enumerable.HalArray;
 import hal.interpreter.types.enumerable.HalDictionary;
 import hal.interpreter.types.enumerable.HalEnumerable;
@@ -55,7 +56,7 @@ abstract public class HalKernel<T> extends HalObject<T>
             record.defineVariable(klass.value, klass);
     }
 
-    private static final Reference __print__ = new Reference(new Builtin("print", new Params.Group("args")) {
+    private static final Reference __print__ = new Reference(new Builtin("print", new Params.ParamGroup("args")) {
         @Override
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalArray a = (HalArray) args.get("args");
@@ -66,6 +67,18 @@ abstract public class HalKernel<T> extends HalObject<T>
             } else {
                 System.out.println();
             }
+
+            return HalNone.NONE;
+        }
+    });
+
+    private static final Reference __write__ = new Reference(new Builtin("write", new Params.ParamGroup("args")) {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            HalArray a = (HalArray) args.get("args");
+
+            for(HalObject arg : a.value)
+                System.out.print(arg);
 
             return HalNone.NONE;
         }
@@ -90,8 +103,20 @@ abstract public class HalKernel<T> extends HalObject<T>
         }
     });
 
+    private static final Reference __method_missing__ = new Reference(new Builtin("method_missing",
+            new Params.Param("name"),
+            new Params.ParamGroup("args"),
+            new Params.KeywordGroup("kwargs")) {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            throw new NameException(((HalString)args.get("name")).getValue());
+        }
+    });
+
     public static final HalClass klass = new HalClass("Kernel", HalObject.klass,
             __print__,
-            range
+            __write__,
+            range,
+            __method_missing__
     );
 }

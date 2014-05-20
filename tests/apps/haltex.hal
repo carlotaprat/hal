@@ -1,0 +1,7 @@
+class Kernel:
+  def __method_missing__ name, *args, options => none, special => false:
+    if block_given?:
+      env name, *args, options => options: yield
+    else:
+      write "\\", name
+      write "*" if special

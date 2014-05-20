@@ -487,11 +487,23 @@ INT : (DIGIT+ (('.' DIGIT)=> '.' DIGIT+ {$type=FLOAT;})?);
 fragment FLOAT  :;
 
 // Strings
-STRING  :  '"' ( ESC_SEQ | ~('\\'|'"') )* '"'
-        ;
+STRING
+    @init { final StringBuilder buf = new StringBuilder(); }
+    : '"' ( ESC_SEQ[buf]
+          | i = ~('\\'|'"') { buf.appendCodePoint(i); }
+          )* '"'
+      { setText(buf.toString()); }
+    ;
 
-fragment ESC_SEQ
-        :   '\\' ('b'|'t'|'n'|'f'|'r'|'\"'|'\''|'\\')
+fragment ESC_SEQ[StringBuilder buf]
+        :   '\\'
+            ('b'  { buf.append('\b'); }
+            |'t'  { buf.append('\t'); }
+            |'n'  { buf.append('\n'); }
+            |'f'  { buf.append('\f'); }
+            |'r'  { buf.append('\r'); }
+            |'"' { buf.append('"'); }
+            |'\\' { buf.append('\\'); } )
         ;
 
 WS        : SP {skip();};

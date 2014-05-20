@@ -104,7 +104,7 @@ public class Hal
                 HalObject d = evaluate(new ANTLRStringStream(input));
 
                 if (d != null)
-                    System.out.println("=> " + d.methodcall("__repr__"));
+                    System.out.println(" => " + d.methodcall("__repr__"));
             } catch(Throwable e) {
                 handleException(e);
             }

@@ -128,7 +128,7 @@ public class Interpreter
      * @param args The AST node representing the list of arguments of the caller.
      * @return The data returned by the function.
      */
-    private HalObject executeCall(String funcname, HalMethod lambda, HalTree args) {
+    private HalObject executeCall(String funcname, HalMethod lambda, Arguments args) {
         HalObject f;
         HalObject instance;
         HalObject self = stack.getVariable("self");
@@ -146,14 +146,19 @@ public class Interpreter
                     f = klass.getRecord().getVariable(funcname);
                     instance = klass;
                 } catch(NameException e3) {
-                    HalModule currentModule = stack.getCurrentModule();
-                    f = currentModule.getRecord().getVariable(funcname);
-                    instance = currentModule;
+                    try {
+                        HalModule currentModule = stack.getCurrentModule();
+                        f = currentModule.getRecord().getVariable(funcname);
+                        instance = currentModule;
+                    } catch(NameException e4) {
+                        args.prepend(new HalString(funcname));
+                        return executeCall("__method_missing__", lambda, args);
+                    }
                 }
             }
         }
 
-        return f.call(instance, lambda, listArguments(args));
+        return f.call(instance, lambda, args);
     }
 
     public HalObject executeMethod(MethodDefinition def, HalTree block, HalObject instance, HalMethod lambda,
@@ -284,7 +289,7 @@ public class Interpreter
 
                 switch(left.getType()) {
                     case HalLexer.FUNCALL:
-                        return executeCall(left.getChild(0).getText(), lambda, left.getChild(1));
+                        return executeCall(left.getChild(0).getText(), lambda, listArguments(left.getChild(1)));
                     case HalLexer.METHCALL:
                         return evaluateMethodCall(evaluateExpression(left.getChild(0)), left.getChild(1), lambda);
                     default:
@@ -396,7 +401,7 @@ public class Interpreter
                 value = evaluateDict(t);
                 break;
             case HalLexer.FUNCALL:
-                value = executeCall(t.getChild(0).getText(), null, t.getChild(1));
+                value = executeCall(t.getChild(0).getText(), null, listArguments(t.getChild(1)));
                 break;
             case HalLexer.INSTANCE_VAR:
                 value = stack.getVariable("self").getRecord().getVariable(t.getChild(0).getText());
@@ -623,7 +628,7 @@ public class Interpreter
 
             switch(param.getType()) {
                 case HalLexer.PARAM_GROUP:
-                    params[i] = new Params.Group(param.getChild(0).getText());
+                    params[i] = new Params.ParamGroup(param.getChild(0).getText());
                     break;
                 case HalLexer.KEYWORD:
                     params[i] = new Params.Keyword(param.getChild(0).getText(),
@@ -699,69 +704,43 @@ public class Interpreter
      * that the arguments are compatible with the parameters. In particular,
      * it checks that the number of parameters is the same and that no
      * expressions are passed as parametres by reference.
-     * @param args The AST of the list of arguments passed by the caller.
+     * @param targs The AST of the list of arguments passed by the caller.
      * @return The list of evaluated arguments.
      */
 
-    private Arguments listArguments(HalTree args) {
-        setLineNumber(args);
+    private Arguments listArguments(HalTree targs) {
+        setLineNumber(targs);
 
         // Create the list of parameters
-        int n = args.getChildCount();
-        HalObject[] arg_expr = new HalObject[n];
-        int pos_args = 0;
-        int kw_args = 0;
+        final Arguments args = new Arguments();
+        int n = targs.getChildCount();
 
         for(int i = 0; i < n; ++i) {
-            HalTree arg = args.getChild(i);
+            HalTree arg = targs.getChild(i);
+            setLineNumber(arg);
 
-            switch(arg.getType()) {
+            switch (arg.getType()) {
                 case HalLexer.FLATTEN_ARG:
-                    HalObject items = evaluateExpression(arg.getChild(0));
-                    arg_expr[i] = items;
-                    pos_args += ((HalInteger) items.methodcall("__size__")).value;
-                    break;
-                case HalLexer.KEYWORD:
-                    arg_expr[i] = evaluateExpression(arg.getChild(1));
-                    kw_args++;
-                    break;
-                default:
-                    arg_expr[i] = evaluateExpression(arg);
-                    pos_args++;
-                    break;
-            }
-        }
-
-        final HalObject[] pos = new HalObject[pos_args];
-        final Params.Keyword[] keywords = new Params.Keyword[kw_args];
-        final int[] current_pos = {0};
-        final int[] current_kw = {0};
-
-        for (int i = 0; i < n; ++i) {
-            HalTree a = args.getChild(i);
-            setLineNumber(a);
-
-            switch (a.getType()) {
-                case HalLexer.FLATTEN_ARG:
-                    arg_expr[i].methodcall_lambda("__each__", new InternalLambda(new Params.Param("value")) {
+                    HalObject toFlat = evaluateExpression(arg.getChild(0));
+                    toFlat.methodcall_lambda("__each__", new InternalLambda(new Params.Param("value")) {
                         @Override
-                        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
-                            HalObject value = args.get("value");
-                            pos[current_pos[0]++] = value;
+                        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments fargs) {
+                            HalObject value = fargs.get("value");
+                            args.append(value);
                             return value;
                         }
                     });
                     break;
                 case HalLexer.KEYWORD:
-                    keywords[current_kw[0]++] = new Params.Keyword(a.getChild(0).getText(), arg_expr[i]);
+                    args.put(arg.getChild(0).getText(), evaluateExpression(arg.getChild(1)));
                     break;
                 default:
-                    pos[current_pos[0]++] = arg_expr[i];
+                    args.append(evaluateExpression(arg));
                     break;
             }
         }
 
-        return new Arguments(pos, keywords);
+        return args;
     }
 
     /**

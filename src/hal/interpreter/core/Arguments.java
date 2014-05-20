@@ -3,21 +3,20 @@ package hal.interpreter.core;
 
 import hal.interpreter.types.HalObject;
 
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 public class Arguments {
-    public HalObject[] pos;
+    public ArrayList<HalObject> pos;
     public HashMap<String, HalObject> args;
 
     public Arguments() {
-        pos = new HalObject[0];
+        pos = new ArrayList<HalObject>();
         args = new HashMap<String, HalObject>();
     }
 
     public Arguments(HalObject...pos) {
         this();
-        this.pos = pos;
+        this.pos = new ArrayList<HalObject>(Arrays.asList(pos));
     }
 
     public Arguments(HalObject[] pos, Params.Keyword...keywords) {
@@ -31,8 +30,16 @@ public class Arguments {
         this(null, keywords);
     }
 
+    public void prepend(HalObject arg) {
+        pos.add(0, arg);
+    }
+
+    public void append(HalObject arg) {
+        pos.add(arg);
+    }
+
     public boolean isEmpty(){
-        return pos.length == 0 && args.size() == 0;
+        return pos.size() == 0 && args.size() == 0;
     }
 
     public HalObject get(String name) {
@@ -53,5 +60,9 @@ public class Arguments {
 
     public Set<String> keys() {
         return args.keySet();
+    }
+
+    public Set<Map.Entry<String, HalObject>> entrySet() {
+        return args.entrySet();
     }
 }

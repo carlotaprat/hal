@@ -77,8 +77,7 @@ public class HalTree extends CommonTree {
      * enclosing quotes. In this way, it can be printed as it is.
      */
     public void setStringValue() {
-        String s = getText();
         // Do not store the " at the extremes of the string
-        strValue = s.substring(1,s.length()-1);
+        strValue = getText();
     }
 }
