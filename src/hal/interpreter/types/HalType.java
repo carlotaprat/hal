@@ -86,6 +86,13 @@ public abstract class HalType
         }
     });
 
+    private static final Reference __none__ = new Reference(new Builtin("none?") {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            return new HalBoolean(instance == HalNone.NONE);
+        }
+    });
+
     public static final HalClass klass = new HalClass("Type", null,
             __repr__,
             __str__,
@@ -95,5 +102,6 @@ public abstract class HalType
             __neq__,
             __le__,
             __gt__,
-            __ge__);
+            __ge__,
+            __none__);
 }

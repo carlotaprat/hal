@@ -3,6 +3,7 @@ package hal.interpreter.types.numeric;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalClass;
 import hal.interpreter.types.HalObject;
+import hal.interpreter.types.enumerable.HalString;
 
 
 public class HalFloat extends HalNumber<Double>
@@ -19,6 +20,11 @@ public class HalFloat extends HalNumber<Double>
 
     public HalClass getKlass() {
         return HalFloat.klass;
+    }
+
+    @Override
+    public HalString str() {
+        return new HalString(String.format("%s",value));
     }
 
     @Override

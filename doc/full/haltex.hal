@@ -1,0 +1,68 @@
+def env name, *args, options => none:
+  write "\\begin{", name, "}"
+  write_options options
+  write_args args
+
+  print
+
+  yield
+
+  p "\\end{", name, "}"
+
+
+def write_options options:
+  write "[", options, "]" if not options.none?
+
+
+def write_args args:
+   if args:
+    args.each with arg: write "{", arg, "}"
+
+
+def wrap:
+    write "{"
+    yield
+    print "}"
+
+
+class Kernel:
+  def __method_missing__ name, *args, options => none, special => false:
+    if block_given?:
+      env name, *args, options => options: yield
+    else:
+      write "\\", name
+      write "*" if special
+      write_options options
+      write_args args
+      print
+
+  def cover title, subject, authors, footer:
+    titlepage:
+      center:
+        textsc "\\Large " + subject; br 1.5
+        hrule; br 0.4
+        wrap: huge; bfseries; print title; br 0.4
+        hrule; br 2.5
+  
+        minipage "0.4\\textwidth":
+          flushleft: large; print authors[0]
+  
+        minipage "0.4\\textwidth":
+          flushright: large; print authors[1]
+  
+        vfill
+        wrap: large; today
+        br
+        wrap: large; texttt footer
+
+  def br size => none, units => "cm":
+    write "\\\\"
+    write "[", size, units, "]" if not size.none?
+    print
+
+  def p *args:
+    write *args
+    print
+
+  def hrule:
+    rule "\\linewidth", "0.5mm"

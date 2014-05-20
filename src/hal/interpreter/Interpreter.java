@@ -382,7 +382,7 @@ public class Interpreter
                 }
                 break;
             case HalLexer.FLOAT:
-                value = new HalFloat(Float.parseFloat(t.getText()));
+                value = new HalFloat(Double.parseDouble(t.getText()));
                 break;
             // A Boolean literal
             case HalLexer.BOOLEAN:

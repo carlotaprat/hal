@@ -4,6 +4,7 @@ package hal.interpreter.types.enumerable;
 import hal.interpreter.Reference;
 import hal.interpreter.core.Arguments;
 import hal.interpreter.core.Builtin;
+import hal.interpreter.core.Params;
 import hal.interpreter.types.HalClass;
 import hal.interpreter.types.HalMethod;
 import hal.interpreter.types.HalNone;
@@ -54,9 +55,17 @@ public class HalString extends HalEnumerable<String>
             return last;
         }
     });
+
+    private static final Reference __add__ = new Reference(new Builtin("add", new Params.Param("x")) {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            return new HalString(((HalString)instance).value + ((HalString)args.get("x")).value);
+        }
+    });
     
     public static final HalClass klass = new HalClass("String", HalEnumerable.klass,
-            __each__
+            __each__,
+            __add__
     );
     
     public HalClass getKlass() { return klass; }
