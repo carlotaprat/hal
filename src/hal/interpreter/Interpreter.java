@@ -171,14 +171,17 @@ public class Interpreter
         stack.pushContext(def.name, instance, def.module, def.getLocals(), lineNumber());
         calls++;
 
-        HalObject superkw;
-        try {
-            superkw = instance.getKlass().getInstanceRecord().parent.getVariable(def.name);
-        } catch(NameException e) {
-            superkw = HalNone.NONE;
-        }
+        if(def.klass != null) {
+            ReferenceRecord parent = def.klass.getInstanceRecord().parent;
 
-        stack.defineVariable("super", superkw);
+            if(parent != null) {
+                try {
+                    stack.defineVariable("super", parent.getVariable(def.name));
+                } catch(NameException e) {
+                    // No super
+                }
+            }
+        }
 
         // Track line number
         setLineNumber(block);
@@ -596,7 +599,7 @@ public class Interpreter
             else
                 parent = (HalClass) evaluateExpression(inherit.getChild(0));
 
-            klass = new HalClass(name, parent);
+            klass = new HalClass(name, false, parent);
             self.getRecord().defineVariable(name, klass);
         }
 
@@ -613,7 +616,7 @@ public class Interpreter
         HalObject klass = stack.getVariable("self");
         String name = fundef.getChild(0).getText();
         Params.Param[] params = extractParams(fundef.getChild(1));
-        MethodDefinition def = new MethodDefinition(stack.getCurrentModule(), name, params);
+        MethodDefinition def = new MethodDefinition(stack.getCurrentModule(), klass, name, params);
         HalMethod method = new HalDefinedMethod(def, fundef.getChild(2));
         klass.getInstanceRecord().defineVariable(def.name, method);
         return method;

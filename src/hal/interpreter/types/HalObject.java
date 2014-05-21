@@ -11,7 +11,11 @@ import hal.interpreter.types.enumerable.HalString;
 
 public abstract class HalObject<T> extends HalType
 {
-    public static final HalClass klass = new HalClass("Object", HalType.klass);
+    public static final HalClass klass = new HalClass("Object", HalType.klass) {
+        public HalObject newInstance(HalClass instklass) {
+            return new HalInstance(instklass);
+        }
+    };
 
     public T value;
     private ReferenceRecord obj_record;
@@ -93,7 +97,7 @@ public abstract class HalObject<T> extends HalType
         try {
             return original.getVariable(name).call(this, lambda, args);
         } catch (NameException e) {
-            throw new TypeException(e.getMessage() + " in class " + getKlass().value);
+            throw new TypeException(e.getMessage() + " in " + toString() + " of class " + getKlass().value);
         } catch(InvalidArgumentsException e) {
                 throw new TypeException(e.getMessage() + " for " + getKlass().value + "#" + name);
         } catch(AbstractClassException e) {

@@ -15,7 +15,9 @@ abstract public class HalMethod extends HalObject<MethodDefinition>
         return mcall(instance, lambda, value.params.fill(args));
     }
 
-    public abstract HalObject mcall(HalObject instance, HalMethod lambda, Arguments args);
+    public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+        throw new RuntimeException("mcall not implemented");
+    }
 
     public HalString str() { return new HalString(value.name); }
     public HalBoolean bool() { return new HalBoolean(true); }

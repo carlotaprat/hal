@@ -1,6 +1,7 @@
 package hal.interpreter.core;
 
 import hal.interpreter.types.HalModule;
+import hal.interpreter.types.HalObject;
 
 
 public class LambdaDefinition extends MethodDefinition
@@ -9,6 +10,7 @@ public class LambdaDefinition extends MethodDefinition
 
     public LambdaDefinition(HalModule module, ReferenceRecord context, Params.Param...params) {
         this.module = module;
+        this.klass = null;
         this.name = "yield";
         this.params = new Params(params);
         this.context = context;
@@ -16,5 +18,9 @@ public class LambdaDefinition extends MethodDefinition
 
     public ReferenceRecord getLocals() {
         return new ReferenceRecord(context);
+    }
+
+    public HalObject getInstance() {
+        return context.getVariable("self");
     }
 }

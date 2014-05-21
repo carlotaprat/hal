@@ -22,6 +22,13 @@ public abstract class HalType
         throw new TypeException("Not a class/module.");
     }
 
+    private static final Reference __init__ = new Reference(new Builtin("init") {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            return instance;
+        }
+    });
+
     private static Reference __repr__ = new Reference(new Builtin("repr") {
         @Override
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
@@ -50,23 +57,23 @@ public abstract class HalType
         }
     });
 
-    private static Reference __eq__ = new Reference(new Builtin("eq", new Params.Param("e1")) {
+    private static Reference __eq__ = new Reference(new Builtin("eq", new Params.Param("x")) {
         @Override
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
-            return new HalBoolean(instance.getValue().equals(args.get("e1").getValue()));
+            return new HalBoolean(instance.getValue().equals(args.get("x").getValue()));
         }
     });
 
     private static Reference __neq__ = new Reference(new Builtin("neq") {
         @Override
-        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+        public HalObject call(HalObject instance, HalMethod lambda, Arguments args) {
             return instance.methodcall("__eq__", args).methodcall("__not__");
         }
     });
 
     private static final Reference __le__ = new Reference(new Builtin("le") {
         @Override
-        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+        public HalObject call(HalObject instance, HalMethod lambda, Arguments args) {
             return new HalBoolean(instance.methodcall("__lt__", args).toBoolean() ||
                     instance.methodcall("__eq__", args).toBoolean());
         }
@@ -74,14 +81,14 @@ public abstract class HalType
 
     private static final Reference __gt__ = new Reference(new Builtin("gt") {
         @Override
-        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+        public HalObject call(HalObject instance, HalMethod lambda, Arguments args) {
             return instance.methodcall("__le__", args).methodcall("__not__");
         }
     });
 
     private static final Reference __ge__ = new Reference(new Builtin("ge") {
         @Override
-        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+        public HalObject call(HalObject instance, HalMethod lambda, Arguments args) {
             return instance.methodcall("__lt__", args).methodcall("__not__");
         }
     });
@@ -94,6 +101,7 @@ public abstract class HalType
     });
 
     public static final HalClass klass = new HalClass("Type", null,
+            __init__,
             __repr__,
             __str__,
             __bool__,

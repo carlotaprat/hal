@@ -13,19 +13,32 @@ public class HalClass extends HalObject<String>
         public void initRecord() {}
     };
 
+    private HalClass parent;
     private ReferenceRecord instRecord;
 
     public HalClass(String name, HalClass parent, Reference... builtins) {
-        value = name;
-        ReferenceRecord inherit = (parent == null) ? null : parent.getInstanceRecord();
-        instRecord = new ReferenceRecord(inherit, builtins);
+        this(name, true, parent, builtins);
     }
 
-    public HalObject _new(Arguments args) {
-        HalObject instance = new HalInstance(this);
-        instance.methodcall("init", args);
+    public HalClass(String name, boolean abstrakt, HalClass parent, Reference... builtins) {
+        value = name;
+        this.parent = parent;
+        ReferenceRecord inherit = (parent == null) ? null : parent.getInstanceRecord();
+        instRecord = new ReferenceRecord(inherit, builtins);
 
-        return instance;
+        if(!abstrakt)
+            getRecord().defineBuiltin(new Reference(new Builtin("new") {
+                @Override
+                public HalObject call(HalObject instance, HalMethod lambda, Arguments args) {
+                    HalObject inst = ((HalClass)instance).newInstance((HalClass)instance);
+                    inst.methodcall_lambda("init", lambda, args);
+                    return inst;
+                }
+            }));
+    }
+
+    public HalObject newInstance(HalClass instklass) {
+        return parent.newInstance(instklass);
     }
 
     public HalString str() {
@@ -37,18 +50,6 @@ public class HalClass extends HalObject<String>
     public void solveDependency() {
         super.initRecord();
         instRecord.parent = HalObject.klass.getInstanceRecord();
-
-        Reference[] builtins = new Reference[] {
-            new Reference(new Builtin("new") {
-                @Override
-                public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
-                    return ((HalClass)instance)._new(args);
-                }
-            })
-        };
-
-        for(Reference builtin : builtins)
-            instRecord.defineBuiltin(builtin);
     }
 
     public ReferenceRecord getInstanceRecord() { return instRecord; }
