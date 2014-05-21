@@ -599,7 +599,9 @@ public class Interpreter
             else
                 parent = (HalClass) evaluateExpression(inherit.getChild(0));
 
-            klass = new HalClass(name, false, parent);
+            boolean abstrakt = !parent.getRecord().hasVariable("new");
+
+            klass = new HalClass(name, abstrakt, parent);
             self.getRecord().defineVariable(name, klass);
         }
 

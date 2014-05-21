@@ -11,7 +11,7 @@ import hal.interpreter.types.enumerable.HalString;
 
 public abstract class HalObject<T> extends HalType
 {
-    public static final HalClass klass = new HalClass("Object", HalType.klass) {
+    public static final HalClass klass = new HalClass("Object", false, HalType.klass) {
         public HalObject newInstance(HalClass instklass) {
             return new HalInstance(instklass);
         }
