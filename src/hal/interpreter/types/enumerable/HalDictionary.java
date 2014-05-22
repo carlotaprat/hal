@@ -98,7 +98,13 @@ public class HalDictionary extends HalEnumerable<HashMap<HalObject, HalObject>>
             __each__,
             __keys__,
             __values__
-    );
+    ){
+        public HalObject newInstance(final HalClass instklass) {
+            return new HalDictionary() {
+                public HalClass getKlass() { return instklass; }
+            };
+        }
+    };
 
     public HalClass getKlass() { return HalDictionary.klass; }
 }

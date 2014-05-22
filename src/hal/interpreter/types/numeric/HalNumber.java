@@ -5,6 +5,7 @@ import hal.interpreter.core.Arguments;
 import hal.interpreter.core.Builtin;
 import hal.interpreter.core.Params;
 import hal.interpreter.exceptions.NameException;
+import hal.interpreter.exceptions.NewNotSupportedException;
 import hal.interpreter.exceptions.ZeroDivisionException;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalClass;
@@ -296,5 +297,9 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
             // Relational
             __lt__,
             __eq__
-    );
+    ) {
+        public HalObject newInstance(HalClass instklass) {
+            throw new NewNotSupportedException();
+        }
+    };
 }

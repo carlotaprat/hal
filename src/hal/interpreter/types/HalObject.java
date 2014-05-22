@@ -2,7 +2,7 @@ package hal.interpreter.types;
 
 import hal.interpreter.core.Arguments;
 import hal.interpreter.core.ReferenceRecord;
-import hal.interpreter.exceptions.AbstractClassException;
+import hal.interpreter.exceptions.NewNotSupportedException;
 import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.exceptions.NameException;
 import hal.interpreter.exceptions.TypeException;
@@ -11,7 +11,7 @@ import hal.interpreter.types.enumerable.HalString;
 
 public abstract class HalObject<T> extends HalType
 {
-    public static final HalClass klass = new HalClass("Object", false, HalType.klass) {
+    public static final HalClass klass = new HalClass("Object", HalType.klass) {
         public HalObject newInstance(HalClass instklass) {
             return new HalInstance(instklass);
         }
@@ -100,8 +100,8 @@ public abstract class HalObject<T> extends HalType
             throw new TypeException(e.getMessage() + " in " + toString() + " of class " + getKlass().value);
         } catch(InvalidArgumentsException e) {
                 throw new TypeException(e.getMessage() + " for " + getKlass().value + "#" + name);
-        } catch(AbstractClassException e) {
-                throw new TypeException(e.getMessage());
+        } catch(NewNotSupportedException e) {
+                throw new TypeException(e.getMessage() + " in " + toString());
         }
     }
 }

@@ -46,16 +46,6 @@ public class HalArray extends HalEnumerable<List<HalObject>>
         return new HalInteger(value.size());
     }
 
-    public HalObject[] flatten() {
-        int n = value.size();
-        HalObject[] flat = new HalObject[n];
-
-        for(int i = 0; i < n; ++i)
-            flat[i] = value.get(i);
-
-        return flat;
-    }
-
     private static final Reference __append__ = new Reference(new Builtin("append!", new Params.Param("element")) {
         @Override
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
@@ -104,7 +94,7 @@ public class HalArray extends HalEnumerable<List<HalObject>>
         }
     });
 
-    public static final HalClass klass = new HalClass("Array", false, HalEnumerable.klass,
+    public static final HalClass klass = new HalClass("Array", HalEnumerable.klass,
             __append__,
             __pop__,
             __lshift__,
