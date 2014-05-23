@@ -2,9 +2,12 @@ package hal.interpreter.types;
 
 
 import hal.interpreter.Reference;
+import hal.interpreter.core.Arguments;
+import hal.interpreter.core.Builtin;
 import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.NewNotSupportedException;
 import hal.interpreter.types.enumerable.HalString;
+import hal.interpreter.types.numeric.HalInteger;
 
 public class HalClass extends HalObject<String>
 {
@@ -51,6 +54,12 @@ public class HalClass extends HalObject<String>
         super.initRecord();
         inherit(HalObject.klass);
         HalMethod.klass.inherit(HalObject.klass);
+        HalMethod.klass.getInstanceRecord().defineBuiltin(new Reference(new Builtin("arity") {
+            @Override
+            public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+                return new HalInteger(((HalMethod)instance).value.getArity());
+            }
+        }));
     }
 
     public ReferenceRecord getInstanceRecord() { return instRecord; }

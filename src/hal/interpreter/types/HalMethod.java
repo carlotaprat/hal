@@ -8,7 +8,7 @@ import hal.interpreter.types.enumerable.HalString;
 abstract public class HalMethod extends HalObject<MethodDefinition>
 {
     public HalMethod(MethodDefinition def) {
-        value = def;
+        super(def);
     }
 
     public HalObject call(HalObject instance, HalMethod lambda, Arguments args) {

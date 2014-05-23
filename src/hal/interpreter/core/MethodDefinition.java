@@ -20,6 +20,10 @@ public class MethodDefinition
         this.params = new Params(params);
     }
 
+    public int getArity() {
+        return params.arity;
+    }
+
     public ReferenceRecord getLocals() {
         return new ReferenceRecord(null);
     }

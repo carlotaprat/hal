@@ -22,6 +22,7 @@ public class Params {
     public int before_group;
     public int after_group;
     public int unpositional_keywords;
+    public int arity;
 
     static public class Param {
         enum TYPE { POSITIONAL, PARAM_GROUP, KEYWORD, KEYWORD_GROUP }
@@ -71,11 +72,13 @@ public class Params {
         before_group = 0;
         after_group = 0;
         unpositional_keywords = 0;
+        arity = 0;
 
         for (Param param : params) {
             switch(param.getType()) {
                 case POSITIONAL:
                     positional.add(param.name);
+                    arity++;
 
                     if(group_params == null)
                         before_group++;
