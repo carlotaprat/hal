@@ -160,6 +160,28 @@ public class Interpreter
         return f.call(instance, lambda, args);
     }
 
+    private HalObject getReference(String funcname) {
+        HalObject f;
+        HalObject self = stack.getVariable("self");
+
+        try {
+            f = stack.getVariable(funcname);
+        } catch(NameException e) {
+            try {
+                f = self.getRecord().getVariable(funcname);
+            } catch (NameException e2) {
+                try {
+                    f = self.getKlass().getRecord().getVariable(funcname);
+                } catch(NameException e3) {
+                    HalModule currentModule = stack.getCurrentModule();
+                    f = currentModule.getRecord().getVariable(funcname);
+                }
+            }
+        }
+
+        return f;
+    }
+
     public HalObject executeMethod(MethodDefinition def, HalTree block, HalObject instance, HalMethod lambda,
                                    Arguments args)
     {
@@ -417,6 +439,9 @@ public class Interpreter
                 break;
             case HalLexer.GLOBAL_VAR:
                 value = globals.getVariable(t.getText());
+                break;
+            case HalLexer.REFERENCE_VAR:
+                value = getReference(t.getChild(0).getText());
                 break;
             case HalLexer.LIST_EXPR:
                 HalObject obj = evaluateExpression(t.getChild(0));

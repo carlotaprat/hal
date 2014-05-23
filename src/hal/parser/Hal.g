@@ -34,6 +34,7 @@ tokens
     GLOBAL_VAR;
     INSTANCE_VAR;
     KLASS_VAR;
+    REFERENCE_VAR;
     LIST_EXPR;
 }
 
@@ -380,6 +381,7 @@ atom
     |   global_var
     |   instance_var
     |   klass_var
+    |   reference_var
     |   list
     |   dict
     |   funcall // An ID can be considered a "funcall" with 0 args
@@ -396,6 +398,10 @@ instance_var
 
 klass_var
     :   DOUBLE_AT ID -> ^(KLASS_VAR ID)
+    ;
+
+reference_var
+    :   AMPERSAND ID -> ^(REFERENCE_VAR ID)
     ;
 
 list
@@ -469,6 +475,7 @@ LARROW  : '=>';
 AT      : '@';
 DOUBLE_AT : '@@';
 DOLLAR    : '$';
+AMPERSAND : '&';
 COMMA     : ',' NL?;
 
 
