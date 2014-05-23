@@ -22,10 +22,6 @@ public class HalInstance extends HalObject<HalClass>
         return new HalBoolean(true);
     }
 
-    public HalString str() {
-        return new HalString("<" + getKlass().value + " @" + System.identityHashCode(this) + ">");
-    }
-
     public HalClass getKlass() {
         return instklass;
     }

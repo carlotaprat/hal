@@ -42,9 +42,6 @@ public class HalTree extends CommonTree {
     /** Field to store integer literals */
     private int intValue;
 
-    /** Field to store string literals (without the enclosing quotes) */
-    private String strValue;
-
     /** Constructor of the class */
     public HalTree(Token t) {
         super(t);
@@ -67,17 +64,5 @@ public class HalTree extends CommonTree {
     /** Define the Boolean value of the node. */
     public void setBooleanValue() {
         intValue = getText().equals("true") ? 1 : 0;
-    }
-
-    /** Get the string value of the node. */
-    public String getStringValue() { return strValue; }
-
-    /**
-     * Define the string value of the node. It removes the
-     * enclosing quotes. In this way, it can be printed as it is.
-     */
-    public void setStringValue() {
-        // Do not store the " at the extremes of the string
-        strValue = getText();
     }
 }

@@ -101,7 +101,6 @@ public class Interpreter
     private void PreProcessAST(HalTree T) {
         if (T == null) return;
         switch(T.getType()) {
-            case HalLexer.STRING: T.setStringValue(); break;
             case HalLexer.BOOLEAN: T.setBooleanValue(); break;
             default: break;
         }
@@ -395,7 +394,11 @@ public class Interpreter
                 value = HalNone.NONE;
                 break;
             case HalLexer.STRING:
-                value = new HalString(t.getStringValue());
+                value = new HalString(t.getText());
+                break;
+            case HalLexer.BACKTICKS:
+                HalObject proc = HalProcess.klass.methodcall("__exec__", new HalString(t.getText()));
+                value = proc.methodcall("output");
                 break;
             case HalLexer.ARRAY:
                 value = evaluateArray(t);

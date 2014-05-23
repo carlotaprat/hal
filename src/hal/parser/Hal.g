@@ -374,6 +374,7 @@ atom
     :   INT
     |   FLOAT
     |   STRING
+    |   BACKTICKS
     |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
     |   NONE
     |   global_var
@@ -493,6 +494,15 @@ STRING
           | i = ~('\\'|'"') { buf.appendCodePoint(i); }
           )* '"'
       { setText(buf.toString()); }
+    ;
+
+BACKTICKS
+    @init { final StringBuilder buf = new StringBuilder(); }
+    :   '`' (
+            '\\`' { buf.append('`'); }
+            | i = ~('`') { buf.appendCodePoint(i); }
+        )* '`'
+        { setText(buf.toString()); }
     ;
 
 fragment ESC_SEQ[StringBuilder buf]

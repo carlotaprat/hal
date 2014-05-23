@@ -144,8 +144,11 @@ public class Hal
         else
             System.err.format(INTERPRETER.getStackTrace());
 
-        if(ex instanceof NullPointerException || ex instanceof AssertionError)
+        if(ex instanceof NullPointerException || ex instanceof AssertionError || ex instanceof StackOverflowError)
             ex.printStackTrace();
+
+        if(!interactive)
+            System.exit(1);
     }
 
     /**
@@ -240,4 +243,3 @@ public class Hal
         return true;
     }
 }
-

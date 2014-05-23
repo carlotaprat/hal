@@ -2,8 +2,6 @@ package hal.interpreter.types;
 
 
 import hal.interpreter.Reference;
-import hal.interpreter.core.Arguments;
-import hal.interpreter.core.Builtin;
 import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.NewNotSupportedException;
 import hal.interpreter.types.enumerable.HalString;
@@ -18,10 +16,18 @@ public class HalClass extends HalObject<String>
     private ReferenceRecord instRecord;
 
     public HalClass(String name, HalClass parent, Reference... builtins) {
+        this(name, parent, builtins, new Reference[0]);
+    }
+
+    public HalClass(String name, HalClass parent, Reference[] instance, Reference... statik) {
         value = name;
         this.parent = parent;
-        instRecord = new ReferenceRecord(null, builtins);
+        instRecord = new ReferenceRecord(null, instance);
         inherit(parent);
+
+        ReferenceRecord statRecord = getRecord();
+        for(Reference statMethod : statik)
+            statRecord.defineBuiltin(statMethod);
     }
 
     private void inherit(HalClass parent) {
@@ -45,15 +51,6 @@ public class HalClass extends HalObject<String>
         super.initRecord();
         inherit(HalObject.klass);
         HalMethod.klass.inherit(HalObject.klass);
-
-        HalObject.klass.getRecord().defineBuiltin(new Reference(new Builtin("new") {
-            @Override
-            public HalObject call(HalObject instance, HalMethod lambda, Arguments args) {
-                HalObject inst = ((HalClass)instance).newInstance((HalClass)instance);
-                inst.methodcall_lambda("init", lambda, args);
-                return inst;
-            }
-        }));
     }
 
     public ReferenceRecord getInstanceRecord() { return instRecord; }

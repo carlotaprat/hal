@@ -1,6 +1,8 @@
 package hal.interpreter.types;
 
+import hal.interpreter.Reference;
 import hal.interpreter.core.Arguments;
+import hal.interpreter.core.Builtin;
 import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.NewNotSupportedException;
 import hal.interpreter.exceptions.InvalidArgumentsException;
@@ -11,7 +13,16 @@ import hal.interpreter.types.enumerable.HalString;
 
 public abstract class HalObject<T> extends HalType
 {
-    public static final HalClass klass = new HalClass("Object", HalType.klass) {
+    public static final HalClass klass = new HalClass("Object", HalType.klass, new Reference[0],
+            new Reference(new Builtin("new") {
+                @Override
+                public HalObject call(HalObject instance, HalMethod lambda, Arguments args) {
+                    HalObject inst = ((HalClass)instance).newInstance((HalClass)instance);
+                    inst.methodcall_lambda("init", lambda, args);
+                    return inst;
+                }
+            }))
+    {
         public HalObject newInstance(HalClass instklass) {
             return new HalInstance(instklass);
         }
@@ -66,6 +77,10 @@ public abstract class HalObject<T> extends HalType
 
     public HalBoolean not() {
         return new HalBoolean(!((HalBoolean) methodcall("__bool__")).value);
+    }
+
+    public HalString str() {
+        return new HalString("<" + getKlass().value + " @" + System.identityHashCode(this) + ">");
     }
 
     public HalObject call(HalObject instance, HalMethod lambda, HalObject...args) {
