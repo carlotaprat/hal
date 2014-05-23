@@ -51,7 +51,8 @@ abstract public class HalKernel<T> extends HalObject<T>
                 HalRational.klass,
 
                 // Misc
-                HalProcess.klass
+                HalProcess.klass,
+                HalFile.klass
         };
 
         ReferenceRecord record = HalKernel.klass.getInstanceRecord();
@@ -87,7 +88,7 @@ abstract public class HalKernel<T> extends HalObject<T>
         }
     });
     
-    private static final Reference range = new Reference(new Builtin("range",
+    private static final Reference __range__ = new Reference(new Builtin("range",
             new Params.Param("end"),
             new Params.Keyword("start", new HalInteger(0)),
             new Params.Keyword("step", new HalInteger(1)))
@@ -119,7 +120,7 @@ abstract public class HalKernel<T> extends HalObject<T>
     public static final HalClass klass = new HalClass("Kernel", HalObject.klass,
             __print__,
             __write__,
-            range,
+            __range__,
             __method_missing__
     );
 }
