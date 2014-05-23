@@ -57,7 +57,9 @@ public class HalClass extends HalObject<String>
         HalMethod.klass.getInstanceRecord().defineBuiltin(new Reference(new Builtin("arity") {
             @Override
             public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
-                return new HalInteger(((HalMethod)instance).value.getArity());
+                HalInteger arity = new HalInteger(((HalMethod)instance).value.getArity());
+                instance.getRecord().defineVariable("arity", arity);
+                return arity;
             }
         }));
     }
