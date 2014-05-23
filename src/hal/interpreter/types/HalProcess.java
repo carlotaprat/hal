@@ -5,10 +5,14 @@ import hal.interpreter.core.Arguments;
 import hal.interpreter.core.Builtin;
 import hal.interpreter.core.Params;
 import hal.interpreter.core.ReferenceRecord;
+import hal.interpreter.exceptions.OSException;
 import hal.interpreter.types.enumerable.HalString;
 import hal.interpreter.types.numeric.HalInteger;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 
 public class HalProcess extends HalObject<Process>
@@ -25,7 +29,7 @@ public class HalProcess extends HalObject<Process>
     private String streamToString(InputStream stream) {
         BufferedReader br = new BufferedReader(new InputStreamReader(stream));
         StringBuilder builder = new StringBuilder();
-        String line = null;
+        String line;
 
         try {
             boolean first = true;
@@ -38,7 +42,7 @@ public class HalProcess extends HalObject<Process>
                 builder.append(line);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return "";
         }
 
         return builder.toString();
@@ -59,9 +63,9 @@ public class HalProcess extends HalObject<Process>
                 p.waitFor();
                 return new HalProcess(p);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new OSException(e.getMessage());
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                throw new OSException(e.getMessage());
             }
         }
     });
