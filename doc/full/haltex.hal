@@ -63,8 +63,15 @@ class Kernel:
     print
 
   def p *args:
-    write *args
+    ps = args.map with arg: pstyle arg
+    write *ps
     print
+
+  def pstyle paragraph:
+    paragraph \
+      .gsub("\\*\\*([^\\*\\*]*)\\*\\*", "\\\\textbf{$1}") \
+      .gsub("\\*([^\\*]*)\\*", "\\\\em{$1}") \
+      .gsub("\\|([^\\|]*)\\|", "\\\\texttt{$1}")
 
   def hrule:
     rule "\\linewidth", "0.5mm"
@@ -75,3 +82,6 @@ class Kernel:
 
   def needs pkg:
     usepackage pkg if not packages.has_key? pkg
+
+  def item description => none:
+    __method_missing__ "item", options => description
