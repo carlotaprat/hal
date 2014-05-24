@@ -4,11 +4,13 @@ documentclass "article", options => "a4paper,11pt"
 
 # Packages
 usepackage "inputenc", options => "utf8"
-usepackage "color", options => "usenames,dvipsnames"
 usepackage "graphicx"
 usepackage "caption", options => "justification=centering,labelfont=bf"
-usepackage "listings"
 usepackage "hyperref", options => "hidelinks"
+usepackage "xcolor", options => "usenames,dvipsnames"
+
+# HalTeX modules
+from haltex.utils import code
 
 document:
   cover title => "Hal",
@@ -20,3 +22,5 @@ document:
   p "HAL is a scripting language based in other scripting languages like Python and Ruby.
     Our objective is to provide a clean, easy-to-use and powerful scripting language with the
     most interesting features and ideas that can be found in other languages!"
+
+  code "hello_world", "Hal says: ``Hello world!\""

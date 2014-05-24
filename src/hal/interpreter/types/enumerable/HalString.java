@@ -62,10 +62,18 @@ public class HalString extends HalEnumerable<String>
             return new HalString(((HalString)instance).value + ((HalString)args.get("x")).value);
         }
     });
+
+    private static final Reference __mod__ = new Reference(new Builtin("mod", new Params.Param("x")) {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            return new HalString(String.format(((HalString)instance).value, args.get("x")));
+        }
+    });
     
     public static final HalClass klass = new HalClass("String", HalEnumerable.klass,
             __each__,
-            __add__
+            __add__,
+            __mod__
     );
     
     public HalClass getKlass() { return klass; }

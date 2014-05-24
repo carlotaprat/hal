@@ -1,0 +1,27 @@
+needs "listings"
+needs "xcolor"
+
+print "\\lstdefinelanguage{hal}{
+    basicstyle=\\ttfamily,
+    sensitive=false,
+    morestring=[b]\",
+    keywords={=,for,in,while,if,else,elif,class,def},
+    keywordstyle=\\color{blue},
+    morecomment=[l]{\\#},
+    showstringspaces=false,
+    stringstyle=\\color{green!50!black},
+    captionpos=b
+  }"
+
+def code file, capt => "No caption given":
+  code = Process.exec "cat examples/%s.hal" % file
+  exec = Process.exec "hal examples/%s.hal" % file
+  
+  figure options => "h!":
+    lstlisting options => "language=hal":
+      print code.output
+
+    verbatim:
+      print "=> " + exec.output if exec.status == 0 else print exec.error
+
+    caption capt

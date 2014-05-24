@@ -3,11 +3,9 @@ package hal.interpreter.types.enumerable;
 import hal.interpreter.Reference;
 import hal.interpreter.core.Arguments;
 import hal.interpreter.core.Builtin;
+import hal.interpreter.core.Params;
 import hal.interpreter.exceptions.KeyException;
-import hal.interpreter.types.HalClass;
-import hal.interpreter.types.HalMethod;
-import hal.interpreter.types.HalNone;
-import hal.interpreter.types.HalObject;
+import hal.interpreter.types.*;
 import hal.interpreter.types.numeric.HalInteger;
 
 import java.util.HashMap;
@@ -93,11 +91,19 @@ public class HalDictionary extends HalEnumerable<HashMap<HalObject, HalObject>>
             return last;
         }
     });
+
+    private static final Reference __has_key__ = new Reference(new Builtin("has_key?", new Params.Param("key")) {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            return new HalBoolean(((HalDictionary)instance).value.containsKey(args.get("key")));
+        }
+    });
     
     public static final HalClass klass = new HalClass("Dictionary", HalEnumerable.klass,
             __each__,
             __keys__,
-            __values__
+            __values__,
+            __has_key__
     ){
         public HalObject newInstance(final HalClass instklass) {
             return new HalDictionary() {

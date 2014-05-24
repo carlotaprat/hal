@@ -66,9 +66,9 @@ public abstract class HalEnumerable<T> extends HalObject<T>
             final HalArray n = new HalArray();
             final HalMethod f = lambda;
 
-            instance.methodcall_lambda("__each__", new InternalLambda() {
+            instance.methodcall_lambda("__each__", new InternalLambda(new Params.Param("x")) {
                 @Override
-                public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+                public HalObject call(HalObject instance, HalMethod lambda, Arguments args) {
                     return n.methodcall("__append!__", f.call(n, null, args));
                 }
             });

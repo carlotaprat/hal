@@ -1,10 +1,21 @@
 \documentclass[a4paper,11pt]{article}
 \usepackage[utf8]{inputenc}
-\usepackage[usenames,dvipsnames]{color}
 \usepackage{graphicx}
 \usepackage[justification=centering,labelfont=bf]{caption}
-\usepackage{listings}
 \usepackage[hidelinks]{hyperref}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{listings}
+\lstdefinelanguage{hal}{
+    basicstyle=\ttfamily,
+    sensitive=false,
+    morestring=[b]",
+    keywords={=,for,in,while,if,else,elif,class,def},
+    keywordstyle=\color{blue},
+    morecomment=[l]{\#},
+    showstringspaces=false,
+    stringstyle=\color{green!50!black},
+    captionpos=b
+  }
 \begin{document}
 \begin{titlepage}
 \begin{center}
@@ -45,4 +56,13 @@ Alvaro Espuña Buxo
 HAL is a scripting language based in other scripting languages like Python and Ruby.
     Our objective is to provide a clean, easy-to-use and powerful scripting language with the
     most interesting features and ideas that can be found in other languages!
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+print "Hello world!"
+\end{lstlisting}
+\begin{verbatim}
+=> Hello world!
+\end{verbatim}
+\caption{Hal says: ``Hello world!"}
+\end{figure}
 \end{document}

@@ -1,3 +1,5 @@
+@packages = {}
+
 def env name, *args, options => none:
   write "\\begin{", name, "}"
   write_options options
@@ -15,14 +17,14 @@ def write_options options:
 
 
 def write_args args:
-   if args:
+  if args:
     args.each with arg: write "{", arg, "}"
 
 
 def wrap:
-    write "{"
-    yield
-    print "}"
+  write "{"
+  yield
+  print "}"
 
 
 class Kernel:
@@ -66,3 +68,10 @@ class Kernel:
 
   def hrule:
     rule "\\linewidth", "0.5mm"
+
+  def usepackage pkg, options => none:
+    packages[pkg] = true
+    __method_missing__ "usepackage", pkg, options => options
+
+  def needs pkg:
+    usepackage pkg if not packages.has_key? pkg
