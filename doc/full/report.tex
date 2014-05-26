@@ -6,16 +6,36 @@
 \usepackage[usenames,dvipsnames]{xcolor}
 \usepackage{soul}
 \usepackage{listings}
+
+\newcommand{\CodeSymbol}[1]{\textcolor{brown}{#1}}
 \lstdefinelanguage{hal}{
     basicstyle=\ttfamily,
     sensitive=false,
     morestring=[b]",
-    keywords={=,for,in,while,if,else,elif,class,def},
-    keywordstyle=\color{blue},
+    keywords=[1]{=,for,in,while,if,else,elif,class,def,with,return},
+    keywords=[2]{Array, print, self, yield},
+    keywordstyle=[1]\color{blue},
+    keywordstyle=[2]\color{red!60!black},
+    ={\color{brown!50!black}\bfseries},
     morecomment=[l]{\#},
     showstringspaces=false,
     stringstyle=\color{green!50!black},
-    captionpos=b
+    captionpos=b,
+    literate=%
+      {\{}{{\CodeSymbol{\{}}}1
+      {\}}{{\CodeSymbol{\}}}}1
+      {(}{{\CodeSymbol{(}}}1
+      {)}{{\CodeSymbol{)}}}1
+      {>}{{\CodeSymbol{>}}}1
+      {<}{{\CodeSymbol{<}}}1
+      {=}{{\CodeSymbol{=}}}1
+      {;}{{\CodeSymbol{;}}}1
+      {[}{{\CodeSymbol{[}}}1
+      {]}{{\CodeSymbol{]}}}1
+      {:}{{\CodeSymbol{:}}}1
+      {.}{{\CodeSymbol{.}}}1
+      {+}{{\CodeSymbol{+}}}1
+      {-}{{\CodeSymbol{-}}}1
   }
 \begin{document}
 \begin{titlepage}
@@ -79,7 +99,7 @@ An \textbf{extensible}, \textbf{intuitive} and \textbf{interactive} interpreter
 \end{itemize}
 We love \texttt{Python} and \texttt{Ruby}! In fact, most of the features of \texttt{HAL} are directly influenced
     by these two languages. However, we implemented everything in our own way, thinking in our
-    needs as programmers.
+    needs as programmers and what made sense to include in \texttt{HAL}.
 \begin{figure}[h!]
 \begin{lstlisting}[language=hal]
 print "Hello world!"
@@ -91,4 +111,32 @@ print "Hello world!"
 \end{figure}
 \clearpage
 \section{Syntax}
+We wanted \texttt{HAL} to be \textbf{readable}, \textbf{clean} and \textbf{easy to write}. We think that one of the
+    best features of \texttt{Python} is the way it defines blocks by indentation because it forces the programmer
+    to write readable code! On the other hand, \texttt{Python} is really verbose sometimes: explicit \texttt{self} everywhere,
+    calls with mandatory parentheses... Here's where \texttt{Ruby} wins! The syntax of \texttt{Ruby} lets the programmer
+    decide whether to be \textbf{explicit} or not, producing code that can feel like \emph{magic}.
+\\
+We decided to try to combine the best parts of \texttt{Python} and \texttt{Ruby} syntaxes into \texttt{HAL}. The result
+    is an amazingly \textbf{clean} syntax with \textbf{blocks defined by indentation} and letting the programmer
+    be \textbf{explicit only when necessary}!
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+class Array:
+  def sort!:
+    if size < 2: return self
+    p = first
+    q = pop!
+    lesser = q.filter with x: x < p
+    greater = q.filter with x: x >= p
+    lesser.sort! ++ [p] ++ greater.sort!
+
+a = [1, 2, 3, -1, -2, -3, 20, 40, 1, 2, 200, -5]
+print a.sort!
+\end{lstlisting}
+\begin{verbatim}
+=> [-5, -3, -2, -1, 1, 1, 2, 2, 3, 20, 40, 200]
+\end{verbatim}
+\caption{\texttt{HAL} can quicksort!}
+\end{figure}
 \end{document}

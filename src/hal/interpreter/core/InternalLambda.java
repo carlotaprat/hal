@@ -12,6 +12,10 @@ abstract public class InternalLambda extends HalMethod
         super(new LambdaDefinition(null, null, params));
     }
 
+    public InternalLambda(HalMethod method) {
+        super(new LambdaDefinition(method.value));
+    }
+
     public HalString str() { return new HalString("yield"); }
     public HalBoolean bool() { return new HalBoolean(true); }
     public HalClass getKlass() { return HalMethod.klass; }

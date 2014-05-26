@@ -70,7 +70,7 @@ class Kernel:
   def pstyle paragraph:
     paragraph \
       .gsub("\\*\\*([^\\*\\*]*)\\*\\*", "\\\\textbf{$1}") \
-      .gsub("\\*([^\\*]*)\\*", "\\\\em{$1}") \
+      .gsub("\\*([^\\*]*)\\*", "\\\\emph{$1}") \
       .gsub("\\|([^\\|]*)\\|", "\\\\texttt{$1}")
 
   def hrule:

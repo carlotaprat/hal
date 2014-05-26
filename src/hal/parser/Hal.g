@@ -347,7 +347,7 @@ shift_expr
     ;
 
 num_expr
-    :   term (options {greedy=true;}: (PLUS^ | MINUS^) term)*
+    :   term (options {greedy=true;}: (PLUS^ | MINUS^ | DOUBLE_PLUS^) term)*
     ;
 
 term
@@ -435,6 +435,7 @@ LE      : '<=';
 GT      : '>';
 GE      : '>=';
 PLUS    : '+' ;
+DOUBLE_PLUS : '++';
 MINUS   : '-' ;
 MUL     : '*';
 POW     : '**';

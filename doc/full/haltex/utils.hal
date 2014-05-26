@@ -1,16 +1,36 @@
 needs "listings"
 needs "xcolor"
 
-print "\\lstdefinelanguage{hal}{
+print "
+\\newcommand{\\CodeSymbol}[1]{\\textcolor{brown}{#1}}
+\\lstdefinelanguage{hal}{
     basicstyle=\\ttfamily,
     sensitive=false,
     morestring=[b]\",
-    keywords={=,for,in,while,if,else,elif,class,def},
-    keywordstyle=\\color{blue},
+    keywords=[1]{=,for,in,while,if,else,elif,class,def,with,return},
+    keywords=[2]{Array, print, self, yield},
+    keywordstyle=[1]\\color{blue},
+    keywordstyle=[2]\\color{red!60!black},
+    ={\\color{brown!50!black}\\bfseries},
     morecomment=[l]{\\#},
     showstringspaces=false,
     stringstyle=\\color{green!50!black},
-    captionpos=b
+    captionpos=b,
+    literate=%
+      {\\{}{{\\CodeSymbol{\\{}}}1
+      {\\}}{{\\CodeSymbol{\\}}}}1
+      {(}{{\\CodeSymbol{(}}}1
+      {)}{{\\CodeSymbol{)}}}1
+      {>}{{\\CodeSymbol{>}}}1
+      {<}{{\\CodeSymbol{<}}}1
+      {=}{{\\CodeSymbol{=}}}1
+      {;}{{\\CodeSymbol{;}}}1
+      {[}{{\\CodeSymbol{[}}}1
+      {]}{{\\CodeSymbol{]}}}1
+      {:}{{\\CodeSymbol{:}}}1
+      {.}{{\\CodeSymbol{.}}}1
+      {+}{{\\CodeSymbol{+}}}1
+      {-}{{\\CodeSymbol{-}}}1
   }"
 
 def code file, capt => none:
@@ -24,4 +44,4 @@ def code file, capt => none:
     verbatim:
       print "=> " + exec.output if exec.status == 0 else print exec.error
 
-    caption capt if not capt.none?
+    caption pstyle capt if not capt.none?

@@ -16,6 +16,14 @@ public class LambdaDefinition extends MethodDefinition
         this.context = context;
     }
 
+    public LambdaDefinition(MethodDefinition def) {
+        module = null;
+        klass = null;
+        name = "yield";
+        params = def.params;
+        context = null;
+    }
+
     public ReferenceRecord getLocals() {
         return new ReferenceRecord(context);
     }

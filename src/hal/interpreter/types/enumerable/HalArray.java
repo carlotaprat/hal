@@ -3,6 +3,7 @@ package hal.interpreter.types.enumerable;
 import hal.interpreter.Reference;
 import hal.interpreter.core.Arguments;
 import hal.interpreter.core.Builtin;
+import hal.interpreter.core.InternalLambda;
 import hal.interpreter.core.Params;
 import hal.interpreter.types.HalClass;
 import hal.interpreter.types.HalMethod;
@@ -53,6 +54,13 @@ public class HalArray extends HalEnumerable<List<HalObject>>
             return instance;
         }
     });
+
+    private static final Reference __first__ = new Reference(new Builtin("first") {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            return ((HalArray) instance).value.get(0);
+        }
+    });
     
     private static final Reference __pop__ = new Reference(new Builtin("pop!") {
         @Override
@@ -94,12 +102,50 @@ public class HalArray extends HalEnumerable<List<HalObject>>
         }
     });
 
+    private static final Reference __filter__ = new Reference(new Builtin("filter") {
+        @Override
+        public HalObject mcall(HalObject instance, final HalMethod lambda, Arguments args) {
+            final HalObject en = instance.getKlass().newInstance(instance.getKlass());
+
+            instance.methodcall_lambda("__each__", new InternalLambda(new Params.Param("x")) {
+                public HalObject mcall(HalObject instance, HalMethod l, Arguments args) {
+                    HalObject ret = lambda.call(null, null, args.get("x"));
+
+                    if(ret.toBoolean())
+                        en.methodcall("__append!__", args.get("x"));
+
+                    return ret;
+                }
+            });
+
+            return en;
+        }
+    });
+
+    private static final Reference __concat__ = new Reference(new Builtin("concat", new Params.Param("x")) {
+        @Override
+        public HalObject mcall(final HalObject instance, HalMethod lambda, Arguments args) {
+            HalObject xs = args.get("x");
+
+            xs.methodcall_lambda("__each__", new InternalLambda(new Params.Param("x")) {
+                public HalObject call(HalObject i, HalMethod l, Arguments args) {
+                    return instance.methodcall("__append!__", args);
+                }
+            });
+
+            return instance;
+        }
+    });
+
     public static final HalClass klass = new HalClass("Array", HalEnumerable.klass,
             __append__,
+            __first__,
             __pop__,
             __lshift__,
             __sum__,
-            __each__
+            __each__,
+            __filter__,
+            __concat__
     ) {
         public HalObject newInstance(final HalClass instklass) {
             return new HalArray() {

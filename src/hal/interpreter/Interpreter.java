@@ -523,6 +523,8 @@ public class Interpreter
             // Arithmetic operators
             case HalLexer.PLUS:
                 value = value.methodcall("__add__", value2); break;
+            case HalLexer.DOUBLE_PLUS:
+                value = value.methodcall("__concat__", value2); break;
             case HalLexer.MINUS:
                 value = value.methodcall("__sub__", value2); break;
             case HalLexer.MUL:
