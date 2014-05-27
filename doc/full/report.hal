@@ -11,7 +11,7 @@ usepackage "xcolor", options => "usenames,dvipsnames"
 usepackage "soul"
 
 # HalTeX modules
-from haltex.utils import code
+import haltex.utils
 
 document:
   cover title => "HAL",
@@ -22,39 +22,6 @@ document:
   tableofcontents
   clearpage
 
-  section "Introduction"
-  p "Programming languages are the most important tools of a programmer. [...]"
-
-  p "Our main objective was to create a programming language we would find **useful** in the future.
-    With that in mind we have developed |HAL|, an scripting language that features:"
-
-  itemize:
-    item; p "A **clean** syntax, perfect for creating **D**omain-**S**pecific **L**anguages"
-    item; p "A **consistent** object-oriented architecture with **inheritance**"
-    item; p "Dynamic typing and **duck typing**"
-    item; p "Builtin methods that can be **rewritten** in |HAL| itself"
-    item; p "**Module** imports"
-    item; p "**First-class** \\st{functions} methods"
-    item; p "..."
-    item; p "An **extensible**, **intuitive** and **interactive** interpreter"
-
-  p "We love |Python| and |Ruby|! In fact, most of the features of |HAL| are directly influenced
-    by these two languages. However, we implemented everything in our own way, thinking in our
-    needs as programmers and what made sense to include in |HAL|."
-
-  code "hello_world", "HAL says: ``Hello world!\""
-
-  clearpage
-
-  section "Syntax"
-  p "We wanted |HAL| to be **readable**, **clean** and **easy to write**. We think that one of the
-    best features of |Python| is the way it defines blocks by indentation because it forces the programmer
-    to write readable code! On the other hand, |Python| is really verbose sometimes: explicit |self| everywhere,
-    calls with mandatory parentheses... Here's where |Ruby| wins! The syntax of |Ruby| lets the programmer
-    decide whether to be **explicit** or not, producing code that can feel like *magic*."
-  br
-  p "We decided to try to combine the best parts of |Python| and |Ruby| syntaxes into |HAL|. The result
-    is an amazingly **clean** syntax with **blocks defined by indentation** and letting the programmer
-    be **explicit only when necessary**!"
-
-  code "quicksort", "|HAL| can quicksort!"
+  import sections.introduction
+  import sections.syntax
+  import sections.objects

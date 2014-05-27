@@ -95,9 +95,19 @@ public class HalArray extends HalEnumerable<List<HalObject>>
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalObject last = HalNone.NONE;
             HalArray i = (HalArray) instance;
-            for (HalObject element: i.value) {
-                last = lambda.call(instance, null, element);
+
+            if(lambda.getArity() < 2) {
+                for (HalObject element : i.value) {
+                    last = lambda.call(instance, null, element);
+                }
+            } else {
+                int index = 0;
+                for(HalObject element : i.value) {
+                    last = lambda.call(instance, null, new HalInteger(index), element);
+                    index++;
+                }
             }
+
             return last;
         }
     });

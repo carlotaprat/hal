@@ -1,16 +1,19 @@
 package hal.interpreter.types.numeric;
 
+import hal.interpreter.Reference;
+import hal.interpreter.core.Arguments;
+import hal.interpreter.core.Builtin;
 import hal.interpreter.core.data.Rational;
 import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalClass;
+import hal.interpreter.types.HalMethod;
 import hal.interpreter.types.HalObject;
+
 import java.math.BigInteger;
 
 public class HalInteger extends HalNumber<Integer>
 {
-    public static final HalClass klass = new HalClass("Integer", HalNumber.klass);
-
     public HalInteger(Integer i) {
         super(i);
     }
@@ -22,8 +25,6 @@ public class HalInteger extends HalNumber<Integer>
     public HalInteger(double d) {
         super((int) d);
     }
-
-    public HalClass getKlass() { return HalInteger.klass; }
 
     @Override
     public boolean isZero() {
@@ -151,4 +152,26 @@ public class HalInteger extends HalNumber<Integer>
         return Integer.numberOfLeadingZeros(Math.abs(left)) +
                Integer.numberOfLeadingZeros(Math.abs(right)) < 32 + (left >> 31 ^ right >> 31);
     }
+
+    private static final Reference __times__ = new Reference(new Builtin("times") {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            int value = ((HalInteger)instance).value;
+
+            if(lambda.getArity() < 1) {
+                for (int i = 0; i < value; ++i)
+                    lambda.call(instance, null);
+            } else {
+                for (int i = 0; i < value; ++i)
+                    lambda.call(instance, null, new HalInteger(i));
+            }
+
+            return instance;
+        }
+    });
+
+    public static final HalClass klass = new HalClass("Integer", HalNumber.klass,
+            __times__);
+
+    public HalClass getKlass() { return HalInteger.klass; }
 }

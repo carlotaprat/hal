@@ -1,0 +1,23 @@
+section "Introduction"
+p "Programming languages are the most important tools of a programmer. [...]"
+
+p "Our main objective was to create a programming language we would find **useful** in the future.
+  With that in mind we have developed |HAL|, an scripting language that features:"
+
+itemize:
+  item; p "A **clean** syntax, perfect for creating **D**omain-**S**pecific **L**anguages"
+  item; p "A **consistent** object-oriented architecture with **inheritance**"
+  item; p "Dynamic typing and **duck typing**"
+  item; p "Builtin methods that can be **rewritten** in |HAL| itself"
+  item; p "**Module** imports"
+  item; p "**First-class** \\st{functions} methods"
+  item; p "..."
+  item; p "An **extensible**, **intuitive** and **interactive** interpreter"
+
+p "We love |Python| and |Ruby|! In fact, most of the features of |HAL| are directly influenced
+  by these two languages. However, we implemented everything in our own way, thinking in our
+  needs as programmers and what made sense to include in |HAL|."
+
+code "hello5", "HAL says: ``Hello world!\""
+
+clearpage

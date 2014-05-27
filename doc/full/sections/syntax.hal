@@ -1,0 +1,14 @@
+section "Syntax"
+p "We wanted |HAL| to be **readable**, **clean** and **easy to write**. We think that one of the
+  best features of |Python| is the way it defines blocks by indentation because it forces the programmer
+  to write readable code! On the other hand, |Python| is really verbose sometimes: explicit |self| everywhere,
+  calls with mandatory parentheses... Here's where |Ruby| wins! The syntax of |Ruby| lets the programmer
+  decide whether to be **explicit** or not, producing code that can feel like *magic*."
+br
+p "We decided to try to combine the best parts of |Python| and |Ruby| syntaxes into |HAL|. The result
+  is an amazingly **clean** syntax with **blocks defined by indentation** and letting the programmer
+  be **explicit only when necessary**!"
+
+code "quicksort", "|HAL| can quicksort!"
+
+clearpage

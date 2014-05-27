@@ -10,9 +10,9 @@
 \newcommand{\CodeSymbol}[1]{\textcolor{brown}{#1}}
 \lstdefinelanguage{hal}{
     basicstyle=\ttfamily,
-    sensitive=false,
+    sensitive=true,
     morestring=[b]",
-    keywords=[1]{=,for,in,while,if,else,elif,class,def,with,return},
+    keywords=[1]{for,in,while,if,else,elif,class,def,with,return},
     keywords=[2]{Array, print, self, yield},
     keywordstyle=[1]\color{blue},
     keywordstyle=[2]\color{red!60!black},
@@ -36,6 +36,12 @@
       {.}{{\CodeSymbol{.}}}1
       {+}{{\CodeSymbol{+}}}1
       {-}{{\CodeSymbol{-}}}1
+  }
+\lstdefinelanguage{output}{
+  basicstyle=\ttfamily\footnotesize,
+  columns=fullflexible,
+  backgroundcolor=\color{gray!180!black},
+  xleftmargin=0.5cm,frame=tlbr,framesep=4pt,framerule=0pt
   }
 \begin{document}
 \begin{titlepage}
@@ -78,7 +84,7 @@ Alvaro Espuña Buxo
 \section{Introduction}
 Programming languages are the most important tools of a programmer. [...]
 Our main objective was to create a programming language we would find \textbf{useful} in the future.
-    With that in mind we have developed \texttt{HAL}, an scripting language that features:
+  With that in mind we have developed \texttt{HAL}, an scripting language that features:
 \begin{itemize}
 \item
 A \textbf{clean} syntax, perfect for creating \textbf{D}omain-\textbf{S}pecific \textbf{L}anguages
@@ -98,33 +104,37 @@ Builtin methods that can be \textbf{rewritten} in \texttt{HAL} itself
 An \textbf{extensible}, \textbf{intuitive} and \textbf{interactive} interpreter
 \end{itemize}
 We love \texttt{Python} and \texttt{Ruby}! In fact, most of the features of \texttt{HAL} are directly influenced
-    by these two languages. However, we implemented everything in our own way, thinking in our
-    needs as programmers and what made sense to include in \texttt{HAL}.
+  by these two languages. However, we implemented everything in our own way, thinking in our
+  needs as programmers and what made sense to include in \texttt{HAL}.
 \begin{figure}[h!]
 \begin{lstlisting}[language=hal]
-print "Hello world!"
+5.times: print "Hello world!"
 \end{lstlisting}
-\begin{verbatim}
-=> Hello world!
-\end{verbatim}
+\begin{lstlisting}[language=output]
+Hello world!
+Hello world!
+Hello world!
+Hello world!
+Hello world!
+\end{lstlisting}
 \caption{HAL says: ``Hello world!"}
 \end{figure}
 \clearpage
 \section{Syntax}
 We wanted \texttt{HAL} to be \textbf{readable}, \textbf{clean} and \textbf{easy to write}. We think that one of the
-    best features of \texttt{Python} is the way it defines blocks by indentation because it forces the programmer
-    to write readable code! On the other hand, \texttt{Python} is really verbose sometimes: explicit \texttt{self} everywhere,
-    calls with mandatory parentheses... Here's where \texttt{Ruby} wins! The syntax of \texttt{Ruby} lets the programmer
-    decide whether to be \textbf{explicit} or not, producing code that can feel like \emph{magic}.
+  best features of \texttt{Python} is the way it defines blocks by indentation because it forces the programmer
+  to write readable code! On the other hand, \texttt{Python} is really verbose sometimes: explicit \texttt{self} everywhere,
+  calls with mandatory parentheses... Here's where \texttt{Ruby} wins! The syntax of \texttt{Ruby} lets the programmer
+  decide whether to be \textbf{explicit} or not, producing code that can feel like \emph{magic}.
 \\
 We decided to try to combine the best parts of \texttt{Python} and \texttt{Ruby} syntaxes into \texttt{HAL}. The result
-    is an amazingly \textbf{clean} syntax with \textbf{blocks defined by indentation} and letting the programmer
-    be \textbf{explicit only when necessary}!
+  is an amazingly \textbf{clean} syntax with \textbf{blocks defined by indentation} and letting the programmer
+  be \textbf{explicit only when necessary}!
 \begin{figure}[h!]
 \begin{lstlisting}[language=hal]
 class Array:
   def sort!:
-    if size < 2: return self
+    return self if size < 2
     p = first
     q = pop!
     lesser = q.filter with x: x < p
@@ -134,9 +144,32 @@ class Array:
 a = [1, 2, 3, -1, -2, -3, 20, 40, 1, 2, 200, -5]
 print a.sort!
 \end{lstlisting}
-\begin{verbatim}
-=> [-5, -3, -2, -1, 1, 1, 2, 2, 3, 20, 40, 200]
-\end{verbatim}
+\begin{lstlisting}[language=output]
+[-5, -3, -2, -1, 1, 1, 2, 2, 3, 20, 40, 200]
+\end{lstlisting}
 \caption{\texttt{HAL} can quicksort!}
+\end{figure}
+\clearpage
+\section{Objects}
+\textbf{Everything in \texttt{HAL} is an object!}
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+print \
+  1.add(2),
+  Array.new,
+  "Chunky bacon!".size,
+  range(10).sum,
+  &range.arity,
+  Class.repr
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+3
+[]
+13
+45
+1
+Class
+\end{lstlisting}
+\caption{Objects everywhere}
 \end{figure}
 \end{document}

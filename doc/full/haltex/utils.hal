@@ -5,9 +5,9 @@ print "
 \\newcommand{\\CodeSymbol}[1]{\\textcolor{brown}{#1}}
 \\lstdefinelanguage{hal}{
     basicstyle=\\ttfamily,
-    sensitive=false,
+    sensitive=true,
     morestring=[b]\",
-    keywords=[1]{=,for,in,while,if,else,elif,class,def,with,return},
+    keywords=[1]{for,in,while,if,else,elif,class,def,with,return},
     keywords=[2]{Array, print, self, yield},
     keywordstyle=[1]\\color{blue},
     keywordstyle=[2]\\color{red!60!black},
@@ -31,17 +31,24 @@ print "
       {.}{{\\CodeSymbol{.}}}1
       {+}{{\\CodeSymbol{+}}}1
       {-}{{\\CodeSymbol{-}}}1
+  }
+\\lstdefinelanguage{output}{
+  basicstyle=\\ttfamily\\footnotesize,
+  columns=fullflexible,
+  backgroundcolor=\\color{gray!180!black},
+  xleftmargin=0.5cm,frame=tlbr,framesep=4pt,framerule=0pt
   }"
 
-def code file, capt => none:
-  code = Process.exec "cat examples/%s.hal" % file
-  exec = Process.exec "hal examples/%s.hal" % file
-  
-  figure options => "h!":
-    lstlisting options => "language=hal":
-      print code.output
+class Kernel:
+  def code file, capt => none:
+    code = Process.exec "cat examples/%s.hal" % file
+    exec = Process.exec "hal examples/%s.hal" % file
+    
+    figure options => "h!":
+      lstlisting options => "language=hal":
+        print code.output
 
-    verbatim:
-      print "=> " + exec.output if exec.status == 0 else print exec.error
+      lstlisting options => "language=output":
+        print exec.output if exec.status == 0 else print exec.error
 
-    caption pstyle capt if not capt.none?
+      caption pstyle capt if not capt.none?

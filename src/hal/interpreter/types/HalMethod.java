@@ -19,6 +19,10 @@ abstract public class HalMethod extends HalObject<MethodDefinition>
         throw new RuntimeException("mcall not implemented");
     }
 
+    public int getArity() {
+        return value.getArity();
+    }
+
     public HalString str() { return new HalString(value.name); }
     public HalBoolean bool() { return new HalBoolean(true); }
     public HalClass getKlass() { return HalMethod.klass; }

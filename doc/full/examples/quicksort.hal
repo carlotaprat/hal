@@ -1,6 +1,6 @@
 class Array:
   def sort!:
-    if size < 2: return self
+    return self if size < 2
     p = first
     q = pop!
     lesser = q.filter with x: x < p

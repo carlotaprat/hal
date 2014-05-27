@@ -1,0 +1,4 @@
+section "Objects"
+p "**Everything in |HAL| is an object!**"
+
+code "objects", "Objects everywhere"
