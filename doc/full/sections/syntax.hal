@@ -9,6 +9,4 @@ p "We decided to try to combine the best parts of |Python| and |Ruby| syntaxes i
   is an amazingly **clean** syntax with **blocks defined by indentation** and letting the programmer
   be **explicit only when necessary**!"
 
-code "quicksort", "|HAL| can quicksort!"
-
 clearpage

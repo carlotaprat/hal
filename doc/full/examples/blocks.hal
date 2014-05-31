@@ -1,0 +1,22 @@
+def list title => none, numbered? => false:
+  print "<h1>" + title + "</h1>" if not title.none?
+  print "<ol>" if numbered? else print "<ul>"
+  yield
+  print "</ol>" if numbered? else print "</ul>"
+
+def item x:
+  if block_given?:
+  	print "<li>" + x
+  	yield
+  	print "</li>"
+  else:
+    print "<li>" + x + "</li>"
+
+list "Shopping list":
+  item "Meat":
+    list:
+      item "Bacon"
+  item "Vegetables":
+    list numbered? => true:
+      item "Cabbage"
+      item "Cucumber"

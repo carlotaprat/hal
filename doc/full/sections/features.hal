@@ -1,0 +1,79 @@
+section "Features"
+
+subsection "Clean syntax"
+p "|HAL| can be easily used to create **D**omain-**S**pecific **L**anguages! Parentheses in calls are optional, |self|
+  is implicitly set accordingly to the **scope** and **blocks** can be defined easily with indentation!"
+
+code "quicksort", "|HAL| can quicksort!"
+
+subsection "Everything is an object"
+p "That's why we said that |HAL| has a consistent object-oriented architecture. Even |none| is an object!"
+
+code "objects", "Objects everywhere"
+
+br
+p "All the instructions return objects in |HAL|. The value returned by the last instruction of a method
+  is the returned value of the method."
+
+subsection "Every method can be overriden"
+p "Like in |Python| there is no method visibility
+  concept, which means that all methods can be called from everywhere. Also, like in |Ruby|
+  any class can be reopened at any moment to define or override methods. There is even possible to
+  override builtin methods\\footnote{Native methods written in Java.}!"
+
+code "overrides", "Overriding |Array| concatenation!"
+clearpage
+subsection "Blocks"
+p "Like in |Ruby|, it is possible to pass blocks to methods. However, in |HAL| you can define the
+  block using the ``|:|\" keyword and indenting accordingly. In a method, the names |block\\_given?|
+  and |yield| are set accordingly to whether some block was given or not."
+
+code "blocks", "Generating HTML lists with |HAL|!"
+
+subsection "First-class methods"
+p "Methods are objects too! The |\\&| accessor can be used to avoid calling and obtain the
+  value stored under that name itself."
+
+code "first_class_methods", "Creating lambdas in one line of code!"
+
+subsection "Module imports"
+p "Like in |Python| every file that contains code is a **module**. Modules can be imported inside
+  other modules using the |import| statement."
+
+code "import", "Importing some examples"
+
+clearpage
+
+subsection "Four levels of scopes"
+p "|HAL| has four different variable scopes. Variables can be defined in those scopes
+  using different access operators:"
+
+description:
+  item "Local"; p "Without any accessor"
+  item "Instance"; p "Using the ``|@|\" accessor"
+  item "Static"; p "Using the ``|@@|\" accessor"
+  item "Module"; p "Instance variables defined in the current module"
+
+p "When a name is referenced without any accessor, |HAL| searches it following that order."
+
+code "scope", ""
+
+clearpage
+
+subsection "Inheritance"
+p "**Objects can inherit methods from other objects!** The name |super| contains a reference to the method
+  with the same name implemented by the parent class, if there is any. The |init| method is called after
+  instantiating an object."
+
+code "inheritance", "The tale of Tod and the horse with no name"
+
+clearpage
+
+subsection "Execution of shell commands"
+p "Command shells can be executed using **backticks** (|\\`|). The value returned is the output
+  of the execution. Additionally, it is possible to use the class |Process| to have information
+  about the **exit status** and the **error output**."
+
+code "backticks", "Writing a file and showing its contents"
+
+clearpage

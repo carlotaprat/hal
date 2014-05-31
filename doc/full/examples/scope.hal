@@ -1,0 +1,17 @@
+@m = "Module variable"
+
+class Foo:
+  @a = "Class variable"
+
+  def init:
+    @a = "Instance variable"
+    @m = m
+
+  def __str__:
+    @@a
+
+print Foo.a, Foo.new.a, Foo.new.m, Foo.new
+
+@m = "Another module variable"
+
+print Foo.new.m

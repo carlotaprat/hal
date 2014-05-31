@@ -12,8 +12,8 @@
     basicstyle=\ttfamily,
     sensitive=true,
     morestring=[b]",
-    keywords=[1]{for,in,while,if,else,elif,class,def,with,return},
-    keywords=[2]{Array, print, self, yield},
+    keywords=[1]{for,in,while,if,else,elif,class,def,with,return,import,from},
+    keywords=[2]{Array, print, self, yield, block_given?},
     keywordstyle=[1]\color{blue},
     keywordstyle=[2]\color{red!60!black},
     ={\color{brown!50!black}\bfseries},
@@ -36,6 +36,7 @@
       {.}{{\CodeSymbol{.}}}1
       {+}{{\CodeSymbol{+}}}1
       {-}{{\CodeSymbol{-}}}1
+      {`}{{\CodeSymbol{\`{}}}}1
   }
 \lstdefinelanguage{output}{
   basicstyle=\ttfamily\footnotesize,
@@ -121,16 +122,10 @@ Hello world!
 \label{hello5}
 \end{figure}
 \clearpage
-\section{Syntax}
-We wanted \texttt{HAL} to be \textbf{readable}, \textbf{clean} and \textbf{easy to write}. We think that one of the
-  best features of \texttt{Python} is the way it defines blocks by indentation because it forces the programmer
-  to write readable code! On the other hand, \texttt{Python} is really verbose sometimes: explicit \texttt{self} everywhere,
-  calls with mandatory parentheses... Here's where \texttt{Ruby} wins! The syntax of \texttt{Ruby} lets the programmer
-  decide whether to be \textbf{explicit} or not, producing code that can feel like \emph{magic}.
-\\
-We decided to try to combine the best parts of \texttt{Python} and \texttt{Ruby} syntaxes into \texttt{HAL}. The result
-  is an amazingly \textbf{clean} syntax with \textbf{blocks defined by indentation} and letting the programmer
-  be \textbf{explicit only when necessary}!
+\section{Features}
+\subsection{Clean syntax}
+\texttt{HAL} can be easily used to create \textbf{D}omain-\textbf{S}pecific \textbf{L}anguages! Parentheses in calls are optional, \texttt{self}
+  is implicitly set accordingly to the \textbf{scope} and \textbf{blocks} can be defined easily with indentation!
 \begin{figure}[h!]
 \begin{lstlisting}[language=hal]
 class Array:
@@ -151,20 +146,13 @@ print a.sort!
 \caption{\texttt{HAL} can quicksort!}
 \label{quicksort}
 \end{figure}
-\clearpage
-\section{Objects}
-\textbf{Everything in \texttt{HAL} is an object!} That's why we said that \texttt{HAL} has a consistent
-  object-oriented architecture. Even \texttt{none} is an object!
+\subsection{Everything is an object}
+That's why we said that \texttt{HAL} has a consistent object-oriented architecture. Even \texttt{none} is an object!
 \begin{figure}[h!]
 \begin{lstlisting}[language=hal]
 print \
-  1.add(2),
-  Array.new,
-  "Chunky bacon!".size,
-  range(10).sum,
-  &range.arity,
-  Class.repr,
-  none.none?
+  1.add(2), Array.new, "Chunky bacon!".size,
+  range(10).sum, &range.arity, Class.repr, none.none?
 \end{lstlisting}
 \begin{lstlisting}[language=output]
 3
@@ -181,7 +169,7 @@ true
 \\
 All the instructions return objects in \texttt{HAL}. The value returned by the last instruction of a method
   is the returned value of the method.
-\clearpage
+\subsection{Every method can be overriden}
 Like in \texttt{Python} there is no method visibility
   concept, which means that all methods can be called from everywhere. Also, like in \texttt{Ruby}
   any class can be reopened at any moment to define or override methods. There is even possible to
@@ -207,7 +195,210 @@ print concat
 \caption{Overriding \texttt{Array} concatenation!}
 \label{overrides}
 \end{figure}
+\clearpage
+\subsection{Blocks}
+Like in \texttt{Ruby}, it is possible to pass blocks to methods. However, in \texttt{HAL} you can define the
+  block using the ``\texttt{:}" keyword and indenting accordingly. In a method, the names \texttt{block\_given?}
+  and \texttt{yield} are set accordingly to whether some block was given or not.
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+def list title => none, numbered? => false:
+  print "<h1>" + title + "</h1>" if not title.none?
+  print "<ol>" if numbered? else print "<ul>"
+  yield
+  print "</ol>" if numbered? else print "</ul>"
+
+def item x:
+  if block_given?:
+  	print "<li>" + x
+  	yield
+  	print "</li>"
+  else:
+    print "<li>" + x + "</li>"
+
+list "Shopping list":
+  item "Meat":
+    list:
+      item "Bacon"
+  item "Vegetables":
+    list numbered? => true:
+      item "Cabbage"
+      item "Cucumber"
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+<h1>Shopping list</h1>
+<ul>
+<li>Meat
+<ul>
+<li>Bacon</li>
+</ul>
+</li>
+<li>Vegetables
+<ol>
+<li>Cabbage</li>
+<li>Cucumber</li>
+</ol>
+</li>
+</ul>
+\end{lstlisting}
+\caption{Generating HTML lists with \texttt{HAL}!}
+\label{blocks}
+\end{figure}
+\subsection{First-class methods}
+Methods are objects too! The \texttt{\&} accessor can be used to avoid calling and obtain the
+  value stored under that name itself.
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+def lambda: &yield
+
+add = lambda with x, y: x + y
+
+print add 5, add 3, add 1, 2
+print &add.arity
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+11
+2
+\end{lstlisting}
+\caption{Creating lambdas in one line of code!}
+\label{first_class_methods}
+\end{figure}
+\subsection{Module imports}
+Like in \texttt{Python} every file that contains code is a \textbf{module}. Modules can be imported inside
+  other modules using the \texttt{import} statement.
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+print "Loading examples..."
+print "-------------------"
+import examples.quicksort
+from examples.scope import Foo
+print "-------------------"
+print Foo.new
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+Loading examples...
+-------------------
+[-5, -3, -2, -1, 1, 1, 2, 2, 3, 20, 40, 200]
+Class variable
+Instance variable
+Module variable
+Class variable
+Another module variable
+-------------------
+Class variable
+\end{lstlisting}
+\caption{Importing some examples}
+\label{import}
+\end{figure}
+\clearpage
+\subsection{Four levels of scopes}
+\texttt{HAL} has four different variable scopes. Variables can be defined in those scopes
+  using different access operators:
+\begin{description}
+\item[Local]
+Without any accessor
+\item[Instance]
+Using the ``\texttt{@}" accessor
+\item[Static]
+Using the ``\texttt{@@}" accessor
+\item[Module]
+Instance variables defined in the current module
+\end{description}
+When a name is referenced without any accessor, \texttt{HAL} searches it following that order.
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+@m = "Module variable"
+
+class Foo:
+  @a = "Class variable"
+
+  def init:
+    @a = "Instance variable"
+    @m = m
+
+  def __str__:
+    @@a
+
+print Foo.a, Foo.new.a, Foo.new.m, Foo.new
+
+@m = "Another module variable"
+
+print Foo.new.m
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+Class variable
+Instance variable
+Module variable
+Class variable
+Another module variable
+\end{lstlisting}
+\caption{}
+\label{scope}
+\end{figure}
+\clearpage
+\subsection{Inheritance}
+\textbf{Objects can inherit methods from other objects!} The name \texttt{super} contains a reference to the method
+  with the same name implemented by the parent class, if there is any. The \texttt{init} method is called after
+  instantiating an object.
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+class Animal:
+  def init type:
+    @type = type
+
+  def __str__:
+    "A " + @type
+
+class Fox << Animal:
+  def init name:
+    super "fox"
+    @name = name
+
+  def __str__:
+    super + " named " + @name
+
+print Animal.new "horse"
+print Fox.new "Tod"
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+A horse
+A fox named Tod
+\end{lstlisting}
+\caption{The tale of Tod and the horse with no name}
+\label{inheritance}
+\end{figure}
+\clearpage
+\subsection{Execution of shell commands}
+Command shells can be executed using \textbf{backticks} (\texttt{\`}). The value returned is the output
+  of the execution. Additionally, it is possible to use the class \texttt{Process} to have information
+  about the \textbf{exit status} and the \textbf{error output}.
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+File.open "test.txt" with f:
+  f.write "Writing a file has never been so easy!"
+
+print `cat test.txt`
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+Writing a file has never been so easy!
+\end{lstlisting}
+\caption{Writing a file and showing its contents}
+\label{backticks}
+\end{figure}
+\clearpage
+\section{Syntax}
+We wanted \texttt{HAL} to be \textbf{readable}, \textbf{clean} and \textbf{easy to write}. We think that one of the
+  best features of \texttt{Python} is the way it defines blocks by indentation because it forces the programmer
+  to write readable code! On the other hand, \texttt{Python} is really verbose sometimes: explicit \texttt{self} everywhere,
+  calls with mandatory parentheses... Here's where \texttt{Ruby} wins! The syntax of \texttt{Ruby} lets the programmer
+  decide whether to be \textbf{explicit} or not, producing code that can feel like \emph{magic}.
 \\
+We decided to try to combine the best parts of \texttt{Python} and \texttt{Ruby} syntaxes into \texttt{HAL}. The result
+  is an amazingly \textbf{clean} syntax with \textbf{blocks defined by indentation} and letting the programmer
+  be \textbf{explicit only when necessary}!
+\clearpage
+\section{Interpreter}
+\subsection{Builtin methods}
 There are two name references for every builtin provided with the interpreter: one that is
   surrounded with ``\texttt{\_\_}" (double underscores) and another that is not (\texttt{\_\_range\_\_} and \texttt{range} for example).
   The name surrounded with underscores is the one that the interpreter can use internally in case it needs it.

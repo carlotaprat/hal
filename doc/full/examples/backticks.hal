@@ -1,0 +1,4 @@
+File.open "test.txt" with f:
+  f.write "Writing a file has never been so easy!"
+
+print `cat test.txt`

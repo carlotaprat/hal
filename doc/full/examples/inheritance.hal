@@ -1,0 +1,17 @@
+class Animal:
+  def init type:
+    @type = type
+
+  def __str__:
+    "A " + @type
+
+class Fox << Animal:
+  def init name:
+    super "fox"
+    @name = name
+
+  def __str__:
+    super + " named " + @name
+
+print Animal.new "horse"
+print Fox.new "Tod"

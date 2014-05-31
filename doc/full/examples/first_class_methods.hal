@@ -1,0 +1,6 @@
+def lambda: &yield
+
+add = lambda with x, y: x + y
+
+print add 5, add 3, add 1, 2
+print &add.arity

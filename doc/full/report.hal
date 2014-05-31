@@ -23,5 +23,8 @@ document:
   clearpage
 
   import sections.introduction
+  import sections.features
   import sections.syntax
-  import sections.objects
+  import sections.interpreter
+  import sections.haltex
+ 
