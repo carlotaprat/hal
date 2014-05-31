@@ -1,0 +1,9 @@
+def ugly_array: [1, 2, [], [], 3, [[]], 4, 5, 6]
+
+print ugly_array
+
+class Array:
+  def __append!__ x:
+    append! x if x != [] else self
+
+print ugly_array

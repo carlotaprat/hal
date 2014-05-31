@@ -265,7 +265,12 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     private static final Reference __eq__ = new Reference(new Builtin("eq", new Params.Param("x")) {
         @Override
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
-            return ((HalNumber) instance).eq(((HalNumber) args.get("x")));
+            HalObject x = args.get("x");
+
+            if(x instanceof HalNumber)
+                return ((HalNumber) instance).eq(((HalNumber) args.get("x")));
+            else
+                return new HalBoolean(false);
         }
     });
 

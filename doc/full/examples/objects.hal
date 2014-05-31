@@ -4,4 +4,5 @@ print \
   "Chunky bacon!".size,
   range(10).sum,
   &range.arity,
-  Class.repr
+  Class.repr,
+  none.none?

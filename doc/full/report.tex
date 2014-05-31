@@ -118,6 +118,7 @@ Hello world!
 Hello world!
 \end{lstlisting}
 \caption{HAL says: ``Hello world!"}
+\label{hello5}
 \end{figure}
 \clearpage
 \section{Syntax}
@@ -148,10 +149,12 @@ print a.sort!
 [-5, -3, -2, -1, 1, 1, 2, 2, 3, 20, 40, 200]
 \end{lstlisting}
 \caption{\texttt{HAL} can quicksort!}
+\label{quicksort}
 \end{figure}
 \clearpage
 \section{Objects}
-\textbf{Everything in \texttt{HAL} is an object!}
+\textbf{Everything in \texttt{HAL} is an object!} That's why we said that \texttt{HAL} has a consistent
+  object-oriented architecture. Even \texttt{none} is an object!
 \begin{figure}[h!]
 \begin{lstlisting}[language=hal]
 print \
@@ -160,7 +163,8 @@ print \
   "Chunky bacon!".size,
   range(10).sum,
   &range.arity,
-  Class.repr
+  Class.repr,
+  none.none?
 \end{lstlisting}
 \begin{lstlisting}[language=output]
 3
@@ -169,7 +173,64 @@ print \
 45
 1
 Class
+true
 \end{lstlisting}
 \caption{Objects everywhere}
+\label{objects}
+\end{figure}
+\\
+All the instructions return objects in \texttt{HAL}. The value returned by the last instruction of a method
+  is the returned value of the method.
+\clearpage
+Like in \texttt{Python} there is no method visibility
+  concept, which means that all methods can be called from everywhere. Also, like in \texttt{Ruby}
+  any class can be reopened at any moment to define or override methods. There is even possible to
+  override builtin methods\footnote{Native methods written in Java.}!
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+def concat: range(10) ++ range(20, start => 10)
+
+print concat
+
+class Array:
+  def __concat__ x:
+    x.each with index, element:
+      self[index] = self[index] + element
+    self
+
+print concat
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+[10, 12, 14, 16, 18, 20, 22, 24, 26, 28]
+\end{lstlisting}
+\caption{Overriding \texttt{Array} concatenation!}
+\label{overrides}
+\end{figure}
+\\
+There are two name references for every builtin provided with the interpreter: one that is
+  surrounded with ``\texttt{\_\_}" (double underscores) and another that is not (\texttt{\_\_range\_\_} and \texttt{range} for example).
+  The name surrounded with underscores is the one that the interpreter can use internally in case it needs it.
+  This means that overriding this methods you can get in the way of how the interpreter does things and use it
+  at your favour. For example, you can filter arrays on creation overriding the \texttt{\_\_append!\_\_} method (see Figure
+  \ref{override_append}). The reference without underscores is provided for readability purposes and as a backup.
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+def ugly_array: [1, 2, [], [], 3, [[]], 4, 5, 6]
+
+print ugly_array
+
+class Array:
+  def __append!__ x:
+    append! x if x != [] else self
+
+print ugly_array
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+[1, 2, [], [], 3, [[]], 4, 5, 6]
+[1, 2, 3, 4, 5, 6]
+\end{lstlisting}
+\caption{Filtering empty \texttt{Array}s on construction}
+\label{override_append}
 \end{figure}
 \end{document}

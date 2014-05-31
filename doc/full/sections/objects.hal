@@ -1,4 +1,29 @@
 section "Objects"
-p "**Everything in |HAL| is an object!**"
+p "**Everything in |HAL| is an object!** That's why we said that |HAL| has a consistent
+  object-oriented architecture. Even |none| is an object!"
 
 code "objects", "Objects everywhere"
+
+br
+p "All the instructions return objects in |HAL|. The value returned by the last instruction of a method
+  is the returned value of the method."
+
+clearpage
+
+p "Like in |Python| there is no method visibility
+  concept, which means that all methods can be called from everywhere. Also, like in |Ruby|
+  any class can be reopened at any moment to define or override methods. There is even possible to
+  override builtin methods\\footnote{Native methods written in Java.}!"
+
+code "overrides", "Overriding |Array| concatenation!"
+
+br
+p "There are two name references for every builtin provided with the interpreter: one that is
+  surrounded with ``|\\_\\_|\" (double underscores) and another that is not (|\\_\\_range\\_\\_| and |range| for example).
+  The name surrounded with underscores is the one that the interpreter can use internally in case it needs it.
+  This means that overriding this methods you can get in the way of how the interpreter does things and use it
+  at your favour. For example, you can filter arrays on creation overriding the |\\_\\_append!\\_\\_| method (see Figure
+  \\ref{override_append}). The reference without underscores is provided for readability purposes and as a backup."
+
+code "override_append", "Filtering empty |Array|s on construction"
+

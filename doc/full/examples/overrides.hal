@@ -1,0 +1,11 @@
+def concat: range(10) ++ range(20, start => 10)
+
+print concat
+
+class Array:
+  def __concat__ x:
+    x.each with index, element:
+      self[index] = self[index] + element
+    self
+
+print concat

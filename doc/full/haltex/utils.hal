@@ -52,3 +52,4 @@ class Kernel:
         print exec.output if exec.status == 0 else print exec.error
 
       caption pstyle capt if not capt.none?
+      label file

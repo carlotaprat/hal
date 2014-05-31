@@ -70,9 +70,9 @@ public class HalArray extends HalEnumerable<List<HalObject>>
         }
     });
 
-    private static final Reference __lshift__ = new Reference(new Builtin("lshift") {
+    private static final Reference __lshift__ = new Reference(new Builtin("lshift", new Params.Param("x")) {
         @Override
-        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+        public HalObject call(HalObject instance, HalMethod lambda, Arguments args) {
             return instance.methodcall("__append!__", args);
         }
     });
