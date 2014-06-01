@@ -1,0 +1,31 @@
+section "HalTeX"
+
+p "As a *real life* example and to be sure that |HAL| is poweful
+ enough at this early stage, we created a *DSL* to write in LaTeX. The
+ output from LaTeX is very beautiful, but the syntax sometimes can be
+ a bit cumbersome. In this section we will detail the implementation
+ of such *DSL*."
+
+subsection pstyle "|\\_\\_method\\_missing\\_\\_|"
+
+p "The most powerful thing to create *DSL*s in |HAL| (apart from the
+syntax) is the special method |\\_\\_method\\_missing\\_\\_|. This
+method can be defined in any level of the scope (instance, class,
+module, kernel). When in a scope a variable/function is undefined,
+|\\_\\_method\\_missing\\_\\_| is called in that scope. The default
+behaviour is to check for the variable/function in the upper level
+(raising a |NameException| when it's not defined in the outermost
+level). This can be modified, an allows the programmer to control even
+more the scope. One typical use of this could be *barewords*."
+
+code "missing", "Simple example using |method\\_missing| special method."
+
+subsection "Use example"
+
+p "This document was written using this *DSL* (we call it
+|HalTeX|). |HalTeX| comes as a builtin module and the source code can
+be found in the |bin/lib/| directory. The source code of this document
+is also included in the delivered *tar.gz* under the |doc/|
+directory."
+
+code "haltex", "This should be applicable to many markup languages."

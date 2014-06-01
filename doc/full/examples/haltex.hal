@@ -1,0 +1,7 @@
+import haltex
+
+section 'Use example'
+enumerate:
+  item; p '*First item*'
+  item; p '|second|'
+  item; p '**third**'
