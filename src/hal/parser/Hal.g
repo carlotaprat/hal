@@ -196,14 +196,14 @@ simple_stmt
     ;
 
 small_stmt
-    :   assign_expr
+    :   assign_or_expr
     |   r=RETURN expr -> ^(RETURN[$r, "RETURN"] expr)
     ;
 
-assign_expr
-    :   expr (a=ASSIGN assign_expr)? // Right-associative
+assign_or_expr
+    :   expr (a=ASSIGN assign_or_expr)? // Right-associative
         -> {a==null}? ^(EXPR expr)
-        -> ^(ASSIGN expr assign_expr)
+        -> ^(ASSIGN expr assign_or_expr)
     ;
 
 compound_stmt
