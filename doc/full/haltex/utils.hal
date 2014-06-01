@@ -70,7 +70,7 @@ class Kernel:
       label file
 
   def antlr file=>"../../src/hal/parser/Hal.g", fl=>none, ll=>none, style=>"antlr":
-    options ="style=%s" % style
+    options ="frame=single,style=%s" % style
     options = options + ",firstline=%s" % fl if not fl.none? else ""
     options = options + ",lastline=%s" % ll if not ll.none? else ""
     lstinputlisting file, options=>options
