@@ -504,6 +504,10 @@ STRING
           | i = ~('\\'|'"') { buf.appendCodePoint(i); }
           )* '"'
       { setText(buf.toString()); }
+    | '\'' ( ESC_SEQ[buf]
+          | i = ~('\\'|'\'') { buf.appendCodePoint(i); }
+          )* '\''
+      { setText(buf.toString()); }
     ;
 
 BACKTICKS
@@ -523,6 +527,7 @@ fragment ESC_SEQ[StringBuilder buf]
             |'f'  { buf.append('\f'); }
             |'r'  { buf.append('\r'); }
             |'"' { buf.append('"'); }
+            |'\'' { buf.append('\''); }
             |'\\' { buf.append('\\'); } )
         ;
 

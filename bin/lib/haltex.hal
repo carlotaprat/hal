@@ -45,13 +45,13 @@ class Kernel:
         hrule; br 0.4
         wrap: huge; bfseries; print title; br 0.4
         hrule; br 2.5
-  
+
         minipage "0.4\\textwidth":
           flushleft: large; print authors[0]
-  
+
         minipage "0.4\\textwidth":
           flushright: large; print authors[1]
-  
+
         vfill
         wrap: large; today
         br
@@ -71,7 +71,8 @@ class Kernel:
     paragraph \
       .gsub("\\*\\*([^\\*\\*]*)\\*\\*", "\\\\textbf{$1}") \
       .gsub("\\*([^\\*]*)\\*", "\\\\emph{$1}") \
-      .gsub("\\|([^\\|]*)\\|", "\\\\texttt{$1}")
+      .gsub("\\|([^\\|]*)\\|", "\\\\texttt{$1}") \
+      .gsub("LaTeX", "\\\\LaTeX{}")
 
   def hrule:
     rule "\\linewidth", "0.5mm"

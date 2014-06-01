@@ -1,5 +1,7 @@
 section "Syntax"
 
+subsection "Indentation"
+
 p "We wanted |HAL| to be **readable**, **clean** and **easy to write**. We think that one of the
   things |Python| does well is the way it defines blocks by indentation because it avoids the verbosity
   of a *closing* token. We wanted |HAL| to be as non-verbose as possible. The relevant part of the
@@ -11,31 +13,45 @@ p "It is also important, when the |NEWLINE| tokens are emited:"
 
 antlr fl=>533, ll=>570
 
-p "We also focused on having a simple small set of keywords:"
+subsection "Lexical rules"
+
+p "The lexical rules are really simple. We tried to have a small set of keywords:"
 
 antlr fl=>428, ll=>481
-antlr fl=>484, ll=>531
+antlr fl=>484, ll=>575
 
 p "Thus giving the programmer more freedom to define its own *keywords*."
 
 code "unless", "It's easy to create new *expressions* in |HAL|. Notice how similar to |if| looks."
 
+clearpage
+
+subsection "Grammatical rules"
+
 p "The grammar is a bit complex. We engineered it thinking in |HAL| (the result) instead of thinking
- in the grammar itself. Because of that we used some helpful Java functions, using multiple features
+ in the grammar itself. Because of that, we used some helpful Java functions, using multiple features
  of |antlr|:"
 
 antlr fl=>121, ll=>172
 
-p "
-Thus we eliminated parens
-  from function calls, allow one-line expressions...
+p "Some important features of the grammar are:"
 
-  to write readable code! On the other hand, |Python| is really verbose sometimes: explicit |self| everywhere,
-  calls with mandatory parentheses... Here's where |Ruby| wins! The syntax of |Ruby| lets the programmer
-  decide whether to be **explicit** or not, producing code that can feel like *magic*."
-br
-p "We decided to try to combine the best parts of |Python| and |Ruby| syntaxes into |HAL|. The result
-  is an amazingly **clean** syntax with **blocks defined by indentation** and letting the programmer
-  be **explicit only when necessary**!"
+itemize:
+  item; p "Statements with if at the end (|a if cond else b|)."
+  item; p "List expressions (|[i for i in range 3] == [0,1,2]|)."
+  item; p "Statements such if, for, while or import."
+  item; p "*Intelligent* spaces in arguments lists:"
+  lstlisting options=>"language=hal":
+    p "
+def a: 5
+a - 1 # 4
+a-1   # 4
+a -1  # Call a with argument -1
+"
+  item; p "Function calls with optional parentheses"
+  item; p "Multiline indented lambda blocks"
+
+antlr fl=>177, ll=>426
+
 
 clearpage
