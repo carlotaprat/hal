@@ -1,6 +1,7 @@
-def hello name => "world":
-  print "Hello %s!" % name.capitalize
+def greet  name=>"John", age=>21:
+  print "My name is " + name.capitalize + " and I'm " + age.str
 
-
-hello
-hello "randy"
+greet
+greet "manel", 30
+greet "manel", age=>30
+greet age=>30, name=>"manel"

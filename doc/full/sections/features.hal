@@ -1,4 +1,4 @@
-section "Features\\footnote{Discover them by yourself! Open the interactive interpreter and play!}", options => "Features"
+section "Features\\footnote{Discover them by yourself! Open the interactive interpreter (|bin/hal|) and play!}", options => "Features"
 
 subsection "Clean syntax"
 p "|HAL| can be easily used to create **D**omain-**S**pecific **L**anguages! Parentheses in calls are optional, |self|
