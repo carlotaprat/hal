@@ -1,0 +1,31 @@
+La pràctica haurà de ser entregada abans del final del dia 1/Juny. L'entrega consistirà en
+1) un document explicatiu de la pràctica (pdf), que inclogui:
+         a) gramàtica
+         b) descripció de les fases
+         c) exemples
+         d) com s'ha repartit la feina entre el grup, i
+2) codi
+
+Addicionalment, cada pràctica s'ha de presentar a classe en una
+presentació de 15 minuts, incloent una demo de l'eina construida.
+
+* Introducció
+* Features
+
+** Everything is an object
+**
+* Syntax
+** Lexic i gramàtica.
+** Decisions de disseny.
+** Quirks.
+* Interpreter
+** Methods
+*** Everything is a callable method
+*** Blocks and yield (& operator)
+** Object architecture
+*** public-dynamic attr
+*** strongly-dynamic typed
+*** special __ methods
+*** inheritance
+*** builtin types (group them in object, enumerables, numeric)
+* Haltex
