@@ -19,6 +19,7 @@ document:
     authors => ["Héctor Ramón Jiménez", "Alvaro Espuña Buxo"],
     footer => "Facultat d'Informàtica de Barcelona"
 
+  clearpage; thispagestyle "empty"; mbox ""; clearpage
   tableofcontents
   clearpage
 
@@ -27,4 +28,3 @@ document:
   import sections.syntax
   import sections.interpreter
   import sections.haltex
- 

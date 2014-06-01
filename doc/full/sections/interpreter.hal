@@ -32,7 +32,7 @@ code "override_append", "Filtering empty |Array|s on construction"
 
 subsection "Types"
 
-p "It's relatively easy to add more native types to |HAL|. Normally it would only consist in writing one |Java| class that represents the type.
+p "It's relatively easy to add more native types to |HAL|. Normally it would only consist in writing one |Java| class that represents the type. Many types in |HAL| are a mere interface to existing types in |Java|.
   A type needs to:"
 
 enumerate:
