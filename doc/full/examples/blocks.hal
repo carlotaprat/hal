@@ -6,9 +6,9 @@ def list title => none, numbered? => false:
 
 def item x:
   if block_given?:
-  	print "<li>" + x
-  	yield
-  	print "</li>"
+    print "<li>" + x
+    yield
+    print "</li>"
   else:
     print "<li>" + x + "</li>"
 

@@ -2,6 +2,9 @@ needs "listings"
 needs "xcolor"
 
 print "
+\\definecolor{dkgreen}{rgb}{0,0.6,0}
+\\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\\definecolor{mauve}{rgb}{0.58,0,0.82}
 \\newcommand{\\CodeSymbol}[1]{\\textcolor{brown}{#1}}
 \\lstdefinelanguage{hal}{
     basicstyle=\\ttfamily,
@@ -32,17 +35,18 @@ print "
       {+}{{\\CodeSymbol{+}}}1
       {-}{{\\CodeSymbol{-}}}1
       {`}{{\\CodeSymbol{\\`{}}}}1
-  }
-\\lstdefinelanguage{output}{
-  basicstyle=\\ttfamily\\footnotesize,
-  columns=fullflexible,
-  backgroundcolor=\\color{gray!180!black},
-  xleftmargin=0.5cm,frame=tlbr,framesep=4pt,framerule=0pt
-  }"
+      {@}{{\\CodeSymbol{@}}}1
+}
 
-print "
+\\lstdefinelanguage{output}{
+    basicstyle=\\ttfamily\\footnotesize,
+    columns=fullflexible,
+    backgroundcolor=\\color{gray!180!black},
+    xleftmargin=0.5cm,frame=tlbr,framesep=4pt,framerule=0pt
+}
+
 \\lstdefinestyle{antlr}{
-    basicstyle=\\footnotesize\\ttfamily,
+    basicstyle=\\scriptsize\\ttfamily,
     language=Java,
     moredelim=[s][\\color{green!50!black}\\ttfamily]{'}{'},
     moredelim=*[s][\\bf]{options}{\\}},
@@ -51,7 +55,20 @@ print "
     commentstyle={\\color{gray}\\itshape},
     alsoletter={:,|,;},
     morekeywords={:,|,;},
-    keywordstyle={\\color{black}\\bf},
+    keywordstyle=\\color{blue},
+    stringstyle=\\color{mauve},
+    breaklines=true,
+    postbreak=\\raisebox{0ex}[0ex][0ex]{\\ensuremath{\\color{red}\\hookrightarrow\\space}}
+}
+
+\\lstdefinestyle{java}{
+  language=Java,
+  basicstyle={\\scriptsize\\ttfamily},
+  keywordstyle=\\color{blue},
+  commentstyle=\\color{dkgreen},
+  stringstyle=\\color{mauve},
+  breaklines=true,
+  postbreak=\\raisebox{0ex}[0ex][0ex]{\\ensuremath{\\color{red}\\hookrightarrow\\space}}
 }"
 
 class Kernel:
@@ -69,8 +86,16 @@ class Kernel:
       caption pstyle capt if not capt.none?
       label file
 
-  def antlr file=>"../../src/hal/parser/Hal.g", fl=>none, ll=>none, style=>"antlr":
-    options ="frame=single,style=%s" % style
-    options = options + ",firstline=%s" % fl if not fl.none? else ""
-    options = options + ",lastline=%s" % ll if not ll.none? else ""
-    lstinputlisting file, options=>options
+  def input_code file, language => none, style => none, firstline => none, lastline => none:
+    options = "frame=single"
+    options = options + ", language=" + language if not language.none?
+    options = options + ", style=" + style if not style.none?
+    options = options + ", firstline=%s" % firstline if not firstline.none?
+    options = options + ", lastline=%s" % lastline if not lastline.none?
+    lstinputlisting file, options => options
+
+  def antlr file => "../../src/hal/parser/Hal.g", fl => none, ll => none:
+    input_code file, style => "antlr", firstline => fl, lastline => ll
+
+  def java file, fl => none, ll => none:
+    input_code "../../src/hal/interpreter/" + file + ".java", style => "java", firstline => fl, lastline => ll

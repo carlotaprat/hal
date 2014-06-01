@@ -23,8 +23,8 @@ p "Like in |Python| there is no method visibility
 
 code "overrides", "Overriding |Array| concatenation!"
 clearpage
-subsection "Blocks"
-p "Like in |Ruby|, it is possible to pass blocks to methods. However, in |HAL| you can define the
+subsection "Lambda blocks"
+p "Like in |Ruby|, it is possible to pass lambda blocks to methods. However, in |HAL| you can define the
   block using the ``|:|\" keyword and indenting accordingly. In a method, the names |block\\_given?|
   and |yield| are set accordingly to whether some block was given or not."
 
@@ -32,7 +32,7 @@ code "blocks", "Generating HTML lists with |HAL|!"
 
 subsection "First-class methods"
 p "Methods are objects too! The |\\&| accessor can be used to avoid calling and obtain the
-  value stored under that name itself."
+  value stored under a name."
 
 code "first_class_methods", "Creating lambdas in one line of code!"
 
@@ -56,7 +56,7 @@ description:
 
 p "When a name is referenced without any accessor, |HAL| searches it following that order."
 
-code "scope", ""
+code "scope", "Playing with the different scope levels"
 
 clearpage
 
@@ -75,5 +75,31 @@ p "Command shells can be executed using **backticks** (|\\`|). The value returne
   about the **exit status** and the **error output**."
 
 code "backticks", "Writing a file and showing its contents"
+
+subsection "Native types"
+p "|HAL| defines a set of useful classes natively:"
+
+itemize:
+  item; p "Boolean"
+  item; p "Class"
+  item; p "Enumerable"
+  itemize:
+    item; p "Array"
+    item; p "Dictionary"
+    item; p "String"
+  item; p "File"
+  item; p "Kernel"
+  itemize:
+    item; p "Module"
+  item; p "None"
+  item; p "Number"
+  itemize:
+    item; p "Float"
+    item; p "Integer"
+    item; p "Long"
+    item; p "Rational"
+  item; p "Object"
+  item; p "Package"
+  item; p "Process"
 
 clearpage
