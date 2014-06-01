@@ -9,12 +9,26 @@ p "**How does |HAL| difference between a variable access and a method call?** Th
   Every |HalObject| implements the |call| method. This method has three parameters: the instance to be set as |self|,
   a |HalMethod| (used to pass |HalLambda|, if any) and an instance of |Arguments| which contains the arguments of the call.
   The |call| method needs to return a |HalObject|. Then, using polymorphism on this method, every type can act differently
-  when it's called. Actually, this method returns the object itself by default and it's only overriden in the |HalMethod| class."
+  when it's called. Actually, this method returns the object itself by default and it's only overriden in the |HalMethod| class.
+  Also, this polymorphism is really useful because the interpreter does not need to take into account if a |HalMethod| is
+  a |Builtin|\\footnote{Natively implemented in |Java|} or a method defined in |HAL| itself that needs to be interpreted,
+  it delegates the responsability to the type."
 
 java "types/HalMethod", 8, 20
 
 p "All the classes that inherit from |HalMethod| need to define the method |mcall|. The method |mcall| is exactly the same as |call| but
   with the arguments processed, validated and ready to be used by the method."
+
+subsection "Builtin methods"
+p "There are two name references for every builtin provided with the interpreter: one that is
+  surrounded with ``|\\_\\_|\" (double underscores) and another that is not (|\\_\\_range\\_\\_| and |range| for example).
+  The name surrounded with underscores is the one that the interpreter can use internally in case it needs it.
+  This means that overriding this methods you can get in the way of how the interpreter does things and use it
+  at your favour. For example, you can filter arrays on creation overriding the |\\_\\_append!\\_\\_| method (see Figure
+  \\ref{override_append}). The reference without underscores is provided for readability purposes and as a backup."
+
+code "override_append", "Filtering empty |Array|s on construction"
+
 
 subsection "Types"
 
@@ -29,13 +43,3 @@ enumerate:
 figure:
   java "types/HalFile", 14, 65
   caption pstyle "|File| type implementation in |Java|"
-
-subsection "Builtin methods"
-p "There are two name references for every builtin provided with the interpreter: one that is
-  surrounded with ``|\\_\\_|\" (double underscores) and another that is not (|\\_\\_range\\_\\_| and |range| for example).
-  The name surrounded with underscores is the one that the interpreter can use internally in case it needs it.
-  This means that overriding this methods you can get in the way of how the interpreter does things and use it
-  at your favour. For example, you can filter arrays on creation overriding the |\\_\\_append!\\_\\_| method (see Figure
-  \\ref{override_append}). The reference without underscores is provided for readability purposes and as a backup."
-
-code "override_append", "Filtering empty |Array|s on construction"

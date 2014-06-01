@@ -1,0 +1,5 @@
+def reverse head, *rest:
+  [head] if rest == [] else reverse(*rest) << head
+
+print range 20
+print reverse *range 20

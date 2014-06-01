@@ -1,4 +1,4 @@
-section "Features"
+section "Features\\footnote{Discover them by yourself! Open the interactive interpreter and play!}", options => "Features"
 
 subsection "Clean syntax"
 p "|HAL| can be easily used to create **D**omain-**S**pecific **L**anguages! Parentheses in calls are optional, |self|
@@ -35,6 +35,22 @@ p "Methods are objects too! The |\\&| accessor can be used to avoid calling and 
   value stored under a name."
 
 code "first_class_methods", "Creating lambdas in one line of code!"
+
+subsection "Parameter groups"
+p "|HAL| method definitions support parameter grouping! The parameter marked with |*| will
+  store the arguments that are not captured by other parameters in an |Array|. |Array|s can be
+  flattened using |*| to pass its elements as arguments!"
+
+code "param_groups", "Dealing with arrays with parameter grouping"
+
+clearpage
+
+subsection "Keyword parameters"
+p "|HAL| methods support keywords too! A *keyword* is a parameter that has a default value, thus
+  it is optional to provide an argument for it. In |HAL| keywords are defined using the |=>|
+  symbol."
+
+code "param_keywords", "A simple example using keywords"
 
 subsection "Module imports"
 p "Like in |Python| every file that contains code is a **module**. Modules can be imported inside

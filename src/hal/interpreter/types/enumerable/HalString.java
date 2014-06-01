@@ -83,12 +83,22 @@ public class HalString extends HalEnumerable<String>
             return new HalString(s);
         }
     });
+
+    private static final Reference __capitalize__ = new Reference(new Builtin("capitalize")
+    {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            String s = ((HalString)instance).value;
+            return new HalString(Character.toUpperCase(s.charAt(0)) + s.substring(1));
+        }
+    });
     
     public static final HalClass klass = new HalClass("String", HalEnumerable.klass,
             __each__,
             __add__,
             __mod__,
-            __gsub__
+            __gsub__,
+            __capitalize__
     );
     
     public HalClass getKlass() { return klass; }
