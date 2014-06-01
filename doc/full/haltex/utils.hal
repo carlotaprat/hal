@@ -40,11 +40,25 @@ print "
   xleftmargin=0.5cm,frame=tlbr,framesep=4pt,framerule=0pt
   }"
 
+print "
+\\lstdefinestyle{antlr}{
+    basicstyle=\\footnotesize\\ttfamily,
+    language=Java,
+    moredelim=[s][\\color{green!50!black}\\ttfamily]{'}{'},
+    moredelim=*[s][\\bf]{options}{\\}},
+    emph=[1]{lexer,header,parser},
+    emphstyle=[1]{\\color{green!70!black}\\ttfamily},
+    commentstyle={\\color{gray}\\itshape},
+    alsoletter={:,|,;},
+    morekeywords={:,|,;},
+    keywordstyle={\\color{black}\\bf},
+}"
+
 class Kernel:
   def code file, capt => none:
     code = Process.exec "cat examples/%s.hal" % file
     exec = Process.exec "hal examples/%s.hal" % file
-    
+
     figure options => "h!":
       lstlisting options => "language=hal":
         print code.output
@@ -54,3 +68,9 @@ class Kernel:
 
       caption pstyle capt if not capt.none?
       label file
+
+  def antlr file=>"../../src/hal/parser/Hal.g", fl=>none, ll=>none, style=>"antlr":
+    options ="style=%s" % style
+    options = options + ",firstline=%s" % fl if not fl.none? else ""
+    options = options + ",lastline=%s" % ll if not ll.none? else ""
+    lstinputlisting file, options=>options

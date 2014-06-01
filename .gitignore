@@ -5,12 +5,14 @@ classes/
 javadoc/
 src/hal/parser/
 
+
 build.xml
 *.mf
 *.class
 *.pdf
 out.dot
 
+doc/full/report.tex
 *.aux
 *.log
 *.out

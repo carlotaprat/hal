@@ -167,7 +167,8 @@ tokens
   }
 
   public boolean keywordIsNext() {
-    return input.LT(1).getType() == ID && input.LT(2).getType() == LARROW;
+    return input.LT(1).getType() == ID
+        && input.LT(2).getType() == LARROW;
   }
 }
 
@@ -491,9 +492,10 @@ fragment SP     : (' ' | '\t')+;
 // Identifiers
 ID  : (LETTER|'_') (LETTER|'_'|DIGIT)* (('!'|'?')('_')*)?;
 
-// Integers
-INT : (DIGIT+ (('.' DIGIT)=> '.' DIGIT+ {$type=FLOAT;})?);
-fragment FLOAT  :;
+// Numbers
+NUMBER : {$type=INT;}(DIGIT+ (('.' DIGIT)=> '.' DIGIT+ {$type=FLOAT;})?);
+fragment INT   :;
+fragment FLOAT :;
 
 // Strings
 STRING
@@ -541,7 +543,8 @@ NEWLINE
         int currentIndent = indentStack[indentLevel];
 
         // Skip if same indentation or empty line or comment
-        if(n == currentIndent || next == '\n' || next == '\r' || next == -1 || next=='#')
+        if(n == currentIndent || next == '\n'
+           || next == '\r' || next == -1 || next=='#')
         {
             skip();
         }

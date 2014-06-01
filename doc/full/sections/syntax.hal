@@ -1,6 +1,35 @@
 section "Syntax"
+
 p "We wanted |HAL| to be **readable**, **clean** and **easy to write**. We think that one of the
-  best features of |Python| is the way it defines blocks by indentation because it forces the programmer
+  things |Python| does well is the way it defines blocks by indentation because it avoids the verbosity
+  of a *closing* token. We wanted |HAL| to be as non-verbose as possible. The relevant part of the
+  grammar that allows blocks by indentation is the following:"
+
+antlr fl=>51, ll=>118
+
+p "It is also important, when the |NEWLINE| tokens are emited:"
+
+antlr fl=>533, ll=>570
+
+p "We also focused on having a simple small set of keywords:"
+
+antlr fl=>428, ll=>481
+antlr fl=>484, ll=>531
+
+p "Thus giving the programmer more freedom to define its own *keywords*."
+
+code "unless", "It's easy to create new *expressions* in |HAL|. Notice how similar to |if| looks."
+
+p "The grammar is a bit complex. We engineered it thinking in |HAL| (the result) instead of thinking
+ in the grammar itself. Because of that we used some helpful Java functions, using multiple features
+ of |antlr|:"
+
+antlr fl=>121, ll=>172
+
+p "
+Thus we eliminated parens
+  from function calls, allow one-line expressions...
+
   to write readable code! On the other hand, |Python| is really verbose sometimes: explicit |self| everywhere,
   calls with mandatory parentheses... Here's where |Ruby| wins! The syntax of |Ruby| lets the programmer
   decide whether to be **explicit** or not, producing code that can feel like *magic*."

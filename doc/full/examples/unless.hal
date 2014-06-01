@@ -1,0 +1,6 @@
+def unless expr:
+  if not expr:
+    yield
+
+unless 1 == 0:
+  print "Everything works as expected"
