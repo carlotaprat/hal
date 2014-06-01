@@ -16,6 +16,20 @@ java "types/HalMethod", 8, 20
 p "All the classes that inherit from |HalMethod| need to define the method |mcall|. The method |mcall| is exactly the same as |call| but
   with the arguments processed, validated and ready to be used by the method."
 
+subsection "Types"
+
+p "It's relatively easy to add more native types to |HAL|. Normally it would only consist in writing one |Java| class that represents the type.
+  A type needs to:"
+
+enumerate:
+  item; p "Extend |HalObject|"
+  item; p "Define its methods"
+  item; p "Define the |getKlass| method that returns the |HalClass| of the type."
+
+figure:
+  java "types/HalFile", 14, 65
+  caption pstyle "|File| type implementation in |Java|"
+
 subsection "Builtin methods"
 p "There are two name references for every builtin provided with the interpreter: one that is
   surrounded with ``|\\_\\_|\" (double underscores) and another that is not (|\\_\\_range\\_\\_| and |range| for example).

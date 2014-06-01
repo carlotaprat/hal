@@ -1,5 +1,6 @@
 package hal.interpreter;
 
+import hal.Hal;
 import hal.interpreter.core.*;
 import hal.interpreter.exceptions.NameException;
 import hal.interpreter.exceptions.SyntaxException;
@@ -15,6 +16,7 @@ import hal.parser.HalLexer;
 import org.antlr.runtime.ANTLRFileStream;
 import org.antlr.runtime.CharStream;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -699,7 +701,18 @@ public class Interpreter
         try {
             modfile = new ANTLRFileStream(module.getFullPath());
         } catch(IOException e) {
-            throw new RuntimeException("Import error: " + e.getMessage());
+            try {
+                modfile = new ANTLRFileStream(
+                        new File(
+                                new File(
+                                        new File(Hal.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent(),
+                                        "lib"),
+                                module.getFullPath()
+                        ).toString()
+                );
+            } catch(IOException e2) {
+                throw new RuntimeException("Import error: " + e.getMessage());
+            }
         }
 
         HalTree tree = parser.getTree(modfile);

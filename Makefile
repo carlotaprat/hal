@@ -52,7 +52,7 @@ compile:
 	  mkdir $(CLASSDIR);\
 	fi
 	sed -i.bkp "s|\$$DATE|$(TIMESTAMP)|" $(MAINFILE)
-	sed -i "s|\$$GIT|$(LASTCOMMIT)|" $(MAINFILE)
+	sed -i.bkp "s|\$$GIT|$(LASTCOMMIT)|" $(MAINFILE)
 	-javac $(JFLAGS) $(ALL_SRC)
 	mv $(MAINFILE).bkp $(MAINFILE);
 
