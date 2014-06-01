@@ -1,5 +1,4 @@
 print "Loading examples..."
-print "-------------------"
 import examples.quicksort
 from examples.scope import Foo
 print "-------------------"

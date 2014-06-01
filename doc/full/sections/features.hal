@@ -18,7 +18,7 @@ p "All the instructions return objects in |HAL|. The value returned by the last 
 subsection "Every method can be overriden"
 p "Like in |Python| there is no method visibility
   concept, which means that all methods can be called from everywhere. Also, like in |Ruby|
-  any class can be reopened at any moment to define or override methods. There is even possible to
+  any class can be reopened at any moment to define or override methods. It is even possible to
   override builtin methods\\footnote{Native methods written in Java.}!"
 
 code "overrides", "Overriding |Array| concatenation!"
@@ -26,7 +26,7 @@ clearpage
 subsection "Lambda blocks"
 p "Like in |Ruby|, it is possible to pass lambda blocks to methods. However, in |HAL| you can define the
   block using the ``|:|\" keyword and indenting accordingly. In a method, the names |block\\_given?|
-  and |yield| are set accordingly to whether some block was given or not."
+  and |yield| are set depending to whether some block was given or not."
 
 code "blocks", "Generating HTML lists with |HAL|!"
 
@@ -37,9 +37,9 @@ p "Methods are objects too! The |\\&| accessor can be used to avoid calling and 
 code "first_class_methods", "Creating lambdas in one line of code!"
 
 subsection "Parameter groups"
-p "|HAL| method definitions support parameter grouping! The parameter marked with |*| will
+p "|HAL| method definitions support parameter grouping! The parameter marked with |$\\ast$| will
   store the arguments that are not captured by other parameters in an |Array|. |Array|s can be
-  flattened using |*| to pass its elements as arguments!"
+  flattened using |$\\ast$| to pass its elements as arguments!"
 
 code "param_groups", "Dealing with arrays with parameter grouping"
 

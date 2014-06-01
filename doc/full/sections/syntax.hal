@@ -30,10 +30,11 @@ subsection "Grammatical rules"
 
 p "The grammar is a bit complex. We engineered it thinking in |HAL| (the result) instead of thinking
  in the grammar itself. Because of that, we used some helpful Java functions, using multiple features
- of |antlr|:"
+ of |antlr| to disambiguate some cases:"
 
 antlr fl=>121, ll=>172
 
+clearpage
 p "Some important features of the grammar are:"
 
 itemize:
@@ -53,5 +54,9 @@ a -1  # Call a with argument -1
 
 antlr fl=>177, ll=>426
 
+p "The major problem we encountered with the syntax is that a call with a lambda block is not an expression, but a call without a lambda block is.
+  Thus, we needed to help the parser to **differentiate** between these two rules that start in the same way. To do so, we used the |:|
+  keyword present in a call with a lambda block **before the end of the line**: iff it is present, then is a lambda block call.
+  There are other rules that use interesting tricks (checking token separation, spacing...)."
 
 clearpage

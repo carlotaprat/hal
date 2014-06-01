@@ -44,3 +44,5 @@ enumerate:
 figure:
   java "types/HalFile", 14, 65
   caption pstyle "|File| type implementation in |Java|"
+
+clearpage
