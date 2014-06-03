@@ -307,7 +307,8 @@ arglist
     ;
 
 flatten_arg
-    :  '*' expr -> ^(FLATTEN_ARG expr)
+    : {input.LT(1).getText().equals("*") && directlyFollows(input.LT(1), input.LT(2))}?
+      '*' expr -> ^(FLATTEN_ARG expr)
     ;
 
 do_lambda

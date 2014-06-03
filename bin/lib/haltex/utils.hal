@@ -1,5 +1,6 @@
 needs "listings"
 needs "xcolor"
+needs "graphicx"
 
 print "
 \\definecolor{dkgreen}{rgb}{0,0.6,0}
@@ -75,8 +76,8 @@ print "
 
 class Kernel:
   def code file, capt => none:
-    code = Process.exec "cat examples/%s.hal" % file
-    exec = Process.exec "hal examples/%s.hal" % file
+    code = Process.exec "cat ../examples/%s.hal" % file
+    exec = Process.exec "hal ../examples/%s.hal" % file
 
     figure options => "h!":
       lstlisting options => "language=hal":

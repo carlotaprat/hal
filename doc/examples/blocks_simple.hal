@@ -1,0 +1,6 @@
+class Array:
+  def map:
+    [ yield x for x in self ]
+
+a = range(10).map with x: x * 2
+print a

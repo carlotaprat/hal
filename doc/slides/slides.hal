@@ -1,0 +1,54 @@
+import haltex
+
+documentclass "beamer"
+
+usepackage "inputenc", options => "utf8"
+
+import haltex.utils
+import haltex.beamer
+
+usetheme "Madrid"
+
+print "\\setbeamertemplate{navigation symbols}{}
+\\setbeamertemplate{footline}[page number]{}"
+
+title "HAL"
+titlegraphic "\\includegraphics[scale=0.15]{hal.png}"
+author "Héctor Ramón i Alvaro Espuña"
+date "4 de juny de 2014"
+
+document:
+  frame "\\titlepage"
+
+  frame "Objectiu", options => "fragile":
+    p "Crear un llenguatge de programació:"
+    
+    itemize:
+      item; p "Que ens resulti útil en el futur"
+      item; p "Fàcil d'escriure i de llegir"
+      item; p "Molt dinàmic"
+      item; p "Que incorpori bones idees d'altres llenguatges (|Python|, |Ruby|,...)"
+
+    code "hello5"
+
+  frame "Característiques":
+    itemize:
+      item; p "Sintaxi **neta**, perfecta per crear **D**omain-**S**pecific **L**anguages"
+      item; p "Arquitectura **orientada a objectes** amb **herència**"
+      item; p "**Dynamic typing** i **duck typing**"
+      item; p "Mètodes *builtin* que es poden **reescriure** en |HAL| mateix"
+      item; p "**Importació** de mòduls"
+      item; p "Funcions de **primera classe**"
+      item; p "Intèrpret interactiu i fàcilment extensible"
+
+  frame "Sintaxi neta", options => "fragile":
+    code "quicksort"
+
+  frame "Lambda blocks i *list comprehension*", options => "fragile":
+    code "blocks_simple"
+
+  frame "Funcions de primera classe", options => "fragile":
+    code "first_class_methods"
+
+  frame "|HALTeX|", options => "fragile":
+    code "haltex"
