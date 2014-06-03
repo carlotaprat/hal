@@ -1,0 +1,6 @@
+class Kernel:
+  def frame title, options => none:
+    if block_given?:
+      __method_missing__ "frame", pstyle(title), options => options: yield
+    else:
+      __method_missing__ "frame", pstyle(title), options => options

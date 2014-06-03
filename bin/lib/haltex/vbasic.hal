@@ -1,0 +1,26 @@
+needs "listings"
+
+print "\\definecolor{LighterGray}{rgb}{0.9,0.9,0.9}
+\\definecolor{LightGray}{rgb}{0.7,0.7,0.7}
+\\definecolor{DarkGray}{rgb}{0.4,0.4,0.4}"
+
+print "\\lstdefinestyle{vbasic}{ %
+  language=[Visual]Basic,%
+  basicstyle=\\ttfamily\\footnotesize,
+  breakatwhitespace=false,%
+  commentstyle=\\color{DarkGray},%
+  breaklines=true,%
+  keywordstyle=\\color{blue},%
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  numbers=left,
+  numbersep=5pt,
+  numberstyle=\\tiny\\color{LightGray},
+  stringstyle=\\color{orange}
+}"
+
+class Kernel:
+  def vbasic:
+    lstlisting options => "style=vbasic":
+      yield
