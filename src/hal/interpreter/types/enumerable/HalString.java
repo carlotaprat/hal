@@ -11,6 +11,8 @@ import hal.interpreter.types.HalNone;
 import hal.interpreter.types.HalObject;
 import hal.interpreter.types.numeric.HalInteger;
 
+import java.util.regex.Pattern;
+
 public class HalString extends HalEnumerable<String>
 {
 
@@ -84,6 +86,17 @@ public class HalString extends HalEnumerable<String>
         }
     });
 
+    private static final Reference __strip__ = new Reference(new Builtin("strip", new Params.Param("str"))
+    {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            String pattern = Pattern.quote(((HalString)args.get("str")).value);
+            String value = ((HalString)instance).value;
+
+            return new HalString(value.replaceAll("(^["+pattern+"]+)|(["+pattern+"]+$)", ""));
+        }
+    });
+
     private static final Reference __capitalize__ = new Reference(new Builtin("capitalize")
     {
         @Override
@@ -98,6 +111,7 @@ public class HalString extends HalEnumerable<String>
             __add__,
             __mod__,
             __gsub__,
+            __strip__,
             __capitalize__
     );
     

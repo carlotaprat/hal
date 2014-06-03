@@ -67,6 +67,9 @@ class Kernel:
     write *ps
     print
 
+  def c code:
+    print code.strip "\n"
+
   def pstyle paragraph:
     paragraph \
       .gsub("\\*\\*([^\\*\\*]*)\\*\\*", "\\\\textbf{$1}") \
@@ -85,4 +88,5 @@ class Kernel:
     usepackage pkg if not packages.has_key? pkg
 
   def item description => none:
-    __method_missing__ "item", options => description
+    options = none if description.none? else options = pstyle description
+    __method_missing__ "item", options => options
