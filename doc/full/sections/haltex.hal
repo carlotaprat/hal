@@ -1,6 +1,6 @@
 section "HalTeX"
 
-p "As a *real life* example and to be sure that |HAL| is poweful
+p "As a *real life* example and to be sure that |HAL| is powerful
  enough at this early stage, we created a *DSL* to write in LaTeX. The
  output from LaTeX is very beautiful, but the syntax sometimes can be
  a bit cumbersome. In this section we will detail the implementation
@@ -25,7 +25,6 @@ subsection "Use example"
 p "This document was written using this *DSL* (we call it
 |HalTeX|). |HalTeX| comes as a builtin module and the source code can
 be found in the |bin/lib/| directory. The source code of this document
-is also included in the delivered *tar.gz* under the |doc/|
-directory."
+is also included in the |doc/| directory."
 
 code "haltex", "This should be applicable to many markup languages."

@@ -1,5 +1,5 @@
 class Kernel:
-    def __method_missing__ name, str=>'':
+    def __method_missing__ name, str => '':
         name + ' ' + str
 
 s = This creates a string

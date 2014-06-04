@@ -1,5 +1,3 @@
-print "Loading examples..."
-import examples.quicksort
-from examples.scope import Foo
-print "-------------------"
-print Foo.new
+import hal
+
+hal.disconnect!

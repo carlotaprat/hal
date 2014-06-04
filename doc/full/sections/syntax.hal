@@ -54,7 +54,8 @@ a -1  # Call a with argument -1
 
 antlr fl=>177, ll=>426
 
-p "The major problem we encountered with the syntax is that a call with a lambda block is not an expression, but a call without a lambda block is.
+p "The major problem we encountered with the syntax is that a call with a lambda block is not an expression, but a call without a lambda block is
+(this will be fixed soon!).
   Thus, we needed to help the parser to **differentiate** between these two rules that start in the same way. To do so, we used the |:|
   keyword present in a call with a lambda block **before the end of the line**: iff it is present, then is a lambda block call.
   There are other rules that use interesting tricks (checking token separation, spacing...)."

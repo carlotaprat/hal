@@ -1,7 +1,7 @@
-def greet  name=>"John", age=>21:
+def greet name => "John", age => 21:
   print "My name is " + name.capitalize + " and I'm " + age.str
 
 greet
 greet "manel", 30
-greet "manel", age=>30
-greet age=>30, name=>"manel"
+greet "manel", age => 30
+greet age => 30, name => "manel"

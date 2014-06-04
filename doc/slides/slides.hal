@@ -14,40 +14,40 @@ print "\\setbeamertemplate{navigation symbols}{}
 
 title "HAL"
 titlegraphic "\\includegraphics[scale=0.15]{hal.png}"
-author "Héctor Ramón i Alvaro Espuña"
-date "4 de juny de 2014"
+author "Héctor Ramón and Alvaro Espuña"
+date "4th june, 2014"
 
 document:
   frame "\\titlepage"
 
-  frame "Objectiu", options => "fragile":
-    p "Crear un llenguatge de programació:"
+  frame "Objectve", options => "fragile":
+    p "Create a programming language:"
 
     itemize:
-      item; p "Que ens resulti útil en el futur"
-      item; p "Fàcil d'escriure i de llegir"
-      item; p "Molt dinàmic"
-      item; p "Que incorpori bones idees d'altres llenguatges (|Python|, |Ruby|,...)"
+      item; p "That results useful in the future"
+      item; p "Easy to write and read"
+      item; p "Very dynamic"
+      item; p "Inspired in good ideas of other languages (|Python|, |Ruby|,...)"
 
     code "hello5"
 
-  frame "Característiques":
+  frame "Main features":
     itemize:
-      item; p "Sintaxi **neta**, perfecta per crear **D**omain-**S**pecific **L**anguages"
-      item; p "Arquitectura **orientada a objectes** amb **herència**"
-      item; p "**Dynamic typing** i **duck typing**"
-      item; p "Mètodes *builtin* que es poden **reescriure** en |HAL| mateix"
-      item; p "**Importació** de mòduls"
-      item; p "Funcions de **primera classe**"
-      item; p "Intèrpret interactiu i fàcilment extensible"
+      item; p "**Clean** syntax, perfect for creating **D**omain-**S**pecific **L**anguages"
+      item; p "**Object-oriented** with **inheritance**"
+      item; p "**Dynamic typing** and **duck typing**"
+      item; p "**Builtin** methods that can be **overriden** in |HAL| itself"
+      item; p "Module **imports**"
+      item; p "**First-class** functions"
+      item; p "Interactive and easy-to-extend interpreter"
 
-  frame "Sintaxi neta", options => "fragile":
+  frame "Clean syntax", options => "fragile":
     code "quicksort"
 
   frame "*List comprehension*", options => "fragile":
     code "list_comprehension"
 
-  frame "Funcions de primera classe", options => "fragile":
+  frame "First-class functions", options => "fragile":
     code "first_class_methods"
 
   frame "Lambda blocks", options => "fragile":
@@ -56,19 +56,19 @@ document:
   frame "*Backticks*", options => "fragile":
     code "backticks"
 
-  frame "Espais significatius", options => "fragile":
+  frame "Spaces are significative", options => "fragile":
     code "spaces_matter"
 
   frame "Four levels of scopes":
     description:
-      item "Local"; p "Sense *accessor*"
-      item "Instance"; p "Utilitzant |@|"
-      item "Static"; p "Utilitzant |@@|"
-      item "Module"; p "Variables d'instancia definides al mòdul actual"
+      item "Local"; p "Without *accessor*"
+      item "Instance"; p "Using |@|"
+      item "Static"; p "Using |@@|"
+      item "Module"; p "Instance variables in the current module"
 
-    p "Si un nom es referencia sense *accessor*, |HAL| busca el nom seguint aquest ordre."
+    p "When a name is referenced without any *accessor*, |HAL| looks in the scopes in that order."
 
-  frame "Classes natives", options=>"fragile":
+  frame "Builtin classes", options=>"fragile":
     itemize:
       item; p "Boolean"
       item; p "Class"
@@ -92,7 +92,7 @@ document:
       item; p "Package"
       item; p "Process"
 
-  frame "Tipus de dades bàsics", options=> "fragile,breaklines=true":
+  frame "Basic data types", options=> "fragile,breaklines=true":
     lstlisting options=>"style=java":
       write "
 public abstract class HalNumber<T extends Number>
@@ -102,7 +102,7 @@ public abstract class HalNumber<T extends Number>
   public abstract boolean canCoerce(HalObject n);
   public abstract HalNumber coerce(HalObject n);"
 
-  frame "Tipus de dades bàsics", options=> "fragile":
+  frame "Basic data types (I)", options=> "fragile":
    lstlisting options=>"style=java":
      write "
 private static final Reference __add__ =
@@ -120,7 +120,7 @@ private static final Reference __add__ =
         }
     });"
 
-  frame "Tipus de dades bàsics", options => "fragile":
+  frame "Basic data types (II)", options => "fragile":
    lstlisting options=>"style=java":
      write "
 public static final HalClass klass =
@@ -144,8 +144,8 @@ class HalInteger extends HalNumber<Integer> {
  // ...
 }"
 
-  frame "Tipus de dades bàsics":
-    p "Altres mètodes dels Numèrics:"
+  frame "Basic data types (III)":
+    p "Other |Number| methods:"
     itemize:
       item "·"; p "|bool|"
       item "·"; p "|pos|"
