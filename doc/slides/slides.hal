@@ -22,7 +22,7 @@ document:
 
   frame "Objectiu", options => "fragile":
     p "Crear un llenguatge de programació:"
-    
+
     itemize:
       item; p "Que ens resulti útil en el futur"
       item; p "Fàcil d'escriure i de llegir"
@@ -43,6 +43,101 @@ document:
 
   frame "Sintaxi neta", options => "fragile":
     code "quicksort"
+
+  frame "Tipus de dades bàsics":
+    description:
+      item "Numèrics"
+      description:
+        item "Enters"; p "|123 + 4567890123456789|"
+	item "Racionals"; p "|123/456 + 12/34|"
+	item "Flotants"; p "|2.5 * 1/5.0|"
+
+  frame "Tipus de dades bàsics", options=> "fragile,breaklines=true":
+    lstlisting options=>"style=java":
+      write "
+public abstract class HalNumber<T extends Number>
+    extends HalObject<T> {
+  public abstract HalNumber add(HalNumber n);
+
+  public abstract boolean canCoerce(HalObject n);
+  public abstract HalNumber coerce(HalObject n);"
+
+  frame "Tipus de dades bàsics", options=> "fragile":
+   lstlisting options=>"style=java":
+     write "
+private static final Reference __add__ =
+  new Reference(new Builtin(\"add\", new Params.Param(\"x\")) {
+    @Override
+    public HalObject mcall(HalObject instance,
+      HalMethod lambda, Arguments args) {
+       HalNumber i = ((HalNumber) instance);
+       HalObject x = args.get(\"x\");
+
+            if (!i.canCoerce(x))
+                return x.methodcall(\"__radd__\", i);
+
+            return i.add(i.coerce(x));
+        }
+    });"
+
+  frame "Tipus de dades bàsics", options => "fragile":
+   lstlisting options=>"style=java":
+     write "
+public static final HalClass klass =
+   new HalClass(\"Number\", HalObject.klass,
+  // ...
+  __add__,
+  // ...
+);"
+
+   lstlisting options=>"style=java":
+      write "
+class HalInteger extends HalNumber<Integer> {
+ // ...
+ @Override
+ public HalNumber add(HalNumber n) {
+   if (addOverflows(toInteger(), n.toInteger()))
+     return new HalLong(toInteger())
+            .add(new HalLong(n.toInteger()));
+   return new HalInteger(toInteger() + n.toInteger());
+ }
+ // ...
+}"
+
+  frame "Tipus de dades bàsics":
+    p "Altres mètodes dels Numèrics:"
+    itemize:
+      item "·"; p "|bool|"
+      item "·"; p "|pos|"
+      item "·"; p "|neg|"
+      item "·"; p "|sub|"
+      item "·"; p "|mul|"
+      item "·"; p "|pow|"
+      item "·"; p "|div|"
+      item "·"; p "|mod|"
+      item "·"; p "|ddiv|"
+      item "·"; p "|eq|"
+      item "·"; p "|lt|"
+
+
+  frame "Tipus de dades bàsics":
+    description:
+      item "Enumerables"
+      description:
+        item "Arrays"; p "|[1,2,3]|"
+	item "Diccionaris"; p "|{'a'=>1, 'b'=>2}|"
+	item "Strings"; p "|'abc', \"abc\"|"
+
+  frame "Tipus de dades bàsics", options=>"fragile":
+    p "Altres tipus són:"
+    itemize:
+          item; p "|Enumerables|"
+	  item; p "|None|"
+	  item; p "|File|"
+	  item; p "|Method|"
+	  item; p "|Module|"
+	  item; p "|Process|"
+    p "Utilizant la mateixa idea"
 
   frame "Lambda blocks i *list comprehension*", options => "fragile":
     code "blocks_simple"
