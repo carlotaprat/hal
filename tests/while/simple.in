@@ -1,4 +1,0 @@
-while a + b == c:
-    print a, b
-
-while true: pass

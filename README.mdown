@@ -6,9 +6,8 @@ features and ideas that can be found in other languages!
 
 Content
 -----------------
-- src/        Java source code
-- doc/        Documentation in HalTeX
-- bin/        Binaries and native modules
-- libs/       Dependencies to compile the source code
-- Makefile    Commands to compile the interpreter
-- report.pdf  Documentation compiled in PDF
+- `src/`        Java source code
+- `doc/`        Documentation in HalTeX
+- `bin/`        Binaries and native modules
+- `libs/`       Dependencies to compile the source code
+- `Makefile`    Commands to compile the interpreter

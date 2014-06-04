@@ -1,9 +1,0 @@
-# while
-while boolea:
-    if i == 0:
-        p
-
-# for
-for key, value in map:
-    print key, value
-
