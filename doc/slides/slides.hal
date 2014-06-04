@@ -44,13 +44,53 @@ document:
   frame "Sintaxi neta", options => "fragile":
     code "quicksort"
 
-  frame "Tipus de dades bàsics":
+  frame "*List comprehension*", options => "fragile":
+    code "list_comprehension"
+
+  frame "Funcions de primera classe", options => "fragile":
+    code "first_class_methods"
+
+  frame "Lambda blocks", options => "fragile":
+    code "blocks_times"
+
+  frame "*Backticks*", options => "fragile":
+    code "backticks"
+
+  frame "Espais significatius", options => "fragile":
+    code "spaces_matter"
+
+  frame "Four levels of scopes":
     description:
-      item "Numèrics"
-      description:
-        item "Enters"; p "|123 + 4567890123456789|"
-	item "Racionals"; p "|123/456 + 12/34|"
-	item "Flotants"; p "|2.5 * 1/5.0|"
+      item "Local"; p "Sense *accessor*"
+      item "Instance"; p "Utilitzant |@|"
+      item "Static"; p "Utilitzant |@@|"
+      item "Module"; p "Variables d'instancia definides al mòdul actual"
+
+    p "Si un nom es referencia sense *accessor*, |HAL| busca el nom seguint aquest ordre."
+
+  frame "Classes natives", options=>"fragile":
+    itemize:
+      item; p "Boolean"
+      item; p "Class"
+      item; p "Enumerable"
+      itemize:
+        item; p "Array"
+        item; p "Dictionary"
+        item; p "String"
+      item; p "File"
+      item; p "Kernel"
+      itemize:
+        item; p "Module"
+      item; p "None"
+      item; p "Number"
+      itemize:
+        item; p "Float"
+        item; p "Integer"
+        item; p "Long"
+        item; p "Rational"
+      item; p "Object"
+      item; p "Package"
+      item; p "Process"
 
   frame "Tipus de dades bàsics", options=> "fragile,breaklines=true":
     lstlisting options=>"style=java":
@@ -118,32 +158,6 @@ class HalInteger extends HalNumber<Integer> {
       item "·"; p "|ddiv|"
       item "·"; p "|eq|"
       item "·"; p "|lt|"
-
-
-  frame "Tipus de dades bàsics":
-    description:
-      item "Enumerables"
-      description:
-        item "Arrays"; p "|[1,2,3]|"
-	item "Diccionaris"; p "|{'a'=>1, 'b'=>2}|"
-	item "Strings"; p "|'abc', \"abc\"|"
-
-  frame "Tipus de dades bàsics", options=>"fragile":
-    p "Altres tipus són:"
-    itemize:
-          item; p "|Enumerables|"
-	  item; p "|None|"
-	  item; p "|File|"
-	  item; p "|Method|"
-	  item; p "|Module|"
-	  item; p "|Process|"
-    p "Utilizant la mateixa idea"
-
-  frame "Lambda blocks i *list comprehension*", options => "fragile":
-    code "blocks_simple"
-
-  frame "Funcions de primera classe", options => "fragile":
-    code "first_class_methods"
 
   frame "|HALTeX|", options => "fragile":
     code "haltex"
