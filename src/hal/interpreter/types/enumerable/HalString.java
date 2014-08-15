@@ -34,7 +34,7 @@ public class HalString extends HalEnumerable<String>
     }
 
     public HalString str() {
-        return new HalString(value);
+        return this;
     }
 
     public HalString getitem(HalObject index) {
