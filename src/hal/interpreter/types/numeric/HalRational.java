@@ -36,6 +36,11 @@ public class HalRational extends HalNumber<Rational>
     }
 
     @Override
+    public Object toFormat(){
+        return toFloat();
+    }
+
+    @Override
     public boolean isZero() {
         return value.getNum() == 0;
     }
