@@ -1,9 +1,0 @@
-def foo:
-    if True: print x;
-    elif y: print l
-    else: print y
-
-if True:
-    pass;
-
-print x, y, mult 3, 4 if foobar else print 2

@@ -1,8 +1,0 @@
-for i in v:
-    this
-    that
-
-
-for i in li:
-    for j in lj:
-        whatever
