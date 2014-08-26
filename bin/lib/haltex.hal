@@ -38,7 +38,7 @@ class Kernel:
       write_args args
       print
 
-  def cover title, subject, authors, footer:
+  def cover title, subject, authors, footer, image => none:
     titlepage:
       center:
         textsc "\\Large " + subject; br 1.5
@@ -46,11 +46,18 @@ class Kernel:
         wrap: huge; bfseries; print title; br 0.4
         hrule; br 2.5
 
-        minipage "0.4\\textwidth":
-          flushleft: large; print authors[0]
+        if authors.size == 2:
+          minipage "0.4\\textwidth":
+            flushleft: large; print authors[0]
 
-        minipage "0.4\\textwidth":
-          flushright: large; print authors[1]
+          minipage "0.4\\textwidth":
+            flushright: large; print authors[1]
+        else:
+          center:
+            large; print authors[0]
+
+        if not image.none?:
+          includegraphics image
 
         vfill
         wrap: large; today
@@ -90,3 +97,6 @@ class Kernel:
   def item description => none:
     options = none if description.none? else options = pstyle description
     __method_missing__ "item", options => options
+
+  def caption text:
+    __method_missing__ "caption", pstyle text
