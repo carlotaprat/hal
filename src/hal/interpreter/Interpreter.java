@@ -19,6 +19,7 @@ import org.antlr.runtime.CharStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 
 /** Class that implements the interpreter of the language. */
 
@@ -697,12 +698,13 @@ public class Interpreter
             pkg = evaluatePackage(mod.getChild(0));
 
         HalModule module = new HalModule(mod.getText(), pkg);
-        CharStream moduleStream;
 
         try {
-            moduleStream = new ANTLRFileStream(module.getPath());
-        } catch(IOException e) {
+            CharStream moduleStream;
+
             try {
+                moduleStream = new ANTLRFileStream(module.getPath());
+            } catch (IOException e) {
                 String moduleFullPath = new File(
                         new File(
                                 new File(Hal.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent(),
@@ -712,16 +714,33 @@ public class Interpreter
 
                 moduleStream = new ANTLRFileStream(moduleFullPath);
                 module.setFullPath(moduleFullPath);
-            } catch(IOException e2) {
-                throw new RuntimeException("Import error: " + e.getMessage());
+            }
+
+            HalTree tree = parser.getTree(moduleStream);
+
+            stack.pushContext(module.value, module, module, null, imp.getLine());
+            evaluate(tree);
+            stack.popContext();
+        } catch(IOException e) {
+            // Load native modules
+            ClassLoader classLoader = Hal.class.getClassLoader();
+
+            try {
+                Class moduleClass = classLoader.loadClass("hal.interpreter.modules." + module.getAddress());
+                module = (HalModule) moduleClass.getConstructor(HalPackage.class).newInstance(pkg);
+                module.setFullPath(moduleClass.getProtectionDomain().getCodeSource().getLocation().getPath());
+            } catch(ClassNotFoundException e2) {
+                throw new RuntimeException("Import error: Module '" + module.getAddress() + "' not found");
+            } catch (InvocationTargetException e1) {
+                e1.printStackTrace();
+            } catch (NoSuchMethodException e1) {
+                e1.printStackTrace();
+            } catch (InstantiationException e1) {
+                e1.printStackTrace();
+            } catch (IllegalAccessException e1) {
+                e1.printStackTrace();
             }
         }
-
-        HalTree tree = parser.getTree(moduleStream);
-
-        stack.pushContext(module.value, module, module, null, imp.getLine());
-        evaluate(tree);
-        stack.popContext();
 
         ReferenceRecord importRecord;
         try {

@@ -29,10 +29,6 @@ public class HalPackage extends HalObject<String>
         }
     }
 
-    public String getChildPath(String child) {
-        return path + File.separator + child;
-    }
-
     public String getPath() {
         return path;
     }
