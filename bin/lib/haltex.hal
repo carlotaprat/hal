@@ -1,19 +1,16 @@
 @packages = {}
 
 def env name, *args, options => none:
-  write "\\begin{", name, "}"
+  write "\\begin{%s}" % name
   write_options options
   write_args args
-
   print
-
   yield
-
-  p "\\end{", name, "}"
+  p "\\end{%s}" % name
 
 
 def write_options options:
-  write "[", options, "]" if not options.none?
+  write "[%s]" % options if not options.none?
 
 
 def write_args args:
@@ -41,7 +38,7 @@ class Kernel:
   def cover title, subject, authors, footer, image => none:
     titlepage:
       center:
-        textsc "\\Large " + subject; br 1.5
+        textsc "\\Large %s" % subject; br 1.5
         hrule; br 0.4
         wrap: huge; bfseries; print title; br 0.4
         hrule; br 2.5
@@ -79,9 +76,9 @@ class Kernel:
 
   def pstyle paragraph:
     paragraph \
-      .gsub("\\*\\*([^\\*\\*]*)\\*\\*", "\\\\textbf{$1}") \
-      .gsub("\\*([^\\*]*)\\*", "\\\\emph{$1}") \
-      .gsub("\\|([^\\|]*)\\|", "\\\\texttt{$1}") \
+      .gsub(r/\*\*([^\*\*]*)\*\*/, "\\\\textbf{$1}") \
+      .gsub(r/\*([^\*]*)\*/, "\\\\emph{$1}") \
+      .gsub(r/\|([^\|]*)\|/, "\\\\texttt{$1}") \
       .gsub("LaTeX", "\\\\LaTeX{}")
 
   def hrule:

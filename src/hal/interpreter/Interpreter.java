@@ -420,6 +420,9 @@ public class Interpreter
             case HalLexer.STRING:
                 value = new HalString(t.getText());
                 break;
+            case HalLexer.REGEXP:
+                value = new HalRegExp(t.getText());
+                break;
             case HalLexer.BACKTICKS:
                 HalObject proc = HalProcess.klass.methodcall("__exec__", new HalString(t.getText()));
                 value = proc.methodcall("output");

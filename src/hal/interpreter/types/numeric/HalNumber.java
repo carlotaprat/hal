@@ -23,6 +23,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
 
     public Integer toInteger() { return value.intValue(); }
     public Double toFloat() { return value.doubleValue(); }
+    public Object toFormat() { return value; }
 
     public HalBoolean bool() { return new HalBoolean(!isZero()); }
 

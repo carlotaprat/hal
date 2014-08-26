@@ -11,6 +11,7 @@ import hal.interpreter.types.HalNone;
 import hal.interpreter.types.HalObject;
 import hal.interpreter.types.numeric.HalInteger;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class HalString extends HalEnumerable<String>
@@ -33,7 +34,7 @@ public class HalString extends HalEnumerable<String>
     }
 
     public HalString str() {
-        return new HalString(value);
+        return this;
     }
 
     public HalString getitem(HalObject index) {
@@ -68,7 +69,23 @@ public class HalString extends HalEnumerable<String>
     private static final Reference __mod__ = new Reference(new Builtin("mod", new Params.Param("x")) {
         @Override
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
-            return new HalString(String.format(((HalString)instance).value, args.get("x")));
+            HalObject x = args.get("x");
+
+            String s;
+
+            if(x instanceof HalArray) {
+                HalArray ary = (HalArray) x;
+                Object[] objects = new Object[ary.value.size()];
+
+                for(int i = 0; i < objects.length; ++i)
+                    objects[i] = ary.value.get(i).toFormat();
+
+                s = String.format(Locale.US, ((HalString) instance).value, objects);
+            } else {
+                s = String.format(Locale.US, ((HalString) instance).value, x.toFormat());
+            }
+
+            return new HalString(s);
         }
     });
 

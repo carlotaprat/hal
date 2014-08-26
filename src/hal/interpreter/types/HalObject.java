@@ -71,6 +71,8 @@ public abstract class HalObject<T> extends HalType
         return ((HalBoolean) methodcall("__bool__")).getValue();
     }
 
+    public Object toFormat(){ return this; }
+
     public HalString repr() {
         return (HalString) methodcall("__str__");
     }

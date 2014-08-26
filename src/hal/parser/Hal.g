@@ -377,6 +377,7 @@ atom
     :   INT
     |   FLOAT
     |   STRING
+    |   REGEXP
     |   BACKTICKS
     |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
     |   NONE
@@ -508,6 +509,14 @@ STRING
     | '\'' ( ESC_SEQ[buf]
           | i = ~('\\'|'\'') { buf.appendCodePoint(i); }
           )* '\''
+      { setText(buf.toString()); }
+    ;
+
+REGEXP
+    @init { final StringBuilder buf = new StringBuilder(); }
+    : 'r' DIV ( '\\' DIV { buf.append('/'); }
+          | i = ~(DIV) { buf.appendCodePoint(i); }
+          )* DIV
       { setText(buf.toString()); }
     ;
 

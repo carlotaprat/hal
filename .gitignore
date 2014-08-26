@@ -1,6 +1,7 @@
 .idea/
 nbproject/
-bin/
+bin/*
+!bin/lib/
 classes/
 javadoc/
 src/hal/parser/
