@@ -1,8 +1,10 @@
 package hal;
 
 // Imports for ANTLR
+
 import hal.interpreter.Interpreter;
 import hal.interpreter.Parser;
+import hal.interpreter.types.HalModule;
 import hal.interpreter.types.HalObject;
 import jline.console.ConsoleReader;
 import org.antlr.runtime.ANTLRFileStream;
@@ -53,7 +55,14 @@ public class Hal
                 System.exit(1);
 
             Parser parser = new Parser(astfile, dotformat);
-            INTERPRETER = new Interpreter(parser, tracefile); // prepares the interpreter
+            HalModule mainModule;
+
+            if(interactive)
+                mainModule = new HalModule("stdin", null, "<stdin>");
+            else
+                mainModule = new HalModule(infile, null, infile);
+
+            INTERPRETER = new Interpreter(parser, mainModule, tracefile);
 
             if(interactive)
                 interactiveMode();

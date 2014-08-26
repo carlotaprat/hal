@@ -46,12 +46,11 @@ public class Interpreter
      * Constructor of the interpreter. It prepares the main
      * data structures for the execution of the main program.
      */
-    public Interpreter(Parser parsr, PrintWriter tracefile) {
+    public Interpreter(Parser parsr, HalModule mainModule, PrintWriter tracefile) {
         // Initialize and solve dependency cycles
         HalKernel.init();
 
         parser = parsr;
-        HalModule mainModule = new HalModule("main", null);
         globals = new ReferenceRecord(null);
         trace = tracefile;
         function_nesting = 0;
@@ -60,10 +59,9 @@ public class Interpreter
         stack.pushContext(mainModule.value, mainModule, mainModule, null, 0);
     }
 
-    /** Runs the program by calling the main function without parameters. */
-    public HalObject run(CharStream input) throws IOException {
+    public HalObject run(CharStream input) {
         stack.popUntilFirstLevel();
-        HalTree t = parser.process(input);
+        HalTree t = parser.getTree(input);
         return evaluate(t);
     }
 
@@ -82,7 +80,7 @@ public class Interpreter
         if(current == null)
             return "none";
 
-        return current.getFullPath();
+        return current.getPath();
     }
 
     /** Returns the contents of the stack trace */
@@ -699,26 +697,27 @@ public class Interpreter
             pkg = evaluatePackage(mod.getChild(0));
 
         HalModule module = new HalModule(mod.getText(), pkg);
-        CharStream modfile;
+        CharStream moduleStream;
 
         try {
-            modfile = new ANTLRFileStream(module.getFullPath());
+            moduleStream = new ANTLRFileStream(module.getPath());
         } catch(IOException e) {
             try {
-                modfile = new ANTLRFileStream(
+                String moduleFullPath = new File(
                         new File(
-                                new File(
-                                        new File(Hal.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent(),
-                                        "lib"),
-                                module.getFullPath()
-                        ).toString()
-                );
+                                new File(Hal.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent(),
+                                "lib"),
+                        module.getPath()
+                ).toString();
+
+                moduleStream = new ANTLRFileStream(moduleFullPath);
+                module.setFullPath(moduleFullPath);
             } catch(IOException e2) {
                 throw new RuntimeException("Import error: " + e.getMessage());
             }
         }
 
-        HalTree tree = parser.getTree(modfile);
+        HalTree tree = parser.getTree(moduleStream);
 
         stack.pushContext(module.value, module, module, null, imp.getLine());
         evaluate(tree);

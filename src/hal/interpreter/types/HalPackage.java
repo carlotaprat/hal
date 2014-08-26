@@ -10,24 +10,35 @@ public class HalPackage extends HalObject<String>
 {
     public HalPackage parent;
     public String path;
+    public String address;
     public HalPackage root;
 
     public HalPackage(String name, HalPackage par) {
         value = name;
         parent = par;
         path = name;
+        address = name;
 
         if(parent == null)
             root = this;
         else {
             path = parent.path + File.separator + path;
+            address = parent.address + '.' + address;
             root = parent.root;
             parent.getInstanceRecord().defineVariable(value, this);
         }
     }
 
-    public String getFullPath() {
-        return path + ".hal";
+    public String getChildPath(String child) {
+        return path + File.separator + child;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public HalString str() {
