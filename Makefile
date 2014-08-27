@@ -1,6 +1,23 @@
 TARGET       = hal
 TARGET_CLASS = Hal
 
+# Special definitions
+noop=
+space = $(noop) $(noop)
+
+# Detect OS
+ifeq ($(OS),Windows_NT)
+	OS = windows
+else
+	UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Linux)
+    	OS = linux
+    endif
+    ifeq ($(UNAME_S),Darwin)
+    	OS = macosx
+    endif
+endif
+
 # Directories
 ROOT     = $(PWD)
 SRCDIR   = $(ROOT)/src
@@ -11,18 +28,24 @@ PARSER   = $(MAIN)/parser
 INTERP   = $(MAIN)/interpreter
 JAVADOC  = $(ROOT)/javadoc
 BIN      = $(ROOT)/bin
+NATIVES  = $(ROOT)/natives
 
 # Executable
 EXEC     = $(BIN)/$(TARGET)
 JARFILE  = $(BIN)/$(TARGET).jar
 MANIFEST = $(BIN)/$(TARGET)_Manifest.txt
 
-# Libraries and Classpath
-LIB_ANTLR = $(LIBDIR)/antlr3.jar
-LIB_CLI   = $(LIBDIR)/commons-cli.jar
-LIB_JLINE = $(LIBDIR)/jline-2.11.jar
-CLASSPATH = $(LIB_ANTLR):$(LIB_CLI):$(LIB_JLINE):$(SRCDIR)
-JARPATH   = "$(LIB_ANTLR) $(LIB_CLI) $(LIB_JLINE)"
+# Main libraries
+LIBS = $(LIBDIR)/antlr3.jar $(LIBDIR)/commons-cli.jar $(LIBDIR)/jline-2.11.jar
+
+# Lightweight Java Game Library
+LWJGL_VERSION = 2.9.1
+LIBS += $(LIBDIR)/lwjgl-$(LWJGL_VERSION)/jar/lwjgl.jar $(LIBDIR)/lwjgl_util.jar
+LIB_NATIVES = $(LIBDIR)/lwjgl-$(LWJGL_VERSION)/native/$(OS)/*
+
+# Classpath
+CLASSPATH = $(subst $(space),:,$(LIBS)):$(SRCDIR)
+JARPATH   = "$(LIBS)"
 
 # Distribution (tar) file
 DATE      = $(shell date +"%d%b%y")
@@ -44,7 +67,8 @@ TIMESTAMP  = $(shell date +'%Y %b %d, %H:%M')
 LASTCOMMIT   = $(shell git rev-parse HEAD | cut -c -8)
 MAINFILE   = $(MAIN)/Hal.java
 
-all: compile exec
+# Make rules
+all: compile exec natives
 
 compile:
 	antlr3 -o $(PARSER) $(GRAMMAR)
@@ -67,8 +91,12 @@ exec:
 	echo "Class-Path: $(JARPATH)" >> $(MANIFEST)
 	cd $(CLASSDIR); jar -cmf $(MANIFEST) $(JARFILE) *
 	printf "#!/bin/sh\n\n" > $(EXEC)
-	printf 'exec java -enableassertions -jar $(JARFILE) "$$@"' >> $(EXEC)
+	printf 'exec java -enableassertions -Djava.library.path=$(NATIVES) -jar $(JARFILE) "$$@"' >> $(EXEC)
 	chmod a+x $(EXEC)
+
+natives:
+	mkdir -p $(NATIVES)
+	cp -u $(LIB_NATIVES) $(NATIVES)
 
 clean:
 	rm -rf $(PARSER)/*.java $(PARSER)/*.tokens

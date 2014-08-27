@@ -52,6 +52,10 @@ public class ReferenceRecord
         defineReference(name, new Reference(ref.data));
     }
 
+    public void defineMethod(HalMethod method) {
+        defineVariable(method.getName(), method);
+    }
+
     public Reference getReference(String name) {
         Reference r = record.get(name);
         if (r == null) {

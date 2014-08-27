@@ -2,6 +2,7 @@
 nbproject/
 bin/*
 !bin/lib/
+natives/
 classes/
 javadoc/
 src/hal/parser/
