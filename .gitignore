@@ -6,7 +6,7 @@ natives/
 classes/
 javadoc/
 src/hal/parser/
-
+libs/lwjgl-2.9.1
 
 build.xml
 *.mf

@@ -550,7 +550,7 @@ NEWLINE
     {
         int n = 0;
     }
-    : NL (' ' {n++;} | '\t' {n += 8; n -= (n \% 8); })*
+    : NL (' ' {n++;} | '\t' {n += 8; n -= (n \% 8); } | (COMMENT NL))*
     {
         emit(new CommonToken(NEWLINE, "\\n"));
 
@@ -559,7 +559,7 @@ NEWLINE
 
         // Skip if same indentation or empty line or comment
         if(n == currentIndent || next == '\n'
-           || next == '\r' || next == -1 || next=='#')
+           || next == '\r' || next == -1 || next == '#')
         {
             skip();
         }

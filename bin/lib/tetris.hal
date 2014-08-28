@@ -1,0 +1,7 @@
+from opengl import display, draw
+
+display title => "HALtris", width => 400, height => 800:
+  draw fps => 60 with delta:
+    # Game logic and drawing goes here
+    # delta is the time in miliseconds passed between iterations
+    print delta
