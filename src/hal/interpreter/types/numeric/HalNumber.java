@@ -29,6 +29,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
 
     public HalNumber pos() { return this; }
     public abstract HalNumber neg();
+    public abstract HalNumber abs();
 
     public HalString str() { return new HalString(value.toString()); }
 
@@ -81,6 +82,13 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
         @Override
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             return ((HalNumber) instance).pos();
+        }
+    });
+
+    private static final Reference __abs__ = new Reference(new Builtin("abs") {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            return ((HalNumber) instance).abs();
         }
     });
 
@@ -283,6 +291,7 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
             // Unary
             __neg__,
             __pos__,
+            __abs__,
 
             // Binary
             __add__,

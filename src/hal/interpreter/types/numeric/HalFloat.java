@@ -38,6 +38,11 @@ public class HalFloat extends HalNumber<Double>
     }
 
     @Override
+    public HalNumber abs() {
+        return value > 0 ? this : neg();
+    }
+
+    @Override
     public HalNumber add(HalNumber n) {
         return new HalFloat(toFloat() + n.toFloat());
     }

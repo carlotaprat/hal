@@ -51,6 +51,20 @@ public class HalRational extends HalNumber<Rational>
     }
 
     @Override
+    public HalNumber abs() {
+        int den = value.getDen();
+        int num = value.getNum();
+
+        if(den < 0 || num < 0)
+            return new HalRational(new Rational(
+                    den > 0 ? den : -den,
+                    num > 0 ? num : -num
+            ));
+
+        return this;
+    }
+
+    @Override
     public HalNumber add(HalNumber n) {
         return RorI(value.add(((HalRational) n).value));
     }

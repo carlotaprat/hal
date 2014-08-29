@@ -37,6 +37,11 @@ public class HalInteger extends HalNumber<Integer>
     }
 
     @Override
+    public HalNumber abs() {
+        return value > 0 ? this : neg();
+    }
+
+    @Override
     public HalNumber add(HalNumber n) {
         if (addOverflows(toInteger(), n.toInteger()))
             return new HalLong(toInteger()).add(new HalLong(n.toInteger()));

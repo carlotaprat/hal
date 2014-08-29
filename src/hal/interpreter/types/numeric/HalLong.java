@@ -1,10 +1,10 @@
 package hal.interpreter.types.numeric;
 
-import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.types.HalBoolean;
 import hal.interpreter.types.HalClass;
 import hal.interpreter.types.HalObject;
 import hal.interpreter.types.enumerable.HalString;
+
 import java.math.BigInteger;
 
 public class HalLong extends HalNumber<BigInteger> {
@@ -48,6 +48,11 @@ public class HalLong extends HalNumber<BigInteger> {
     @Override
     public HalNumber neg() {
         return new HalLong(value.negate());
+    }
+
+    @Override
+    public HalNumber abs() {
+        return value.compareTo(new BigInteger("0")) < 0 ? neg() : this;
     }
 
     @Override
