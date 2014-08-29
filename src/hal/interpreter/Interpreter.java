@@ -133,24 +133,24 @@ public class Interpreter
         HalObject instance;
         HalObject self = stack.getVariable("self");
 
-        try {
-            f = stack.getVariable(funcname);
+        f = stack.getUnsafeVariable(funcname);
+        instance = self;
+
+        if(f == null) {
+            f = self.getRecord().getUnsafeVariable(funcname);
             instance = self;
-        } catch(NameException e) {
-            try {
-                f = self.getRecord().getVariable(funcname);
-                instance = self;
-            } catch (NameException e2) {
-                try {
-                    HalClass klass = self.getKlass();
-                    f = klass.getRecord().getVariable(funcname);
-                    instance = klass;
-                } catch(NameException e3) {
-                    try {
-                        HalModule currentModule = stack.getCurrentModule();
-                        f = currentModule.getRecord().getVariable(funcname);
-                        instance = currentModule;
-                    } catch(NameException e4) {
+
+            if(f == null) {
+                HalClass klass = self.getKlass();
+                f = klass.getRecord().getUnsafeVariable(funcname);
+                instance = klass;
+
+                if(f == null) {
+                    HalModule currentModule = stack.getCurrentModule();
+                    f = currentModule.getRecord().getUnsafeVariable(funcname);
+                    instance = currentModule;
+
+                    if(f == null) {
                         args.prepend(new HalString(funcname));
                         return executeCall("__method_missing__", lambda, args);
                     }

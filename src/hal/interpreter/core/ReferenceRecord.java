@@ -42,8 +42,16 @@ public class ReferenceRecord
         else r.data = value; // Use the previous data
     }
 
-    public boolean hasVariable(String name) {
-        return record.containsKey(name);
+    public HalObject getUnsafeVariable(String name) {
+        Reference r = record.get(name);
+
+        if(r != null)
+            return r.data;
+
+        if(parent != null)
+            return parent.getUnsafeVariable(name);
+
+        return null;
     }
 
     public void defineBuiltin(Reference ref) {

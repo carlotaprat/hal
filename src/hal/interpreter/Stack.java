@@ -106,6 +106,10 @@ public class Stack
             popContext();
     }
 
+    public HalObject getUnsafeVariable(String name){
+        return record.getUnsafeVariable(name);
+    }
+
     public HalObject getVariable(String name) {
         return record.getVariable(name);
     }
