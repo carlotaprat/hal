@@ -9,10 +9,12 @@ import hal.interpreter.types.*;
 import hal.interpreter.types.enumerable.HalArray;
 import hal.interpreter.types.enumerable.HalString;
 import hal.interpreter.types.numeric.HalInteger;
+import hal.interpreter.types.numeric.HalNumber;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
 
 
 public class opengl extends HalModule {
@@ -37,7 +39,7 @@ public class opengl extends HalModule {
 
         if(time - lastFPS > 1000) {
             String current = Display.getTitle().split("\\s\\|\\s")[0];
-            Display.setTitle(current + " | FPS: " + (fps-1));
+            Display.setTitle(current + " | " + (fps-1) + " fps");
             fps = 0;
             lastFPS = time;
         }
@@ -49,6 +51,9 @@ public class opengl extends HalModule {
         super("opengl", pkg);
 
         ReferenceRecord module = getInstanceRecord();
+
+        // GL variables
+        module.defineVariable("DEPTH_TEST", new HalInteger(GL11.GL_DEPTH_TEST));
 
         module.defineMethod(new Builtin("display",
                 new Params.Param("title"),
@@ -65,6 +70,7 @@ public class opengl extends HalModule {
                 try {
                     Display.setTitle(title.value);
                     Display.setDisplayMode(new DisplayMode(width.value, height.value));
+                    Display.setVSyncEnabled(true);
 
                     if(location == HalNone.NONE) {
                         Display.setLocation(0, 0);
@@ -119,6 +125,97 @@ public class opengl extends HalModule {
                     Display.update();
                     Display.sync(fps);
                 }
+
+                return HalNone.NONE;
+            }
+        });
+        
+        module.defineMethod(new Builtin("projection") {
+            @Override
+            public HalObject call(HalObject instance, HalMethod lambda, Arguments args) {
+                GL11.glMatrixMode(GL11.GL_PROJECTION);
+                lambda.call(instance, null);
+                GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+                return HalNone.NONE;
+            }
+        });
+
+        module.defineMethod(new Builtin("ortho",
+                new Params.Param("left"),
+                new Params.Param("right"),
+                new Params.Param("bottom"),
+                new Params.Param("top"),
+                new Params.Param("z_near"),
+                new Params.Param("z_far")) {
+            @Override
+            public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+                GL11.glOrtho(
+                        ((HalNumber)args.get("left")).toFloat(),
+                        ((HalNumber)args.get("right")).toFloat(),
+                        ((HalNumber)args.get("bottom")).toFloat(),
+                        ((HalNumber)args.get("top")).toFloat(),
+                        ((HalNumber)args.get("z_near")).toFloat(),
+                        ((HalNumber)args.get("z_far")).toFloat()
+                );
+
+                return HalNone.NONE;
+            }
+        });
+
+        module.defineMethod(new Builtin("disable",
+                new Params.Param("cap")) {
+            @Override
+            public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+                GL11.glDisable(((HalInteger)args.get("cap")).value);
+
+                return HalNone.NONE;
+            }
+        });
+
+        module.defineMethod(new Builtin("clear") {
+            @Override
+            public HalObject call(HalObject instance, HalMethod lambda, Arguments args) {
+                GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+                return HalNone.NONE;
+            }
+        });
+
+        module.defineMethod(new Builtin("color",
+                new Params.Param("r"),
+                new Params.Param("g"),
+                new Params.Param("b")) {
+            @Override
+            public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+                GL11.glColor3d(
+                        ((HalNumber)args.get("r")).toFloat(),
+                        ((HalNumber)args.get("g")).toFloat(),
+                        ((HalNumber)args.get("b")).toFloat()
+                );
+
+                return HalNone.NONE;
+            }
+        });
+
+        // Draws 2D rectangle
+        module.defineMethod(new Builtin("rectangle",
+                new Params.Param("x"),
+                new Params.Param("y"),
+                new Params.Param("width"),
+                new Params.Param("height")) {
+            @Override
+            public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+                double x = ((HalNumber)args.get("x")).toFloat();
+                double y = ((HalNumber)args.get("y")).toFloat();
+                double width = ((HalNumber)args.get("width")).toFloat();
+                double height = ((HalNumber)args.get("height")).toFloat();
+
+                GL11.glBegin(GL11.GL_QUADS);
+                GL11.glVertex2d(x, y);
+                GL11.glVertex2d(x, y + height);
+                GL11.glVertex2d(x + width, y + height);
+                GL11.glVertex2d(x + width, y);
+                GL11.glEnd();
 
                 return HalNone.NONE;
             }
