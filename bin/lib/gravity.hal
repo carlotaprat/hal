@@ -1,0 +1,51 @@
+from opengl import display, draw, projection, ortho, color, disable, rectangle, clear, DEPTH_TEST
+
+
+class BouncingRectangle:
+  @width = 50
+  @height = 50
+
+  def init x, y:
+    @x = x
+    @y = y
+    @vspeed = 0
+
+  def update delta:
+    @y = @y + @vspeed * delta
+    @vspeed = @vspeed + 0.001 * delta
+    
+    if @y + @@height >= 600:
+      if @vspeed.abs < 0.06:
+        @vspeed = 0
+        @y = -50
+      else:
+        @vspeed = @vspeed * -0.7 if @vspeed > 0
+
+  def render:
+    rectangle @x, @y, @@width, @@height
+
+
+display title => "HALtris", width => 800, height => 600:
+  # Initialize OpenGL
+  projection: ortho 0, 800, 600, 0, 0, 1
+  disable DEPTH_TEST
+
+  rectangles = [ BouncingRectangle.new(i*75+33, -50*i) for i in range(10) ]
+
+  draw fps => 60 with delta:
+    clear
+    
+    # Update game state
+    for index, r in rectangles:
+      r.update delta
+
+      type = index % 3
+
+      if type == 0:
+        color 1, 0, 0
+      elif type == 1:
+        color 0, 1, 0
+      else:
+        color 0, 0, 1
+
+      r.render
