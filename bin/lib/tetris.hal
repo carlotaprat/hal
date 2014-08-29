@@ -1,7 +1,13 @@
-from opengl import display, draw
+from opengl import display, draw, projection, ortho, color, disable, rectangle, clear, DEPTH_TEST
 
-display title => "HALtris", width => 400, height => 800:
-  draw fps => 60 with delta:
-    # Game logic and drawing goes here
-    # delta is the time in miliseconds passed between iterations
-    print delta
+
+def play:
+  display title => "HALtris", width => 400, height => 800:
+    # Initialize OpenGL
+    projection: ortho 0, 400, 800, 0, 0, 1
+    disable DEPTH_TEST
+
+    draw fps => 60 with delta:
+      clear
+      
+      # Game logic and rendering here
