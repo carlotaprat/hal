@@ -25,7 +25,7 @@ class BouncingRectangle:
     rectangle @x, @y, @@width, @@height
 
 
-display title => "HALtris", width => 800, height => 600:
+display title => "Gravity", width => 800, height => 600:
   # Initialize OpenGL
   projection: ortho 0, 800, 600, 0, 0, 1
   disable DEPTH_TEST

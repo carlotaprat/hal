@@ -75,8 +75,9 @@ compile:
 	if [ ! -e $(CLASSDIR) ]; then\
 	  mkdir $(CLASSDIR);\
 	fi
+	cp $(MAINFILE) $(MAINFILE).bkp
 	sed -i.bkp "s|\$$DATE|$(TIMESTAMP)|" $(MAINFILE)
-	sed -i.bkp "s|\$$GIT|$(LASTCOMMIT)|" $(MAINFILE)
+	sed -i "s|\$$GIT|$(LASTCOMMIT)|" $(MAINFILE)
 	-javac $(JFLAGS) $(ALL_SRC)
 	mv $(MAINFILE).bkp $(MAINFILE);
 

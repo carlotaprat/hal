@@ -31,7 +31,7 @@ import java.io.PrintWriter;
 public class Hal
 {
     public static final String VERSION = "0.0.3@$GIT";
-    public static final String DATE = "2014 jun 01, 11:41";
+    public static final String DATE = "$DATE";
 
     public static Interpreter INTERPRETER = null;
     /** The file name of the program. */
