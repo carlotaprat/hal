@@ -1,13 +1,40 @@
-from opengl import display, draw, projection, ortho, color, disable, rectangle, clear, DEPTH_TEST
+from opengl import display, draw, projection, ortho, color, disable, rectangle, clear, DEPTH_TEST,
+  line
+
+class Board:
+  @hcells = 10
+  @vcells = 20
+  @scale = 40
+  @width = @hcells * @scale
+  @height = @vcells * @scale
+
+  def init:
+    @cells = [ [ none for _ in range(@@width) ] for _ in range(@@height) ]
+
+  def render:
+    color 0.2, 0.2, 0.2
+
+    for i in range(@@hcells):
+      line i * @@scale, 0, i * @@scale, @@height
+
+    for i in range(@@vcells):
+      line 0, i * @@scale, @@width, i * @@scale
+
+
 
 
 def play:
-  display title => "HALtris", width => 400, height => 800:
+  display title => "HALtris", width => Board.width, height => Board.height:
     # Initialize OpenGL
-    projection: ortho 0, 400, 800, 0, 0, 1
+    projection: ortho 0, Board.width, Board.height, 0, 0, 1
     disable DEPTH_TEST
+
+    board = Board.new
 
     draw fps => 60 with delta:
       clear
       
       # Game logic and rendering here
+      board.render
+      
+play

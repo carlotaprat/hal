@@ -220,5 +220,26 @@ public class opengl extends HalModule {
                 return HalNone.NONE;
             }
         });
+
+        module.defineMethod(new Builtin("line",
+                new Params.Param("x1"),
+                new Params.Param("y1"),
+                new Params.Param("x2"),
+                new Params.Param("y2")) {
+            @Override
+            public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+                double x1 = ((HalNumber)args.get("x1")).toFloat();
+                double y1 = ((HalNumber)args.get("y1")).toFloat();
+                double x2 = ((HalNumber)args.get("x2")).toFloat();
+                double y2 = ((HalNumber)args.get("y2")).toFloat();
+
+                GL11.glBegin(GL11.GL_LINES);
+                GL11.glVertex2d(x1, y1);
+                GL11.glVertex2d(x2, y2);
+                GL11.glEnd();
+
+                return HalNone.NONE;
+            }
+        });
     }
 }
