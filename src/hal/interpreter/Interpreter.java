@@ -57,7 +57,7 @@ public class Interpreter
         function_nesting = 0;
 
         stack = new Stack(); // Creates the memory of the virtual machine
-        stack.pushContext(mainModule.value, mainModule, mainModule, null, 0);
+        stack.pushContext(mainModule.value, mainModule, mainModule, null, 0, false);
     }
 
     public HalObject run(CharStream input) {
@@ -190,7 +190,7 @@ public class Interpreter
         //if (trace != null) traceFunctionCall(tree, args);
 
         // Create the activation record in memory
-        stack.pushContext(def.name, instance, def.module, def.getLocals(), lineNumber());
+        stack.pushContext(def.name, instance, def.module, def.getLocals(), lineNumber(), def.isMethod());
         calls++;
 
         if(def.klass != null) {
@@ -320,9 +320,6 @@ public class Interpreter
                 
             // Return
             case HalLexer.RETURN:
-                if(calls == 0)
-                    throw new SyntaxException("return outside method");
-
                 HalObject result;
 
                 if (t.getChildCount() != 0)
@@ -713,7 +710,7 @@ public class Interpreter
 
             HalTree tree = parser.getTree(moduleStream);
 
-            stack.pushContext(module.value, module, module, null, imp.getLine());
+            stack.pushContext(module.value, module, module, null, imp.getLine(), false);
             evaluate(tree);
             stack.popContext();
         } catch(IOException e) {

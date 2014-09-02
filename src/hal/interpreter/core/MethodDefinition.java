@@ -27,4 +27,8 @@ public class MethodDefinition
     public ReferenceRecord getLocals() {
         return null;
     }
+
+    public boolean isMethod() {
+        return true;
+    }
 }

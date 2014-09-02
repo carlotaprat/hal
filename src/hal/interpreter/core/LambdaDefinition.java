@@ -36,4 +36,8 @@ public class LambdaDefinition extends MethodDefinition
     public Reference getReturnReference() {
         return context.getReference("return");
     }
+
+    public boolean isMethod() {
+        return false;
+    }
 }

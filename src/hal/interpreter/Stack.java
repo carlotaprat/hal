@@ -32,6 +32,7 @@ import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.types.HalModule;
 import hal.interpreter.types.HalObject;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -74,15 +75,16 @@ public class Stack
 
     /** Creates a new activation record on the top of the stack */
     public void pushContext(String name, HalObject inst, int line) {
-        pushContext(name, inst, module, null, line);
+        pushContext(name, inst, module, null, line, false);
     }
 
-    public void pushContext(String name, HalObject inst, HalModule mod, ReferenceRecord parent, int line) {
+    public void pushContext(String name, HalObject inst, HalModule mod, ReferenceRecord parent, int line,
+                            boolean method) {
         module = mod;
         record = new ReferenceRecord(parent);
         record.defineVariable("self", inst);
         record.defineVariable("return", null);
-        stack.addLast(new Context(mod, record));
+        stack.addLast(new Context(mod, record, method));
         stackTrace.addLast(new StackTraceItem(name, line));
     }
 
@@ -104,6 +106,8 @@ public class Stack
     public void popUntilFirstLevel() {
         while(stack.size() > 1)
             popContext();
+
+        defineVariable("return", null);
     }
 
     public HalObject getUnsafeVariable(String name){
@@ -119,7 +123,17 @@ public class Stack
     }
 
     public void defineReturn(HalObject obj) {
-        record.defineReturn(obj);
+        Iterator<Context> it = stack.descendingIterator();
+        boolean found = false;
+
+        while(it.hasNext() && !found) {
+            Context c = it.next();
+            c.record.defineVariable("return", obj);
+            found = c.isMethod;
+        }
+
+        if(!found)
+            throw new RuntimeException("return outside of method");
     }
 
     public Reference getReference(String name) {

@@ -62,6 +62,12 @@ public class HalClass extends HalObject<String>
                 return arity;
             }
         }));
+        HalMethod.klass.getInstanceRecord().defineBuiltin(new Reference(new Builtin("break?") {
+            @Override
+            public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+                return new HalBoolean(((HalMethod) instance).isBreakRequested());
+            }
+        }));
     }
 
     public ReferenceRecord getInstanceRecord() { return instRecord; }
