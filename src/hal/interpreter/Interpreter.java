@@ -41,7 +41,6 @@ public class Interpreter
 
     /** Nested levels of function calls. */
     private int function_nesting = 0;
-    private int calls = 0;
     
     /**
      * Constructor of the interpreter. It prepares the main
@@ -191,7 +190,6 @@ public class Interpreter
 
         // Create the activation record in memory
         stack.pushContext(def.name, instance, def.module, def.getLocals(), lineNumber(), def.isMethod());
-        calls++;
 
         if(def.klass != null) {
             ReferenceRecord parent = def.klass.getInstanceRecord().parent;
@@ -227,7 +225,6 @@ public class Interpreter
 
         // Destroy the activation record
         stack.popContext();
-        calls--;
 
         return result;
     }
