@@ -1,5 +1,6 @@
 package hal.interpreter.core;
 
+import hal.interpreter.Reference;
 import hal.interpreter.types.HalModule;
 import hal.interpreter.types.HalObject;
 
@@ -25,10 +26,14 @@ public class LambdaDefinition extends MethodDefinition
     }
 
     public ReferenceRecord getLocals() {
-        return new ReferenceRecord(context);
+        return context;
     }
 
     public HalObject getInstance() {
         return context.getVariable("self");
+    }
+
+    public Reference getReturnReference() {
+        return context.getReference("return");
     }
 }

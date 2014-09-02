@@ -99,11 +99,18 @@ public class HalArray extends HalEnumerable<List<HalObject>>
             if(lambda.getArity() < 2) {
                 for (HalObject element : i.value) {
                     last = lambda.call(instance, null, element);
+
+                    if(lambda.isBreakRequested())
+                        return last;
                 }
             } else {
                 int index = 0;
                 for(HalObject element : i.value) {
                     last = lambda.call(instance, null, new HalInteger(index), element);
+
+                    if(lambda.isBreakRequested())
+                        return last;
+
                     index++;
                 }
             }

@@ -54,6 +54,17 @@ public class ReferenceRecord
         return null;
     }
 
+    public void defineReturn(HalObject obj) {
+        Reference r = record.get("return");
+
+        if(r != null) {
+            r.data = obj;
+
+            if(parent != null)
+                parent.defineReturn(obj);
+        }
+    }
+
     public void defineBuiltin(Reference ref) {
         String name = ((HalMethod)ref.data).getValue().name;
         defineReference("__" + name + "__", ref);

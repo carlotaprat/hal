@@ -25,6 +25,6 @@ public class MethodDefinition
     }
 
     public ReferenceRecord getLocals() {
-        return new ReferenceRecord(null);
+        return null;
     }
 }

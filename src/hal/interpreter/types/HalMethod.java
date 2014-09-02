@@ -27,6 +27,10 @@ abstract public class HalMethod extends HalObject<MethodDefinition>
         return value.getArity();
     }
 
+    public boolean isBreakRequested() {
+        return false;
+    }
+
     public HalString str() { return new HalString(value.name); }
     public HalBoolean bool() { return new HalBoolean(true); }
     public HalClass getKlass() { return HalMethod.klass; }

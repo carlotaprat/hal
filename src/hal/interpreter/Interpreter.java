@@ -241,7 +241,6 @@ public class Interpreter
      * statement has been executed).
      */
     private HalObject executeListInstructions (HalTree t) {
-        assert t != null;
         Reference result = stack.getReference("return");
         HalObject last = HalNone.NONE;
 
@@ -262,8 +261,6 @@ public class Interpreter
      * of instructions executing a return.
      */
     private HalObject executeInstruction (HalTree t) {
-        assert t != null;
-
         setLineNumber(t);
         HalObject value; // The returned value
 
@@ -333,7 +330,7 @@ public class Interpreter
                 else
                     result = new HalNone(); // No expression: returns void data
 
-                stack.defineVariable("return", result);
+                stack.defineReturn(result);
                 return result;
 
             case HalLexer.IMPORT_STMT:
@@ -389,8 +386,6 @@ public class Interpreter
      * @return The value of the expression.
      */
     public HalObject evaluateExpression(HalTree t) {
-        assert t != null;
-
         int previous_line = lineNumber();
         setLineNumber(t);
         int type = t.getType();

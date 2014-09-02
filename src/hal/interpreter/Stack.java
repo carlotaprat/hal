@@ -118,6 +118,10 @@ public class Stack
         record.defineVariable(name, obj);
     }
 
+    public void defineReturn(HalObject obj) {
+        record.defineReturn(obj);
+    }
+
     public Reference getReference(String name) {
         return record.getReference(name);
     }
