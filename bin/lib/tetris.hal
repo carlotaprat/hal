@@ -1,26 +1,100 @@
-from opengl import display, draw, projection, ortho, color, disable, rectangle, clear, DEPTH_TEST,
-  line
+from opengl import display, draw, projection, ortho, color, disable, rectangle, clear,
+  DEPTH_TEST, line
+
+
+class Square:
+  @width = 40
+
+  def init x, y, rgb:
+    @x = x
+    @y = y
+    @rgb = rgb
+
+  def down!:
+    @y = @y + 1
+
+  def render:
+    color *@rgb
+    rectangle @x * @@width, @y * @@width, @@width, @@width
+
+
+class Piece:
+  def init:
+    @squares = [ Square.new(coords[0]+4, coords[1]-2, @@rgb) for coords in @@shape ]
+
+  def down!:
+    for square in @squares: square.down!
+
+  def render:
+    for square in @squares: square.render
+
+
+class LPiece << Piece:
+  @shape = [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [1, 2]
+  ]
+  @rgb = [0, 1, 0]
+
+
+class Player:
+  def init board:
+    @board = board
+    @acc_delta = 0
+    @time = 500
+    random_piece!
+
+  def random_piece!:
+    @piece = LPiece.new # Random ofc
+
+  def update delta:
+    @acc_delta = @acc_delta + delta
+
+    if @acc_delta > 200:
+      @acc_delta = 0
+      @time = @time * 0.9
+
+      if board.can_move_down? piece:
+        piece.down!
+      else:
+        board.add! piece
+        random_piece!
+
 
 class Board:
   @hcells = 10
   @vcells = 20
-  @scale = 40
-  @width = @hcells * @scale
-  @height = @vcells * @scale
+  @width = @hcells * Square.width
+  @height = @vcells * Square.width
 
   def init:
-    @cells = [ [ none for _ in range(@@width) ] for _ in range(@@height) ]
+    @cells = [ [ none for _ in range(@@hcells) ] for _ in range(@@vcells) ]
+
+  def add! piece:
+    for square in piece.squares:
+      @cells[square.y][square.x] = square
+
+  def can_move_down? piece:
+    for square in piece.squares:
+      if square.y > 0 and (((square.y + 1) >= @@vcells) or not @cells[square.y+1][square.x].none?):
+        return false
+    return true
+
 
   def render:
+    for row in @cells:
+      for cell in row:
+        cell.render if not cell.none?
+
     color 0.2, 0.2, 0.2
 
     for i in range(@@hcells):
-      line i * @@scale, 0, i * @@scale, @@height
+      line i * Square.width, 0, i * Square.width, @@height
 
     for i in range(@@vcells):
-      line 0, i * @@scale, @@width, i * @@scale
-
-
+      line 0, i * Square.width, @@width, i * Square.width
 
 
 def play:
@@ -30,11 +104,16 @@ def play:
     disable DEPTH_TEST
 
     board = Board.new
+    player = Player.new board
 
     draw fps => 60 with delta:
       clear
       
-      # Game logic and rendering here
+      # Update game logic
+      player.update delta
+
+      # Render objects
+      player.piece.render
       board.render
       
 play
