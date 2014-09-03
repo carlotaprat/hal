@@ -1,66 +1,93 @@
-from opengl import display, draw, projection, ortho, color, disable, rectangle, clear,
-  DEPTH_TEST, line
-
-
-class Square:
-  @width = 40
-
-  def init x, y, rgb:
-    @x = x
-    @y = y
-    @rgb = rgb
-
-  def down!:
-    @y = @y + 1
-
-  def render:
-    color *@rgb
-    rectangle @x * @@width, @y * @@width, @@width, @@width
-
-
-class Piece:
-  def init:
-    @squares = [ Square.new(coords[0]+4, coords[1]-2, @@rgb) for coords in @@shape ]
-
-  def down!:
-    for square in @squares: square.down!
-
-  def render:
-    for square in @squares: square.render
-
-
-class LPiece << Piece:
-  @shape = [
-    [0, 0],
-    [0, 1],
-    [0, 2],
-    [1, 2]
-  ]
-  @rgb = [0, 1, 0]
+from input import Keyboard
+from opengl import display, draw, projection, ortho, disable, clear, DEPTH_TEST, color, line
+from tetris.pieces import random_piece, Square
 
 
 class Player:
+  @keys = [ Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT, Keyboard.KEY_DOWN, Keyboard.KEY_UP ]
+  @limit_input = 20
+  
+  # Key status
+  @UP = 0
+  @DOWN = 1
+  @DOWN_MOVED = 2
+  @DOWN_RELEASED = 3
+  @DOWN_KEPT = 4
+
+
   def init board:
     @board = board
-    @acc_delta = 0
-    @time = 500
-    random_piece!
+    @time_still = 0
+    @infinity = 500
+    @time_key = 0
+    @key_status = {}
+    @key_times = {}
 
-  def random_piece!:
-    @piece = LPiece.new # Random ofc
+    for key in @@keys:
+      @key_status[key] = @@UP
+      @key_times[key] = -1
+
+    new_piece!
+
+  def new_piece!:
+    @piece = random_piece.new @board
 
   def update delta:
-    @acc_delta = @acc_delta + delta
+    @time_still = @time_still + delta
+    @time_key = @time_key + delta
 
-    if @acc_delta > 200:
-      @acc_delta = 0
-      @time = @time * 0.9
+    for key, status in @key_status:
+      if Keyboard.down? key:
+        @key_status[key] = @@DOWN if status == @@UP
+        
+        if status == @@DOWN_MOVED:
+          if @key_times[key] == -1:
+            @key_times[key] = -delta
+          else:
+            @key_times[key] = @key_times[key] + delta
 
-      if board.can_move_down? piece:
-        piece.down!
+          if @key_times[key] > @@limit_input * 5:
+            @key_status[key] = @@DOWN_KEPT
+
       else:
-        board.add! piece
-        random_piece!
+        @key_times[key] = -1
+
+        if status == @@DOWN:
+          @key_status[key] = @@DOWN_RELEASED
+        elif status == @@DOWN_MOVED or status == @@DOWN_KEPT:
+          @key_status[key] = @@UP
+
+    process_keys! if @time_key > @@limit_input
+
+    if @time_still > @infinity:
+      @time_still = @time_still - @infinity
+      new_piece! if not piece.down!
+
+  def process_keys!:
+    @time_key = @time_key - @@limit_input
+
+    for key, status in @key_status:
+      if status != @@DOWN_MOVED and status != @@UP:
+        # Update key status accordingly
+        if status == @@DOWN:
+          @key_status[key] = @@DOWN_MOVED
+
+        elif status == @@DOWN_RELEASED:
+          @key_status[key] = @@UP
+
+        # TODO: Implement native HAL switch (Ruby-like)
+        if key == Keyboard.KEY_LEFT:
+          piece.left!
+
+        elif key == Keyboard.KEY_RIGHT:
+          piece.right!
+
+        elif key == Keyboard.KEY_DOWN:
+          @time_still = 0
+          new_piece! if not piece.down!
+
+        elif key == Keyboard.KEY_UP:
+          piece.rotate_left!
 
 
 class Board:
@@ -72,16 +99,12 @@ class Board:
   def init:
     @cells = [ [ none for _ in range(@@hcells) ] for _ in range(@@vcells) ]
 
-  def add! piece:
-    for square in piece.squares:
+  def add! squares:
+    for square in squares:
       @cells[square.y][square.x] = square
 
-  def can_move_down? piece:
-    for square in piece.squares:
-      if square.y > 0 and (((square.y + 1) >= @@vcells) or not @cells[square.y+1][square.x].none?):
-        return false
-    return true
-
+  def taken? x, y:
+    y >= 0 and (x < 0 or x >= @@hcells or y >= @@vcells or not @cells[y][x].none?)
 
   def render:
     for row in @cells:

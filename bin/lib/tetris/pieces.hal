@@ -1,0 +1,267 @@
+import random
+from opengl import color, rectangle
+
+class Square:
+  @width = 40
+
+  def init x, y, rgb:
+    @x = x
+    @y = y
+    @rgb = rgb
+
+  def render:
+    color *@rgb
+    rectangle @x * @@width, @y * @@width, @@width, @@width
+
+
+class Piece:
+  def init board:
+    @board = board
+    @x = 3
+    @y = -2
+    @rotation = 0
+    @squares = [ Square.new(coords[0]+@x, coords[1]+@y, @@rgb) for coords in @@shape[@rotation] ]
+
+  def left!: move! -1, 0
+  def right!: move! 1, 0
+  def down!:
+    if not move! 0, 1:
+      @board.add! @squares
+      return false
+    return true
+
+  def move! x_displ, y_displ:
+    return false if not can_move? x_displ, y_displ
+
+    @x = @x + x_displ
+    @y = @y + y_displ
+
+    for square in @squares:
+      square.x = square.x + x_displ
+      square.y = square.y + y_displ
+
+    return true
+
+  def rotate_left!: rotate! -1
+  def rotate_right!: rotate! 1
+  def rotate! step:
+    old = @rotation
+    @rotation = (@rotation + step) % 4
+    update_shape!
+
+    if not can_move? 0, 0:
+      @rotation = old
+      update_shape!
+
+  def update_shape!:
+    shape = @@shape[@rotation]
+
+    for index, square in @squares:
+      square.x = shape[index][0] + @x
+      square.y = shape[index][1] + @y
+
+  def can_move? x_displ, y_displ:
+    for square in @squares:
+      return false if @board.taken? square.x + x_displ, square.y + y_displ
+    return true
+
+  def render:
+    for square in @squares: square.render
+
+
+# Extend Array to handle RGB colors :D
+class Array:
+  def rgb:
+    map with component: component.float / 255
+
+
+class L << Piece:
+  @shape = [
+    [
+      [1, 0],
+      [1, 1],
+      [1, 2],
+      [2, 2]
+    ],
+    [
+      [2, 1],
+      [1, 1],
+      [0, 1],
+      [0, 2]
+    ],
+    [
+      [1, 2],
+      [1, 1],
+      [1, 0],
+      [0, 0]
+    ],
+    [
+      [0, 1],
+      [1, 1],
+      [2, 1],
+      [2, 0]
+    ]
+  ]
+  @rgb = [107, 66, 38].rgb
+
+
+class LReversed << Piece:
+  @shape = [
+    [
+      [1, 0],
+      [1, 1],
+      [1, 2],
+      [0, 2]
+    ],
+    [
+      [2, 1],
+      [1, 1],
+      [0, 1],
+      [0, 0]
+    ],
+    [
+      [1, 2],
+      [1, 1],
+      [1, 0],
+      [2, 0]
+    ],
+    [
+      [0, 1],
+      [1, 1],
+      [2, 1],
+      [2, 2]
+    ]
+  ]
+  @rgb = [238, 201, 0].rgb
+
+
+class I << Piece:
+  @shape = [
+    [
+      [1, 0],
+      [1, 1],
+      [1, 2],
+      [1, 3]
+    ],
+    [
+      [3, 1],
+      [2, 1],
+      [1, 1],
+      [0, 1]
+    ],
+    [
+      [2, 3],
+      [2, 2],
+      [2, 1],
+      [2, 0]
+    ],
+    [
+      [0, 2],
+      [1, 2],
+      [2, 2],
+      [3, 2]
+    ]
+  ]
+  @rgb = [35, 142, 35].rgb
+
+
+class T << Piece:
+  @shape = [
+    [
+      [1, 0],
+      [1, 1],
+      [2, 1],
+      [1, 2]
+    ],
+    [
+      [0, 1],
+      [1, 1],
+      [1, 2],
+      [2, 1]
+    ],
+    [
+      [1, 2],
+      [1, 1],
+      [0, 1],
+      [1, 0]
+    ],
+    [
+      [0, 1],
+      [1, 1],
+      [1, 0],
+      [2, 1]
+    ]
+  ]
+  @rgb = [112, 219, 219].rgb
+
+
+class O << Piece:
+  o = [ [1,0], [2,0], [1,1], [2,1] ]
+  @shape = [ o for _ in range 4 ]
+  @rgb = [ 205, 51, 51 ].rgb
+
+
+class Z << Piece:
+  @shape = [
+    [
+      [2, 0],
+      [2, 1],
+      [1, 1],
+      [1, 2]
+    ],
+    [
+      [2, 2],
+      [1, 2],
+      [1, 1],
+      [0, 1]
+    ],
+    [
+      [0, 2],
+      [0, 1],
+      [1, 1],
+      [1, 0]
+    ],
+    [
+      [0, 0],
+      [1, 0],
+      [1, 1],
+      [2, 1]
+    ]
+  ]
+  @rgb = [127, 0, 255].rgb
+
+
+class ZReversed << Piece:
+  @shape = [
+    [
+      [1, 0],
+      [1, 1],
+      [2, 1],
+      [2, 2]
+    ],
+    [
+      [2, 1],
+      [1, 1],
+      [1, 2],
+      [0, 2]
+    ],
+    [
+      [1, 2],
+      [1, 1],
+      [0, 1],
+      [0, 0]
+    ],
+    [
+      [0, 1],
+      [1, 1],
+      [1, 0],
+      [2, 0]
+    ]
+  ]
+  @rgb = [199, 21, 133].rgb
+
+
+@all = [ L, I, T, O, Z, LReversed, ZReversed ]
+
+def random_piece:
+  all[random.integer % all.size]
