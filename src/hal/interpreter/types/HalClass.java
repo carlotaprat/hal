@@ -31,6 +31,12 @@ public class HalClass extends HalObject<String>
         ReferenceRecord statRecord = getRecord();
         for(Reference statMethod : statik)
             statRecord.defineBuiltin(statMethod);
+
+        defineKlass(getInstanceRecord(), getRecord());
+    }
+
+    protected void defineKlass(ReferenceRecord inst, ReferenceRecord stat) {
+        // Do nothing
     }
 
     private void inherit(HalClass parent) {
