@@ -2,6 +2,7 @@ package hal.interpreter;
 
 import hal.Hal;
 import hal.interpreter.core.*;
+import hal.interpreter.exceptions.AttributeException;
 import hal.interpreter.exceptions.NameException;
 import hal.interpreter.exceptions.SyntaxException;
 import hal.interpreter.exceptions.TypeException;
@@ -367,6 +368,22 @@ public class Interpreter
             case HalLexer.GLOBAL_VAR:
                 globals.defineVariable(left.getChild(0).getText(), value);
                 break;
+            case HalLexer.METHCALL:
+                HalObject obj = evaluateExpression(left.getChild(0));
+                HalTree funcall = left.getChild(1);
+
+                if(funcall.getChild(1).getChildCount() > 0)
+                    throw new TypeException("Impossible to assign to left expression");
+
+                String attr = funcall.getChild(0).getText();
+                ReferenceRecord record = obj.getRecord();
+
+                if(!record.hasVariable(attr))
+                    throw new AttributeException(obj, attr);
+
+                record.defineVariable(attr, value);
+                break;
+
             default:
                 throw new TypeException("Impossible to assign to left expression");
         }

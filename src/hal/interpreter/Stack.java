@@ -123,17 +123,31 @@ public class Stack
     }
 
     public void defineReturn(HalObject obj) {
-        Iterator<Context> it = stack.descendingIterator();
-        boolean found = false;
+        Context current = stack.getLast();
 
-        while(it.hasNext() && !found) {
-            Context c = it.next();
-            c.record.defineVariable("return", obj);
-            found = c.isMethod;
+        if(current.isMethod)
+            current.record.defineVariable("return", obj);
+        else {
+            ReferenceRecord parent = current.record.parent;
+
+            if(parent == null)
+                throw new RuntimeException("return outside of method");
+
+            while(parent.parent != null)
+                parent = parent.parent;
+
+            Iterator<Context> it = stack.descendingIterator();
+            boolean found = false;
+
+            while(it.hasNext() && !found) {
+                Context c = it.next();
+                c.record.defineVariable("return", obj);
+                found = c.isMethod && parent == c.record;
+            }
+
+            if(!found)
+                throw new RuntimeException("return outside of method");
         }
-
-        if(!found)
-            throw new RuntimeException("return outside of method");
     }
 
     public Reference getReference(String name) {

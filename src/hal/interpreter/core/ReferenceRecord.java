@@ -95,4 +95,8 @@ public class ReferenceRecord
     public HalObject getVariable(String name) {
         return getReference(name).data;
     }
+
+    public boolean hasVariable(String name) {
+        return record.containsKey(name);
+    }
 }

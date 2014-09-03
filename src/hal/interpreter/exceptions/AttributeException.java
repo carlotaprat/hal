@@ -1,9 +1,11 @@
 package hal.interpreter.exceptions;
 
 
+import hal.interpreter.types.HalObject;
+
 public class AttributeException extends RuntimeException
 {
-    public AttributeException(String msg) {
-        super(msg);
+    public AttributeException(HalObject obj, String attr) {
+        super(obj + " has no attribute '" + attr + "'");
     }
 }
