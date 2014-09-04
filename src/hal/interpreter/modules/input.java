@@ -29,6 +29,7 @@ public class input extends HalModule {
             stat.defineVariable("KEY_RIGHT", new HalInteger(Keyboard.KEY_RIGHT));
             stat.defineVariable("KEY_UP", new HalInteger(Keyboard.KEY_UP));
             stat.defineVariable("KEY_DOWN", new HalInteger(Keyboard.KEY_DOWN));
+            stat.defineVariable("KEY_SPACE", new HalInteger(Keyboard.KEY_SPACE));
         }
     };
 

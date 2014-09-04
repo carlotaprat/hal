@@ -11,7 +11,7 @@ import hal.interpreter.exceptions.TypeException;
 import hal.interpreter.types.enumerable.HalString;
 
 
-public abstract class HalObject<T> extends HalType
+public abstract class HalObject<T> extends HalType implements Comparable<HalObject>
 {
     public static final HalClass klass = new HalClass("Object", HalType.klass, new Reference[0],
             new Reference(new Builtin("new") {
@@ -56,6 +56,16 @@ public abstract class HalObject<T> extends HalType
             return methodcall("__eq__", (HalObject) o).toBoolean();
 
         return false;
+    }
+
+    public int compareTo(HalObject o) {
+        if(methodcall("__lt__", o).toBoolean())
+            return -1;
+
+        if(methodcall("__eq__", o).toBoolean())
+            return 0;
+
+        return 1;
     }
 
     @Override

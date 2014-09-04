@@ -12,6 +12,7 @@ import hal.interpreter.types.HalObject;
 import hal.interpreter.types.numeric.HalInteger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -154,6 +155,15 @@ public class HalArray extends HalEnumerable<List<HalObject>>
         }
     });
 
+    private static final Reference __sort__ = new Reference(new Builtin("sort!") {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            Collections.sort(((HalArray)instance).value);
+
+            return instance;
+        }
+    });
+
     public static final HalClass klass = new HalClass("Array", HalEnumerable.klass,
             __append__,
             __first__,
@@ -162,7 +172,8 @@ public class HalArray extends HalEnumerable<List<HalObject>>
             __sum__,
             __each__,
             __filter__,
-            __concat__
+            __concat__,
+            __sort__
     ) {
         public HalObject newInstance(final HalClass instklass) {
             return new HalArray() {
