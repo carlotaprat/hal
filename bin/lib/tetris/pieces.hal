@@ -264,4 +264,5 @@ class ZReversed << Piece:
 @all = [ L, I, T, O, Z, LReversed, ZReversed ]
 
 def random_piece:
-  all[random.integer % all.size]
+  #all[random.integer % all.size]
+  L

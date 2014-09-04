@@ -4,7 +4,8 @@ from tetris.pieces import random_piece, Square
 
 
 class Player:
-  @keys = [ Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT, Keyboard.KEY_DOWN, Keyboard.KEY_UP ]
+  @keys = [ Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT, Keyboard.KEY_DOWN, Keyboard.KEY_UP,
+    Keyboard.KEY_SPACE ]
   @limit_input = 20
   
   # Key status
@@ -22,6 +23,7 @@ class Player:
     @time_key = 0
     @key_status = {}
     @key_times = {}
+    @drop = false
 
     for key in @@keys:
       @key_status[key] = @@UP
@@ -57,11 +59,23 @@ class Player:
         elif status == @@DOWN_MOVED or status == @@DOWN_KEPT:
           @key_status[key] = @@UP
 
-    process_keys! if @time_key > @@limit_input
+    if board.busy?:
+      board.update
 
-    if @time_still > @infinity:
-      @time_still = @time_still - @infinity
-      new_piece! if not piece.down!
+    elif @drop == false:
+      process_keys! if @time_key > @@limit_input
+
+      if @time_still > @infinity:
+        @time_still = @time_still - @infinity
+        new_piece! if not piece.down!
+
+    else:
+      falling = piece.down!
+      falling = piece.down! if falling
+
+      if not falling:
+        new_piece!
+        @drop = false
 
   def process_keys!:
     @time_key = @time_key - @@limit_input
@@ -89,6 +103,9 @@ class Player:
         elif key == Keyboard.KEY_UP:
           piece.rotate_left!
 
+        elif key == Keyboard.KEY_SPACE:
+          @drop = true if status == @@DOWN or status == @@DOWN_RELEASED
+
 
 class Board:
   @hcells = 10
@@ -98,10 +115,38 @@ class Board:
 
   def init:
     @cells = [ [ none for _ in range(@@hcells) ] for _ in range(@@vcells) ]
+    @row_count = [ 0 for _ in range(@@vcells) ]
+    @clear_queue = []
 
   def add! squares:
     for square in squares:
-      @cells[square.y][square.x] = square
+      if square.y >= 0:
+        @cells[square.y][square.x] = square
+        @row_count[square.y] = @row_count[square.y] + 1 # TODO: Add native += operator
+        @clear_queue.append! square.y if @row_count[square.y] == 10
+
+    @clear_queue.sort!
+
+  def busy?:
+    @clear_queue != []
+
+  def update:
+    print @clear_queue
+    row = @clear_queue.first
+    @clear_queue.pop!
+
+    # Move cells down
+    for i in range(row, 1):
+      current = row - i
+      @row_count[current+1] = @row_count[current]
+
+      for index, cell in @cells[current]:
+        @cells[current+1][index] = cell
+        cell.y = cell.y + 1 if not cell.none?
+
+    # Clear first row
+    @cells[0] = [ none for _ in range(@@hcells) ]
+
 
   def taken? x, y:
     y >= 0 and (x < 0 or x >= @@hcells or y >= @@vcells or not @cells[y][x].none?)
