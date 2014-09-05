@@ -3,7 +3,7 @@ from opengl import display, draw, projection, ortho, disable, clear, DEPTH_TEST,
 from tetris.pieces import random_piece, Square
 
 
-class Player:
+class Game:
   @keys = [ Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT, Keyboard.KEY_DOWN, Keyboard.KEY_UP,
     Keyboard.KEY_SPACE ]
   @limit_input = 20
@@ -16,8 +16,8 @@ class Player:
   @DOWN_KEPT = 4
 
 
-  def init board:
-    @board = board
+  def init:
+    @board = Board.new
     @time_still = 0
     @infinity = 500
     @time_key = 0
@@ -34,7 +34,10 @@ class Player:
   def new_piece!:
     @piece = random_piece.new @board
 
-  def update delta:
+  def over?:
+    @board.full?
+
+  def update! delta:
     @time_still = @time_still + delta
     @time_key = @time_key + delta
 
@@ -89,22 +92,22 @@ class Player:
         elif status == @@DOWN_RELEASED:
           @key_status[key] = @@UP
 
-        # TODO: Implement native HAL switch (Ruby-like)
-        if key == Keyboard.KEY_LEFT:
-          piece.left!
-
-        elif key == Keyboard.KEY_RIGHT:
-          piece.right!
-
-        elif key == Keyboard.KEY_DOWN:
-          @time_still = 0
-          new_piece! if not piece.down!
-
-        elif key == Keyboard.KEY_UP:
-          piece.rotate_left!
-
-        elif key == Keyboard.KEY_SPACE:
-          @drop = true if status == @@DOWN or status == @@DOWN_RELEASED
+        case key:
+          when Keyboard.KEY_LEFT:
+            piece.left!
+          when Keyboard.KEY_RIGHT:
+            piece.right!
+          when Keyboard.KEY_DOWN:
+            @time_still = 0
+            new_piece! if not piece.down!
+          when Keyboard.KEY_UP:
+            piece.rotate_left!
+          when Keyboard.KEY_SPACE:
+            @drop = true if status == @@DOWN or status == @@DOWN_RELEASED
+          
+  def render:
+    @piece.render
+    @board.render
 
 
 class Board:
@@ -117,6 +120,7 @@ class Board:
     @cells = [ [ none for _ in range(@@hcells) ] for _ in range(@@vcells) ]
     @row_count = [ 0 for _ in range(@@vcells) ]
     @clear_queue = []
+    @full? = false
 
   def add! squares:
     for square in squares:
@@ -124,14 +128,13 @@ class Board:
         @cells[square.y][square.x] = square
         @row_count[square.y] = @row_count[square.y] + 1 # TODO: Add native += operator
         @clear_queue.append! square.y if @row_count[square.y] == 10
-
+        @full? = true if square.y == 0
     @clear_queue.sort!
 
   def busy?:
     @clear_queue != []
 
   def update:
-    print @clear_queue
     row = @clear_queue.first
     @clear_queue.pop!
 
@@ -144,18 +147,15 @@ class Board:
         @cells[current+1][index] = cell
         cell.y = cell.y + 1 if not cell.none?
 
-    # Clear first row
-    @cells[0] = [ none for _ in range(@@hcells) ]
-
-
   def taken? x, y:
-    y >= 0 and (x < 0 or x >= @@hcells or y >= @@vcells or not @cells[y][x].none?)
+    (x < 0 or x >= @@hcells or y >= @@vcells or (y >= 0 and not @cells[y][x].none?))
 
   def render:
     for row in @cells:
       for cell in row:
         cell.render if not cell.none?
 
+    # Board grid
     color 0.2, 0.2, 0.2
 
     for i in range(@@hcells):
@@ -166,22 +166,17 @@ class Board:
 
 
 def play:
+  game = Game.new
+
   display title => "HALtris", width => Board.width, height => Board.height:
     # Initialize OpenGL
     projection: ortho 0, Board.width, Board.height, 0, 0, 1
     disable DEPTH_TEST
 
-    board = Board.new
-    player = Player.new board
-
     draw fps => 60 with delta:
       clear
       
-      # Update game logic
-      player.update delta
-
-      # Render objects
-      player.piece.render
-      board.render
+      game.update! delta
+      game.render
       
 play
