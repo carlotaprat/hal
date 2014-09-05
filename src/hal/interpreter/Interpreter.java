@@ -331,6 +331,23 @@ public class Interpreter
             case HalLexer.IMPORT_STMT:
                 return evaluateImport(t);
 
+            case HalLexer.CASE_STMT:
+                HalObject obj = evaluateExpression(t.getChild(0));
+                HalTree cases = t.getChild(1);
+                int n = cases.getChildCount();
+
+                for(int i = 0; i < n; ++i) {
+                    HalObject comp = evaluateExpression(cases.getChild(i).getChild(0));
+
+                    if(obj.methodcall("__eq__", comp).toBoolean())
+                        return executeListInstructions(cases.getChild(i).getChild(1));
+                }
+
+                if(t.getChildCount() > 2)
+                    return executeListInstructions(t.getChild(2));
+
+                return HalNone.NONE;
+
             default: assert false; // Should never happen
         }
 

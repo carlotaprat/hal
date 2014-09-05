@@ -22,6 +22,8 @@ tokens
     FOR_STMT;
     WHILE_STMT;
     IMPORT_STMT;
+    CASE_STMT;
+    CASES;
     BOOLEAN;
     ARRAY;
     LAMBDA;
@@ -215,6 +217,7 @@ compound_stmt
     |   fundef
     |   do_lambda
     |   assign_lambda
+    |   case_stmt
     ;
 
 if_stmt
@@ -242,6 +245,16 @@ while_stmt
 import_stmt
     :  IMPORT module -> ^(IMPORT_STMT module)
     |  FROM module IMPORT ID (COMMA ID)* -> ^(IMPORT_STMT module ID+)
+    ;
+
+case_stmt
+    :  CASE expr COLON NEWLINE
+       Indent (when_stmt|NEWLINE)+
+       (ELSE COLON block NEWLINE*)? Dedent -> ^(CASE_STMT expr ^(CASES when_stmt+) block?)
+    ;
+
+when_stmt
+    :  WHEN^ expr COLON! block
     ;
 
 module
@@ -466,6 +479,8 @@ RETURN  : 'return';
 CLASS   : 'class';
 IMPORT  : 'import';
 FROM    : 'from';
+CASE    : 'case';
+WHEN    : 'when';
 // SPECIAL SYMBOLS
 COLON     : ':' ;
 SEMICOLON : ';';
