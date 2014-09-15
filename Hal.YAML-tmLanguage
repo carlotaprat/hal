@@ -1,0 +1,43 @@
+# [PackageDev] target_format: plist, ext: tmLanguage
+---
+name: Hal
+scopeName: source.hal
+fileTypes: [hal]
+uuid: 2961a6b0-2b89-412d-9080-f62ba2f07a72
+
+patterns:
+- name: keyword.control.hal
+  match: \b(if|else|elif|return)\b
+
+- name: keyword.other.hal
+  match: \b(class|import|from|def|with|and|or)\b
+
+- name: keyword.operator.hal
+  match: (\+|\*|=|>|<|:|;|,|\\|\.)
+
+- name: constant.numeric.hal
+  match: ([0-9]+)
+
+- name: support.variable.hal
+  match: \b(yield|super|self)\b
+
+- name: support.entity.hal
+  match: \b(Kernel|Array|String|Dictionary)\b
+
+- name: support.function.hal
+  match: \b(print|write|each|map|filter|first|pop!|gsub|__method_missing__|has_key|new)\b
+
+- name: variable.hal
+  match: (@@?([a-zA-Z_]+))
+
+- name: string.quoted.double.hal
+  begin: \"
+  end: \"
+  patterns:
+  - name: constant.character.escape.untitled
+    match: \\.
+
+- name: string.regexp.hal
+  begin: r/
+  end: /
+...
