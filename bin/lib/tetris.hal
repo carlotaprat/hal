@@ -6,28 +6,12 @@ from tetris.pieces import random_piece, Square
 class Game:
   @keys = [ Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT, Keyboard.KEY_DOWN, Keyboard.KEY_UP,
     Keyboard.KEY_SPACE ]
-  @limit_input = 20
-  
-  # Key status
-  @UP = 0
-  @DOWN = 1
-  @DOWN_MOVED = 2
-  @DOWN_RELEASED = 3
-  @DOWN_KEPT = 4
-
 
   def init:
     @board = Board.new
     @time_still = 0
     @infinity = 500
-    @time_key = 0
-    @key_status = {}
-    @key_times = {}
     @drop = false
-
-    for key in @@keys:
-      @key_status[key] = @@UP
-      @key_times[key] = -1
 
     new_piece!
 
@@ -39,34 +23,12 @@ class Game:
 
   def update! delta:
     @time_still = @time_still + delta
-    @time_key = @time_key + delta
-
-    for key, status in @key_status:
-      if Keyboard.down? key:
-        @key_status[key] = @@DOWN if status == @@UP
-        
-        if status == @@DOWN_MOVED:
-          if @key_times[key] == -1:
-            @key_times[key] = -delta
-          else:
-            @key_times[key] = @key_times[key] + delta
-
-          if @key_times[key] > @@limit_input * 5:
-            @key_status[key] = @@DOWN_KEPT
-
-      else:
-        @key_times[key] = -1
-
-        if status == @@DOWN:
-          @key_status[key] = @@DOWN_RELEASED
-        elif status == @@DOWN_MOVED or status == @@DOWN_KEPT:
-          @key_status[key] = @@UP
 
     if board.busy?:
       board.update
 
     elif @drop == false:
-      process_keys! if @time_key > @@limit_input
+      process_keys delta
 
       if @time_still > @infinity:
         @time_still = @time_still - @infinity
@@ -80,18 +42,8 @@ class Game:
         new_piece!
         @drop = false
 
-  def process_keys!:
-    @time_key = @time_key - @@limit_input
-
-    for key, status in @key_status:
-      if status != @@DOWN_MOVED and status != @@UP:
-        # Update key status accordingly
-        if status == @@DOWN:
-          @key_status[key] = @@DOWN_MOVED
-
-        elif status == @@DOWN_RELEASED:
-          @key_status[key] = @@UP
-
+  def process_keys delta:
+    Keyboard.poll @@keys, delta with key, kept:
         case key:
           when Keyboard.KEY_LEFT:
             piece.left!
@@ -103,7 +55,7 @@ class Game:
           when Keyboard.KEY_UP:
             piece.rotate_left!
           when Keyboard.KEY_SPACE:
-            @drop = true if status == @@DOWN or status == @@DOWN_RELEASED
+            @drop = true if not kept
           
   def render:
     @piece.render
