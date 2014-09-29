@@ -10,7 +10,7 @@ patterns:
   match: \b(if|else|elif|return)\b
 
 - name: keyword.other.hal
-  match: \b(class|import|from|def|with|and|or)\b
+  match: \b(class|import|from|def|with|and|or|when|case)\b
 
 - name: keyword.operator.hal
   match: (\+|\*|=|>|<|:|;|,|\\|\.)
@@ -25,10 +25,11 @@ patterns:
   match: \b(Kernel|Array|String|Dictionary)\b
 
 - name: support.function.hal
-  match: \b(print|write|each|map|filter|first|pop!|gsub|__method_missing__|has_key|new)\b
+  match: \b(print|write|each|map|filter|first|pop!|gsub|__method_missing__|has_key|new
+           |size|length)\b
 
 - name: variable.hal
-  match: (@@?([a-zA-Z_]+))
+  match: (@@?([a-zA-Z_]+)(\?|\!)?)
 
 - name: string.quoted.double.hal
   begin: \"
