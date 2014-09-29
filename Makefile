@@ -71,7 +71,7 @@ MAINFILE   = $(MAIN)/Hal.java
 all: compile exec natives
 
 compile:
-	antlr3 -o $(PARSER) $(GRAMMAR)
+	java -jar $(LIBDIR)/antlr3.jar -o $(PARSER) $(GRAMMAR)
 	if [ ! -e $(CLASSDIR) ]; then\
 	  mkdir $(CLASSDIR);\
 	fi
