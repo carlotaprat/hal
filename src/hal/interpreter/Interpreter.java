@@ -368,8 +368,18 @@ public class Interpreter
                 if(left.getChild(1).getChildCount() > 0)
                     throw new TypeException("Method call in left hand assignation");
 
+
                 String id = left.getChild(0).getText();
-                stack.defineVariable(id, value);
+                if(stack.isInMethod()) {
+                    stack.defineVariable(id, value);
+                } else {
+                    Reference r = stack.getUnsafeReference(id);
+
+                    if(r == null)
+                        stack.defineVariable(id, value);
+                    else
+                        r.data = value;
+                }
                 break;
             case HalLexer.GET_ITEM:
                 HalObject d = evaluateExpression(left.getChild(0));

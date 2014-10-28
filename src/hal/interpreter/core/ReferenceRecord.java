@@ -54,6 +54,18 @@ public class ReferenceRecord
         return null;
     }
 
+    public Reference getUnsafeReference(String name) {
+        Reference r = record.get(name);
+
+        if(r != null)
+            return r;
+
+        if(parent != null)
+            return parent.getUnsafeReference(name);
+
+        return null;
+    }
+
     public void defineReturn(HalObject obj) {
         Reference r = record.get("return");
 

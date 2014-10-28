@@ -118,6 +118,10 @@ public class Stack
         return record.getVariable(name);
     }
 
+    public Reference getUnsafeReference(String name) {
+        return record.getUnsafeReference(name);
+    }
+
     public void defineVariable(String name, HalObject obj) {
         record.defineVariable(name, obj);
     }
@@ -160,6 +164,10 @@ public class Stack
 
     public ReferenceRecord getCurrentRecord() {
         return record;
+    }
+
+    public boolean isInMethod() {
+        return stack.getLast().isMethod;
     }
 
     /**

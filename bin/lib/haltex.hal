@@ -79,7 +79,7 @@ class Kernel:
       .gsub(r/\*\*((\n|.)*)\*\*/, "\\\\textbf{$1}") \
       .gsub(r/\*([^\*]*)\*/, "\\\\emph{$1}") \
       .gsub(r/\|([^\|]*)\|/, "\\\\texttt{$1}") \
-      .gsub(r/#([a-zA-Z]+)/, "\\\\$1") \
+      .gsub(r/#/, "\\\\") \
       .gsub("LaTeX", "\\\\LaTeX{}")
 
   def hrule:
