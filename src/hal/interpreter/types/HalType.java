@@ -18,9 +18,6 @@ public abstract class HalType
     public abstract HalBoolean bool();
     public abstract HalBoolean not();
     public abstract HalClass getKlass();
-    public ReferenceRecord getInstanceRecord() {
-        throw new TypeException("Not a class/module.");
-    }
 
     private static final Reference __init__ = new Reference(new Builtin("init") {
         @Override

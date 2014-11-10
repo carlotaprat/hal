@@ -30,6 +30,7 @@ public abstract class HalObject<T> extends HalType implements Comparable<HalObje
 
     public T value;
     private ReferenceRecord obj_record;
+    private HalClass eigenclass;
 
     public HalObject() {
         initRecord();
@@ -49,6 +50,21 @@ public abstract class HalObject<T> extends HalType implements Comparable<HalObje
     }
 
     public final ReferenceRecord getRecord() { return obj_record; }
+    public ReferenceRecord getInstanceRecord() {
+        return obj_record;
+    }
+    public HalObject getEigenclass() {
+        if(eigenclass == null) {
+            final HalObject self = this;
+            eigenclass = new HalClass("Eigenclass<"+ repr().value + ">", null){
+                public ReferenceRecord getInstanceRecord() {
+                    return self.obj_record;
+                }
+            };
+        }
+
+        return eigenclass;
+    }
 
     @Override
     public boolean equals(Object o) {

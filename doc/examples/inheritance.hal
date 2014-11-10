@@ -5,7 +5,7 @@ class Animal:
   def __str__:
     "A " + @type
 
-class Fox << Animal:
+class Fox < Animal:
   def init name:
     super "fox"
     @name = name

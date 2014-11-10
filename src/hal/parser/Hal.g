@@ -11,6 +11,7 @@ tokens
     PARAM_GROUP;
     BLOCK;
     CLASSDEF;
+    EIGENCLASS;
     PARENT;
     FUNDEF;
     FUNCALL;
@@ -271,7 +272,8 @@ multiline_block
     ;
 
 classdef
-    :   CLASS ID ('<<' expr)? COLON block -> ^(CLASSDEF ID ^(PARENT expr?) block)
+    :   CLASS ID ('<' expr)? COLON block -> ^(CLASSDEF ID ^(PARENT expr?) block)
+    |   CLASS '<<' expr COLON block -> ^(EIGENCLASS expr block)
     ;
 
 fundef

@@ -299,6 +299,9 @@ public class Interpreter
             case HalLexer.CLASSDEF:
                 return evaluateClassDefinition(t);
 
+            case HalLexer.EIGENCLASS:
+                return evaluateEigenclass(t);
+
             // Function definition
             case HalLexer.FUNDEF:
                 return evaluateMethodDefinition(t);
@@ -654,7 +657,14 @@ public class Interpreter
         HalObject klass;
 
         try {
-            klass = self.getRecord().getVariable(name);
+            try {
+                klass = stack.getVariable(name);
+            } catch(NameException e) {
+                klass = self.getRecord().getVariable(name);
+            }
+
+            if(!(klass instanceof HalClass))
+                throw new TypeException(name + " is not a class.");
 
             if(inherit.getChildCount() != 0)
                 throw new TypeException("Parent class can not be updated");
@@ -680,7 +690,17 @@ public class Interpreter
         HalObject result = executeListInstructions(block);
 
         stack.popContext();
+        return result;
+    }
 
+    private HalObject evaluateEigenclass(HalTree t) {
+        HalObject instance = evaluateExpression(t.getChild(0));
+
+        stack.pushContext("eigenclass", instance.getEigenclass(), t.getLine());
+
+        HalObject result = executeListInstructions(t.getChild(1));
+
+        stack.popContext();
         return result;
     }
 
