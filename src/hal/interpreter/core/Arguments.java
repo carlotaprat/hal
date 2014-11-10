@@ -2,6 +2,7 @@ package hal.interpreter.core;
 
 
 import hal.interpreter.types.HalObject;
+import hal.interpreter.types.enumerable.HalArray;
 
 import java.util.*;
 
@@ -24,6 +25,11 @@ public class Arguments {
 
         for(Params.Keyword kw : keywords)
             args.put(kw.name, kw.value);
+    }
+
+    public Arguments(HalArray array) {
+        this();
+        pos.addAll(array.value);
     }
 
     public Arguments(Params.Keyword...keywords) {

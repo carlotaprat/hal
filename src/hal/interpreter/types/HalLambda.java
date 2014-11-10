@@ -21,6 +21,10 @@ public class HalLambda extends HalDefinedMethod
         return super.mcall(self, lambda, args);
     }
 
+    public HalObject instanceEval(HalObject instance, HalMethod lambda, Arguments args) {
+        return super.mcall(instance, lambda, value.params.fill(args));
+    }
+
     public boolean isBreakRequested() {
         return returnReference.data != null;
     }

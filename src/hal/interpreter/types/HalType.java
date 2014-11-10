@@ -7,6 +7,7 @@ import hal.interpreter.core.Params;
 import hal.interpreter.core.ReferenceRecord;
 import hal.interpreter.exceptions.NameException;
 import hal.interpreter.exceptions.TypeException;
+import hal.interpreter.types.enumerable.HalArray;
 import hal.interpreter.types.enumerable.HalString;
 
 public abstract class HalType
@@ -97,6 +98,17 @@ public abstract class HalType
         }
     });
 
+    private static final Reference __instance_exec__ = new Reference(new Builtin("instance_exec",
+            new Params.ParamGroup("args")) {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            HalArray margs = (HalArray) args.get("args");
+            HalLambda l = (HalLambda) margs.value.remove(margs.value.size()-1);
+
+            return l.instanceEval(instance, null, new Arguments(margs));
+        }
+    });
+
     public static final HalClass klass = new HalClass("Type", null,
             __init__,
             __repr__,
@@ -108,5 +120,6 @@ public abstract class HalType
             __le__,
             __gt__,
             __ge__,
-            __none__);
+            __none__,
+            __instance_exec__);
 }
