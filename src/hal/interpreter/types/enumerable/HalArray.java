@@ -142,16 +142,19 @@ public class HalArray extends HalEnumerable<List<HalObject>>
 
     private static final Reference __concat__ = new Reference(new Builtin("concat", new Params.Param("x")) {
         @Override
-        public HalObject mcall(final HalObject instance, HalMethod lambda, Arguments args) {
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            final HalArray result = new HalArray();
+            result.value.addAll(((HalArray)instance).value);
+
             HalObject xs = args.get("x");
 
             xs.methodcall_lambda("__each__", new InternalLambda(new Params.Param("x")) {
                 public HalObject call(HalObject i, HalMethod l, Arguments args) {
-                    return instance.methodcall("__append!__", args);
+                    return result.methodcall("__append!__", args);
                 }
             });
 
-            return instance;
+            return result;
         }
     });
 
@@ -164,6 +167,24 @@ public class HalArray extends HalEnumerable<List<HalObject>>
         }
     });
 
+    private static final Reference __join__ = new Reference(new Builtin("join", new Params.Param("separator")) {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            HalArray array = (HalArray) instance;
+            String result = "";
+            HalString separator = (HalString) args.get("separator");
+
+            for(int i = 0; i < array.value.size(); ++i) {
+                if(i > 0)
+                    result += separator.value;
+
+                result += array.value.get(i).toString();
+            }
+
+            return new HalString(result);
+        }
+    });
+
     public static final HalClass klass = new HalClass("Array", HalEnumerable.klass,
             __append__,
             __first__,
@@ -173,7 +194,8 @@ public class HalArray extends HalEnumerable<List<HalObject>>
             __each__,
             __filter__,
             __concat__,
-            __sort__
+            __sort__,
+            __join__
     ) {
         public HalObject newInstance(final HalClass instklass) {
             return new HalArray() {

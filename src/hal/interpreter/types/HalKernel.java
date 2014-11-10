@@ -1,6 +1,8 @@
 package hal.interpreter.types;
 
 
+import hal.Hal;
+import hal.interpreter.HalTree;
 import hal.interpreter.Reference;
 import hal.interpreter.core.Arguments;
 import hal.interpreter.core.Builtin;
@@ -15,6 +17,8 @@ import hal.interpreter.types.numeric.HalFloat;
 import hal.interpreter.types.numeric.HalInteger;
 import hal.interpreter.types.numeric.HalNumber;
 import hal.interpreter.types.numeric.HalRational;
+import hal.parser.HalLexer;
+import org.antlr.runtime.CommonToken;
 
 abstract public class HalKernel<T> extends HalObject<T>
 {
@@ -122,10 +126,24 @@ abstract public class HalKernel<T> extends HalObject<T>
         }
     });
 
+    private static final Reference __require__ = new Reference(new Builtin("require",
+            new Params.Param("module")) {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            String module = ((HalString)args.get("module")).value;
+
+            HalTree imp = new HalTree(new CommonToken(HalLexer.IMPORT_STMT));
+            imp.addChild(new HalTree(new CommonToken(HalLexer.ID, module)));
+
+            return Hal.INTERPRETER.evaluateImport(imp);
+        }
+    });
+
     public static final HalClass klass = new HalClass("Kernel", HalObject.klass,
             __print__,
             __write__,
             __range__,
-            __method_missing__
+            __method_missing__,
+            __require__
     );
 }

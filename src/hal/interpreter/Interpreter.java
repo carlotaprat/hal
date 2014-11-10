@@ -743,7 +743,7 @@ public class Interpreter
                 extractParams(tlambda.getChild(0))), tlambda.getChild(1));
     }
 
-    private HalModule evaluateImport(HalTree imp) {
+    public HalModule evaluateImport(HalTree imp) {
         HalTree mod = imp.getChild(0);
 
         HalPackage pkg = null;
