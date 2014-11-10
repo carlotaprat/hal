@@ -90,14 +90,19 @@ abstract public class HalKernel<T> extends HalObject<T>
     
     private static final Reference __range__ = new Reference(new Builtin("range",
             new Params.Param("end"),
-            new Params.Keyword("start", new HalInteger(0)),
+            new Params.Keyword("start", HalNone.NONE),
             new Params.Keyword("step", new HalInteger(1)))
     {
         @Override
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
-            int ini = ((HalInteger)args.get("start")).getValue();
+            int ini = 0;
             int end = ((HalInteger)args.get("end")).getValue();
             int step = ((HalInteger)args.get("step")).getValue();
+
+            if(args.get("start") != HalNone.NONE) {
+                ini = end;
+                end = ((HalInteger)args.get("start")).getValue();
+            }
 
             HalArray arr = new HalArray();
             for (int i = ini; i < end; i+=step) {
