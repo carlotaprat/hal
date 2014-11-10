@@ -1,0 +1,10 @@
+import haldoc
+
+replace "HAL", "Ruby", "Python" with word:
+  "|%s|" % word
+
+chapters \
+  "introduction",
+  "installation"
+
+generate

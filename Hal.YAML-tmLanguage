@@ -6,6 +6,9 @@ fileTypes: [hal]
 uuid: 2961a6b0-2b89-412d-9080-f62ba2f07a72
 
 patterns:
+- name: comment.hal
+  match: (#).*$\n?
+
 - name: keyword.control.hal
   match: \b(if|else|elif|return)\b
 
@@ -16,7 +19,7 @@ patterns:
   match: (\+|\*|=|>|<|:|;|,|\\|\.)
 
 - name: constant.numeric.hal
-  match: ([0-9]+)
+  match: \b([0-9]+(\.[0-9]+)?)\b
 
 - name: support.variable.hal
   match: \b(yield|super|self)\b
