@@ -76,7 +76,7 @@ class Kernel:
 
   def pstyle paragraph:
     paragraph \
-      .gsub(r/\*\*((\n|.)*)\*\*/, "\\\\textbf{$1}") \
+      .gsub(r/\*\*((\n|[^\*])*)\*\*/, "\\\\textbf{$1}") \
       .gsub(r/\*([^\*]*)\*/, "\\\\emph{$1}") \
       .gsub(r/\|([^\|]*)\|/, "\\\\texttt{$1}") \
       .gsub(r/#/, "\\\\") \
