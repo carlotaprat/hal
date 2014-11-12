@@ -1,31 +1,30 @@
-title "Installation"
+chapter "Installation":
+  p "The only way to get HAL working right now is to compile its source code.
+    But don't be afraid! It's pretty easy! HAL comes with all its dependencies,
+    so you don't need to worry about them. To compile HAL you only need the
+    [Java Development Kit](http://www.oracle.com/technetwork/es/java/javase/downloads/index.html)."
 
-p "The only way to get HAL working right now is to compile its source code.
-  But don't be afraid! It's pretty easy! HAL comes with all its dependencies,
-  so you don't need to worry about them. To compile HAL you only need the
-  [Java Development Kit](http://www.oracle.com/technetwork/es/java/javase/downloads/index.html)"
+  p "Once you have the JDK correctly installed, you just need to clone the repository in
+     any directory:"
 
-p "Once you have the JDK correctly installed, you just need to clone the repository in
-   any directory:"
+  bash "git clone https://github.com/hecrj/hal"
+  note "If you don't have git installed, you can still get the repository from
+  [here](https://github.com/hecrj/hal/archive/master.zip). Just unzip it wherever you want."
 
-bash "git clone https://github.com/hecrj/hal"
-note "If you don't have git installed, you can still get the repository from
-[here](https://github.com/hecrj/hal/archive/master.zip). Just unzip it wherever you want."
+  p "After you have your local copy of the repository ready, get inside that directory and
+     run the Makefile to compile the source code:"
 
-p "After you have your local copy of the repository ready, get inside that directory and
-   run the Makefile to compile the source code:"
+  bash "cd hal", "make"
 
-bash "cd hal", "make"
+  p "Once it's finished, you can find the HAL executable inside the folder bin. Thus, you can
+     run HAL in interactive mode:"
 
-p "Once it's finished, you can find the HAL executable inside the folder bin. Thus, you can
-   run HAL in interactive mode:"
+  bash "./bin/hal"
 
-bash "./bin/hal"
-note "Right now, just use Ctrl+D or type `quit` to exit the interactive shell."
+  p "Right now, just use |Ctrl+D| or type |quit| to exit the interactive shell."
+  p "If you want to be able to execute HAL from everywhere, then add an alias to your
+     environment pointing to the `bin/hal` executable or include in your `PATH` the bin
+     directory."
 
-p "If you want to be able to execute HAL from everywhere, then add an alias to your
-   environment pointing to the `bin/hal` executable or include in your `PATH` the bin
-   directory."
-
-bash "hal", "Hal 0.0.3@82260b05 (2014 nov 10, 13:57) [java 1.7.0_72]", ">>>",
-  caption => "Output example of the HAL interactive shell"
+  bash "hal", "Hal 0.0.3@82260b05 (2014 nov 10, 13:57) [java 1.7.0_72]", ">>>",
+    caption => "Output example of the HAL interactive shell"

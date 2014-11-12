@@ -10,10 +10,10 @@ patterns:
   match: (#).*$\n?
 
 - name: keyword.control.hal
-  match: \b(if|else|elif|return)\b
+  match: \b(if|else|elif|return|for|while)\b
 
 - name: keyword.other.hal
-  match: \b(class|import|from|def|with|and|or|when|case)\b
+  match: \b(class|import|from|def|with|and|or|when|case|in)\b
 
 - name: keyword.operator.hal
   match: (\+|\*|=|>|<|:|;|,|\\|\.)
@@ -37,6 +37,13 @@ patterns:
 - name: string.quoted.double.hal
   begin: \"
   end: \"
+  patterns:
+  - name: constant.character.escape.untitled
+    match: \\.
+
+- name: string.quoted.double.hal
+  begin: \'
+  end: \'
   patterns:
   - name: constant.character.escape.untitled
     match: \\.

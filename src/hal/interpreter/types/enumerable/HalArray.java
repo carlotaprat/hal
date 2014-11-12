@@ -167,7 +167,8 @@ public class HalArray extends HalEnumerable<List<HalObject>>
         }
     });
 
-    private static final Reference __join__ = new Reference(new Builtin("join", new Params.Param("separator")) {
+    private static final Reference __join__ = new Reference(new Builtin("join",
+            new Params.Keyword("separator", new HalString(" "))) {
         @Override
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalArray array = (HalArray) instance;

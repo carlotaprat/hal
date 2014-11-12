@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2. Installation - HALDoc</title>
+<!-- Bootstrap -->
+<link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="../styles/haldoc.css">
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn 't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+<div class="container">
+<div class="row">
+<div class="col-md-4">
+<ul class="nav nav-pills nav-stacked nav-haldoc">
+<li>
+<a href="01_introduction.html">1. Introduction</a>
+</li>
+<li class="active">
+<a href="02_installation.html">2. Installation</a>
+</li>
+</ul>
+</div>
+<div class="col-md-8">
+<h1>2. Installation</h2>
+<p>The only way to get <code>HAL</code> working right now is to compile its source code.
+    But don't be afraid! It's pretty easy! <code>HAL</code> comes with all its dependencies,
+    so you don't need to worry about them. To compile <code>HAL</code> you only need the
+    <a href="http://www.oracle.com/technetwork/es/java/javase/downloads/index.html" target="_blank">Java Development Kit</a>.</p>
+<p>Once you have the <code>JDK</code> correctly installed, you just need to clone the repository in
+     any directory:</p>
+<pre>
+<code>git</code> clone https://github.com/hecrj/hal
+</pre>
+<div class="alert alert-info">
+If you don't have <code>git</code> installed, you can still get the repository from
+  <a href="https://github.com/hecrj/hal/archive/master.zip" target="_blank">here</a>. Just unzip it wherever you want.
+</div>
+<p>After you have your local copy of the repository ready, get inside that directory and
+     run the <code>Makefile</code> to compile the source code:</p>
+<pre>
+cd hal
+make
+</pre>
+<p>Once it's finished, you can find the <code>HAL</code> executable inside the folder bin. Thus, you can
+     run <code>HAL</code> in interactive mode:</p>
+<pre>
+./bin/hal
+</pre>
+<p>Right now, just use <kbd>Ctrl+D</kbd> or type <kbd>quit</kbd> to exit the interactive shell.</p>
+<p>If you want to be able to execute <code>HAL</code> from everywhere, then add an alias to your
+     environment pointing to the <code>bin/hal</code> executable or include in your <code>PATH</code> the bin
+     directory.</p>
+<pre>
+hal
+Hal 0.0.3@82260b05 (2014 nov 10, 13:57) [java 1.7.0_72]
+>>>
+</pre>
+<div class="row">
+<div class="pull-left">
+<a href="01_introduction.html">&larr; Introduction</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

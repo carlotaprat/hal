@@ -1,0 +1,8 @@
+.nav-haldoc {
+  position: fixed;
+  top: 10px;
+  width: 280px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}

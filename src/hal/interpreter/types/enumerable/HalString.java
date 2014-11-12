@@ -114,6 +114,24 @@ public class HalString extends HalEnumerable<String>
         }
     });
 
+    private static final Reference __lowercase__ = new Reference(new Builtin("lowercase")
+    {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            String s = ((HalString)instance).value;
+            return new HalString(s.toLowerCase());
+        }
+    });
+
+    private static final Reference __uppercase__ = new Reference(new Builtin("uppercase")
+    {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            String s = ((HalString)instance).value;
+            return new HalString(s.toUpperCase());
+        }
+    });
+
     private static final Reference __capitalize__ = new Reference(new Builtin("capitalize")
     {
         @Override
@@ -129,6 +147,8 @@ public class HalString extends HalEnumerable<String>
             __mod__,
             __gsub__,
             __strip__,
+            __lowercase__,
+            __uppercase__,
             __capitalize__
     );
     

@@ -1,10 +1,10 @@
 import haldoc
 
-replace "HAL", "Ruby", "Python" with word:
-  "|%s|" % word
+documentation:
+  css "styles/haldoc.css"
 
-chapters \
-  "introduction",
-  "installation"
+  replace "HAL", "Ruby", "Python", "JDK", "git", "Makefile": "`$1`"
 
-generate
+  generate \
+    "introduction",
+    "installation"

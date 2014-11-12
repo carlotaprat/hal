@@ -1,0 +1,40 @@
+class HTMLHelper:
+  def title text:
+    print "<h1>%s</h1>" % text
+
+  def section text:
+    print "<h2>%s</h2>" % text
+
+  def p text:
+    print "<p>%s</p>" % text
+
+  def list klass => none:
+    print "<ul class=\"%s\">" % klass if klass else print "<ul>"
+    yield
+    print "</ul>"
+
+  def item text:
+    print "<li>%s</li>" % text
+
+  def link href, text => none:
+    if not text:
+      text = href
+
+    print "<a href=\"%s\">%s</a>" % [href, text]
+
+  def bash *commands, caption => none:
+    print "<pre>"
+    print *commands
+    print "</pre>"
+
+  def note text:
+    div "alert alert-info":
+      print text
+
+  def small text:
+    print "<small>%s</small>" % text
+
+  def div klass:
+    print '<div class="%s">' % klass
+    yield
+    print '</div>'

@@ -98,3 +98,18 @@ class Kernel:
 
   def caption text:
     __method_missing__ "caption", pstyle text
+
+  def row col, *cols:
+    write "$", col.str, "$" if col != ""
+
+    cols.each with col:
+      write " & $", col, "$ "
+    p "##"
+
+  def head *heads:
+    row *heads
+    hline
+
+  def question text:
+    item; textbf pstyle text
+    br

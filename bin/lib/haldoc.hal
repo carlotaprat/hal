@@ -1,43 +1,129 @@
-@replacements = []
-@parts = []
+from html import HTMLHelper
+
+class Documentation:
+  def init:
+    @replacements = []
+    @chapters = []
+    @with_style = none
+
+  def replace *words:
+    regexp = "\\b(" + words.join("|") + ")\\b"
+    @replacements.append! [regexp, yield]
+
+  def generate *chapters:
+    for index, chapter in chapters:
+      require "%02d_%s" % [index+1, chapter]
+
+    for chapter in @chapters:
+      chapter.generate @with_style
+
+  def chapter title:
+    chapter = Chapter.new title, &yield
+    @chapters.append! chapter
+
+  def css cssfile:
+    @with_style = cssfile
+
+
+class Chapter < HTMLHelper:
+  @total_count = 0
+
+  def init title, block:
+    @@total_count = @@total_count + 1
+    @number = @@total_count
+    @title = title
+    @file = none
+    @block = &block
+
+  def filename extension => "html":
+    "%02d_%s.%s" % [@number, @title.lowercase, extension]
+
+  def generate with_css:
+    @file = File.open "html/%02d_%s.html" % [@number, @title.lowercase]
+    
+    head with_css
+    div "row":
+      navigation
+      content
+    foot
+    
+    @file.close!
+
+  def content:
+    div "col-md-8":
+      print "<h1>%d. %s</h2>" % [@number, @title]
+      instance_exec @block
+
+      div "row":
+        if @number > 1:
+          div "pull-left":
+            previous = document.chapters[@number-2]
+            link previous.filename, "&larr; " + previous.title
+
+        if @number < document.chapters.size:
+          div "pull-right":
+            next = document.chapters[@number]
+            link next.filename, next.title + " &rarr;"
+
+  def navigation:
+    div "col-md-4":
+      list "nav nav-pills nav-stacked nav-haldoc":
+        for index, chapter in document.chapters:
+          print '<li class="active">' if index+1 == @number else print "<li>"
+          print '<a href="%02d_%s.html">%d. %s</a>' % [chapter.number, chapter.title.lowercase,
+            chapter.number, chapter.title]
+          print "</li>"
+
+  def head with_css:
+    @file.print '<!DOCTYPE html>',
+          '<html lang="en">',
+          '<head>',
+          '<meta charset="utf-8">',
+          '<meta http-equiv="X-UA-Compatible" content="IE=edge">',
+          '<meta name="viewport" content="width=device-width, initial-scale=1">',
+          '<title>%d. %s - HALDoc</title>' % [@number, @title],
+          '<!-- Bootstrap -->',
+          '<link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">'
+    print '<link rel="stylesheet" href="../%s">' % with_css if with_css
+    print '<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->',
+          '<!-- WARNING: Respond.js doesn \'t work if you view the page via file:// -->',
+          '<!--[if lt IE 9]>',
+          '<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>',
+          '<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>',
+          '<![endif]-->',
+          '</head>',
+          '<body>',
+          '<div class="container">'
+
+  def foot:
+    print '</div>',
+          '</body>',
+          '</html>'
+
+  def print *args:
+    @file.print *[markdown text for text in args]
+
+  def write *args:
+    @file.write *[markdown text for text in args]
+
+@document = Documentation.new
+
+def markdown text:
+    for replacement in document.replacements:
+      text = text.gsub replacement[0], replacement[1]
+
+    text \
+    .gsub(r/\*\*((\n|[^\*])*)\*\*/, "<strong>$1</strong>") \
+    .gsub(r/\*([^\*]*)\*/, "<em>$1</em>") \
+    .gsub(r/\[http(.*)\]/, "<a href=\"http$1\" target=\"_blank\">http$1</a>") \
+    .gsub(r/\[(.*)\]\((.*)\)/, "<a href=\"$2\" target=\"_blank\">$1</a>") \
+    .gsub(r/`([^`]*)`/, "<code>$1</code>") \
+    .gsub(r/\|([^\|]*)\|/, "<kbd>$1</kbd>")
 
 class Kernel:
-  def replace *words:
-    regexp = "(" + words.join("|") + ")"
-    replacements.append! [regexp, &yield]
+  def documentation:
+    document.instance_exec &yield
 
-  def chapters *chapters:
-    for chapter in chapters:
-      parts.append! chapter
-
-  def generate:
-    for index, part in parts:
-      require "%02d_%s" % [index+1, part]
-
-  def title text:
-    print "<h1>%s</h1>" % text
-
-  def section text:
-    print "<h2>%s</h2>" % text
-
-  def p text:
-    print "<p>%s</p>" % text
-
-  def list:
-    print "<ul>"
-    yield
-    print "</ul>"
-
-  def item text:
-    print "<li>%s</li>" % text
-
-  def link href:
-    print "<a href=\"%s\">%s</a>" % [href, href]
-
-  def bash *commands, caption => none:
-    print "<pre>"
-    print *commands
-    print "</pre>"
-
-  def note text:
-    print "<small>%s</small>" % text
+  def chapter title:
+    document.chapter title: instance_exec &yield

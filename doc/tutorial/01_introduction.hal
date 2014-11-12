@@ -1,25 +1,25 @@
-title "Introduction"
-p "HAL is a dynamic, open-source programming language inspired by Ruby and Python.
-   HAL offers a really clean syntax and powerful scripting features."
+chapter "Introduction":
+  p "HAL is a dynamic, open-source programming language inspired mainly by Ruby and Python.
+     HAL offers a really clean syntax and powerful scripting features."
 
-section "Main features"
-list:
-  item "A **clean** syntax, perfect for creating **D**omain-**S**pecific **L**anguages"
-  item "A **consistent** object-oriented architecture with **inheritance**"
-  item "Ruby-like **lambda blocks**"
-  item "**Dynamic typing** and **duck typing**"
-  item "Builtin methods that can be **rewritten** in HAL itself"
-  item "Python-like **module** imports"
-  item "**First-class** methods"
-  item "An **extensible**, **intuitive** and **interactive** interpreter"
+  section "Main features"
+  list:
+    item "A **clean** syntax, perfect for creating **D**omain-**S**pecific **L**anguages"
+    item "A **consistent** object-oriented architecture with **inheritance**"
+    item "Ruby-like **lambda blocks**"
+    item "**Dynamic typing** and **duck typing**"
+    item "Builtin methods that can be **rewritten** in HAL itself"
+    item "Python-like **module** imports"
+    item "**First-class** methods"
+    item "An **extensible**, **intuitive** and **interactive** interpreter"
 
-section "Source code"
-p "As said before, HAL is open-source. All the code can be found at Github:"
-link "https://github.com/hecrj/hal"
-p "Feel free to contribute anything!"
+  section "Source code"
+  p "As said before, HAL is open-source. All the code can be found at Github: [https://github.com/hecrj/hal]"
+  p "Feel free to report any issue you find in the language or to contribute a pull request of any awesome idea
+    you may have!"
 
-section "Current status"
-p "Be aware that HAL is currently in a very early stage of development. Thus,
-   expect a high amount of changes and additions to the core of the language.
-   Also, there are probably many internal issues and bugs to be found.
-   Still, it's pretty fun to delevop using HAL, so we encourage you to try it out."
+  section "Current status"
+  p "Be aware that HAL is currently in a very early stage of development. Thus,
+     expect a high amount of changes and additions to the core of the language.
+     Also, there are probably many internal issues and bugs to be found.
+     Still, it's pretty fun to delevop using HAL, so we encourage you to try it out."
