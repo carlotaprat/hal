@@ -56,7 +56,8 @@ abstract public class HalKernel<T> extends HalObject<T>
 
                 // Misc
                 HalProcess.klass,
-                HalFile.klass
+                HalFile.klass,
+                HalStringStream.klass
         };
 
         ReferenceRecord record = HalKernel.klass.getInstanceRecord();

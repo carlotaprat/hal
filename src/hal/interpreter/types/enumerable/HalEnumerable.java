@@ -60,6 +60,13 @@ public abstract class HalEnumerable<T> extends HalObject<T>
         }
     });
 
+    private static final Reference __empty_ = new Reference(new Builtin("empty?") {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            return new HalBoolean(((HalEnumerable)instance).size().value == 0);
+        }
+    });
+
     private static final Reference __map__ = new Reference(new Builtin("map") {
         @Override
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
@@ -82,6 +89,7 @@ public abstract class HalEnumerable<T> extends HalObject<T>
             __setitem__,
             __size__,
             __length__,
+            __empty_,
             __map__
     );
 }
