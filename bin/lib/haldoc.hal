@@ -50,7 +50,7 @@ class Chapter < HTMLHelper:
     "%02d_%s.%s" % [@number, @title.lowercase, extension]
 
   def generate with_css:
-    # Render the content first and populate the chaper
+    # Render the content first in a virtual stream and populate the chapter
     @stream = StringStream.new
     content
     content_html = @stream.str
