@@ -23,7 +23,7 @@ chapter "Installation":
 
   p "Right now, just use |Ctrl+D| or type |quit| to exit the interactive shell."
   p "If you want to be able to execute HAL from everywhere, then add an alias to your
-     environment pointing to the `bin/hal` executable or include in your `PATH` the bin
+     environment pointing to the `bin/hal` executable or include in your `PATH` the `bin`
      directory."
 
   bash "hal", "Hal 0.0.3@82260b05 (2014 nov 10, 13:57) [java 1.7.0_72]", ">>>",

@@ -5,6 +5,7 @@ class Documentation:
     @replacements = []
     @chapters = []
     @with_style = none
+    @title = "Untitled"
 
   def replace *words:
     regexp = "\\b(" + words.join("|") + ")\\b"
@@ -24,30 +25,45 @@ class Documentation:
   def css cssfile:
     @with_style = cssfile
 
+@document = Documentation.new
+
 
 class Chapter < HTMLHelper:
   @total_count = 0
 
   def init title, block:
+    super
     @@total_count = @@total_count + 1
     @number = @@total_count
     @title = title
-    @file = none
+    @stream = none
     @block = &block
+    @sections = []
+    @subsection = &h3
+    @subsubsection = &h4
+
+  def section name:
+    @sections << name
+    h2 "%d.%d. %s" % [@number, @sections.size, name], id => normalize name
 
   def filename extension => "html":
     "%02d_%s.%s" % [@number, @title.lowercase, extension]
 
   def generate with_css:
-    @file = File.open "html/%02d_%s.html" % [@number, @title.lowercase]
+    # Render the content first and populate the chaper
+    @stream = StringStream.new
+    content
+    content_html = @stream.str
+
+    @stream = File.open "html/%02d_%s.html" % [@number, @title.lowercase]
     
     head with_css
     div "row":
       navigation
-      content
+      @stream.write content_html
     foot
     
-    @file.close!
+    @stream.close!
 
   def content:
     div "col-md-8":
@@ -67,15 +83,31 @@ class Chapter < HTMLHelper:
 
   def navigation:
     div "col-md-4":
-      list "nav nav-pills nav-stacked nav-haldoc":
-        for index, chapter in document.chapters:
-          print '<li class="active">' if index+1 == @number else print "<li>"
-          print '<a href="%02d_%s.html">%d. %s</a>' % [chapter.number, chapter.title.lowercase,
-            chapter.number, chapter.title]
-          print "</li>"
+      div "nav-haldoc":
+        h3 document.title
+        list "nav nav-pills nav-stacked":
+          for index, chapter in document.chapters:
+            active? = index+1 == @number
+            print '<li class="active">' if active? else print "<li>"
+            print '<a href="%02d_%s.html">%d. %s</a>' % [chapter.number, chapter.title.lowercase,
+              chapter.number, chapter.title]
+
+            if active? and not sections.empty?:
+              navigation_sections
+
+            print "</li>"
+
+  def navigation_sections:
+    list "nav nav-nested":
+      for index, section in sections:
+        item:
+          link "#%s" % normalize(section), "%d.%d. %s" % [@number, index+1, section]
+
+  def normalize name:
+    name.lowercase.gsub " ", "-"
 
   def head with_css:
-    @file.print '<!DOCTYPE html>',
+    @stream.print '<!DOCTYPE html>',
           '<html lang="en">',
           '<head>',
           '<meta charset="utf-8">',
@@ -102,12 +134,11 @@ class Chapter < HTMLHelper:
           '</html>'
 
   def print *args:
-    @file.print *[markdown text for text in args]
+    @stream.print *[markdown text for text in args]
 
   def write *args:
-    @file.write *[markdown text for text in args]
+    @stream.write *[markdown text for text in args]
 
-@document = Documentation.new
 
 def markdown text:
     for replacement in document.replacements:

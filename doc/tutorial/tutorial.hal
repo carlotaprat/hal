@@ -1,6 +1,7 @@
 import haldoc
 
 documentation:
+  @title = "The HAL Tutorial"
   css "styles/haldoc.css"
 
   replace "HAL", "Ruby", "Python", "JDK", "git", "Makefile": "`$1`"

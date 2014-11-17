@@ -15,11 +15,21 @@ chapter "Introduction":
 
   section "Source code"
   p "As said before, HAL is open-source. All the code can be found at Github: [https://github.com/hecrj/hal]"
-  p "Feel free to report any issue you find in the language or to contribute a pull request of any awesome idea
-    you may have!"
+  
+  note:
+    p "If you have an idea and you want to contribute:"
+    list ordered => true:
+      item "Fork the HAL repository"
+      item "Create a branch with a name that describes the new feature"
+      item "Perform the changes in that branch"
+      item "Open a [pull request](https://github.com/hecrj/hal/pulls) of your branch"
+    p "An offical developer will review your changes and decide if the new feature gets
+    merged officialy in the language!"
 
   section "Current status"
   p "Be aware that HAL is currently in a very early stage of development. Thus,
      expect a high amount of changes and additions to the core of the language.
      Also, there are probably many internal issues and bugs to be found.
-     Still, it's pretty fun to delevop using HAL, so we encourage you to try it out."
+     Still, it's pretty fun to develop using HAL, so we encourage you to try it out."
+  note "If you find any bugs, feel free to [open an issue](https://github.com/hecrj/hal/issues/new)
+  describing the problem in the HAL repository."
