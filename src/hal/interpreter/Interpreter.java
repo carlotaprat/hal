@@ -210,10 +210,13 @@ public class Interpreter
         for(String arg : args.keys())
             stack.defineVariable(arg, args.get(arg));
 
-        if(lambda != null)
-            stack.defineVariable("yield", lambda);
 
-        stack.defineVariable("block_given?", new HalBoolean(lambda != null));
+        if(def.isMethod()) {
+            if(lambda != null)
+                stack.defineVariable("yield", lambda);
+
+            stack.defineVariable("block_given?", new HalBoolean(lambda != null));
+        }
 
         // Execute the instructions
         HalObject result = executeListInstructions(block);
