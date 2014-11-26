@@ -8,4 +8,5 @@ documentation:
 
   generate \
     "introduction",
-    "installation"
+    "installation",
+    "getting_started"

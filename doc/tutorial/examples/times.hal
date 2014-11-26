@@ -1,0 +1,8 @@
+class Integer:
+  def times:
+    i = 0
+    while i < self:
+      yield
+      i = i + 1
+
+5.times: print "Hello world!"

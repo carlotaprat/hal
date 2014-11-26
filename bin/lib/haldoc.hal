@@ -139,6 +139,19 @@ class Chapter < HTMLHelper:
   def write *args:
     @stream.write *[markdown text for text in args]
 
+  def hal example_file:
+    p = Process.exec "cat examples/%s.hal" % example_file
+    h = Process.exec "hal examples/%s.hal" % example_file
+
+    print '<pre>',
+          p.output,
+          '</pre>'
+
+    yield if block_given?
+
+    print '<pre>',
+          h.output,
+          '</pre>'
 
 def markdown text:
     for replacement in document.replacements:

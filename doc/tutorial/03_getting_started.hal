@@ -1,0 +1,22 @@
+chapter "Getting started":
+  section "Hello world!"
+  
+  hal "hello_world":
+    p "Read the code above out loud. Readable, isn't it? The program does exactly what it seems to do: it prints 5
+      times `Hello world!`"
+
+  p "But... What is really happening? Well, like in Ruby, **everything in HAL is an object**, even literals. Thus,
+    `5.times` means calling the method `times` of the `Integer` instance `5`. This method takes a `block` and executes
+    it a number of times that is equal to the instance value. And... What is a block, you say?"
+
+  section "Everything is a call"
+
+  section "Blocks"
+  p "Generally speaking, a block of code is just code that is grouped together and at the same indentation level.
+    In HAL, you can pass a block of code to any method just adding `:` after the method call and then defining the
+    block, indenting properly. Also, this means you can execute that block whenever you want in the method itself.
+    For example, we could write the `times` method we've seen before in HAL like this:"
+
+  hal "times"
+
+  p "The `yield` keyword refers to the `block` received by the method."  

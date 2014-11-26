@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3. Getting started - HALDoc</title>
+<!-- Bootstrap -->
+<link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="../styles/haldoc.css">
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn 't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+<div class="container">
+<div class="row">
+<div class="col-md-4">
+<div class="nav-haldoc">
+<h3>The <code>HAL</code> Tutorial</h3>
+<ul class="nav nav-pills nav-stacked">
+<li>
+<a href="01_introduction.html">1. Introduction</a>
+</li>
+<li>
+<a href="02_installation.html">2. Installation</a>
+</li>
+<li class="active">
+<a href="03_getting started.html">3. Getting started</a>
+<ul class="nav nav-nested">
+<li>
+<a href="#hello-world!">3.1. Hello world!</a>
+</li>
+<li>
+<a href="#everything-is-a-call">3.2. Everything is a call</a>
+</li>
+<li>
+<a href="#blocks">3.3. Blocks</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="col-md-8">
+<h1>3. Getting started</h2>
+<h2 id=hello-world!>3.1. Hello world!</h2>
+<pre>
+5.times: print "Hello world!"
+</pre>
+<p>Read the code above out loud. Readable, isn't it? The program does exactly what it seems to do: it prints 5
+      times <code>Hello world!</code></p>
+<pre>
+Hello world!
+Hello world!
+Hello world!
+Hello world!
+Hello world!
+</pre>
+<p>But... What is really happening? Well, like in <code>Ruby</code>, <strong>everything in <code>HAL</code> is an object</strong>, even literals. Thus,
+    <code>5.times</code> means calling the method <code>times</code> of the <code>Integer</code> instance <code>5</code>. This method takes a <code>block</code> and executes
+    it a number of times that is equal to the instance value. And... What is a block, you say?</p>
+<h2 id=everything-is-a-call>3.2. Everything is a call</h2>
+<h2 id=blocks>3.3. Blocks</h2>
+<p>Generally speaking, a block of code is just code that is grouped together and at the same indentation level.
+    In <code>HAL</code>, you can pass a block of code to any method just adding <code>:</code> after the method call and then defining the
+    block, indenting properly. Also, this means you can execute that block whenever you want in the method itself.
+    For example, we could write the <code>times</code> method we've seen before in <code>HAL</code> like this:</p>
+<pre>
+class Integer:
+  def times:
+    i = 0
+    while i < self:
+      yield
+      i = i + 1
+
+5.times: print "Hello world!"
+</pre>
+<pre>
+Hello world!
+Hello world!
+Hello world!
+Hello world!
+Hello world!
+</pre>
+<p>The <code>yield</code> keyword refers to the <code>block</code> received by the method.</p>
+<div class="row">
+<div class="pull-left">
+<a href="02_installation.html">&larr; Installation</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
