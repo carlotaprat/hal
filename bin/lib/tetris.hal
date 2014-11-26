@@ -89,9 +89,9 @@ class Board:
   def update:
     row = @clear_queue.first
     @clear_queue.pop!
-
+    
     # Move cells down
-    for i in range(row, 1):
+    for i in range(1, row):
       current = row - i
       @row_count[current+1] = @row_count[current]
 
