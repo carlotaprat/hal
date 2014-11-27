@@ -394,6 +394,7 @@ atom
     |   STRING
     |   REGEXP
     |   BACKTICKS
+    |   SYMBOL
     |   (b=TRUE | b=FALSE)  -> ^(BOOLEAN[$b,$b.text])
     |   NONE
     |   global_var
@@ -510,6 +511,7 @@ fragment SP     : (' ' | '\t')+;
 
 // Identifiers
 ID  : (LETTER|'_') (LETTER|'_'|DIGIT)* (('!'|'?')('_')*)?;
+SYMBOL : COLON ID;
 
 // Numbers
 NUMBER : {$type=INT;}(DIGIT+ (('.' DIGIT)=> '.' DIGIT+ {$type=FLOAT;})?);

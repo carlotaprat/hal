@@ -458,6 +458,9 @@ public class Interpreter
             case HalLexer.STRING:
                 value = new HalString(t.getText());
                 break;
+            case HalLexer.SYMBOL:
+                value = new HalSymbol(t.getText().substring(1));
+                break;
             case HalLexer.REGEXP:
                 value = new HalRegExp(t.getText());
                 break;
