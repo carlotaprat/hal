@@ -3,22 +3,30 @@ package hal.interpreter.types;
 
 import hal.interpreter.types.enumerable.HalString;
 
+import java.util.HashMap;
+
 public class HalSymbol extends HalObject<String>
 {
+    static private HashMap<String, HalSymbol> symbols = new HashMap<String, HalSymbol>();
 
-    public HalSymbol(Character c) {
-        value = String.valueOf(c);
+    static public HalSymbol getSymbol(String s) {
+        if(!symbols.containsKey(s)) {
+            symbols.put(s, new HalSymbol(s));
+        }
+
+        return symbols.get(s);
     }
-    public HalSymbol(String s) {
+
+    private HalSymbol(String s) {
         value = s;
     }
 
     public String toString(){
-        return ':' + value;
+        return value;
     }
 
     public HalString repr() {
-        return new HalString(toString());
+        return new HalString(':' + value);
     }
 
     public HalString str() {
