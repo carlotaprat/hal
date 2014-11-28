@@ -15,6 +15,9 @@ patterns:
 - name: keyword.other.hal
   match: \b(class|import|from|def|with|and|or|when|case|in)\b
 
+- name: constant.other.symbol.hal
+  match: (:([a-zA-Z_]+)(\?|\!)?_*)
+
 - name: keyword.operator.hal
   match: (\+|\*|=|>|<|:|;|,|\\|\.)
 

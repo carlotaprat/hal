@@ -19,4 +19,5 @@ chapter "Getting started":
 
   hal "times"
 
-  p "The `yield` keyword refers to the `block` received by the method."  
+  p "The `yield` keyword refers to the `block` received by the method."
+  

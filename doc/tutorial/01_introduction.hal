@@ -1,5 +1,5 @@
 chapter "Introduction":
-  p "HAL is a dynamic, open-source programming language inspired mainly by Ruby and Python.
+  p "HAL is a dynamic programming language inspired mainly by Ruby and Python.
      HAL offers a really clean syntax and powerful scripting features."
 
   section "Main features"
@@ -12,6 +12,21 @@ chapter "Introduction":
     item "Python-like **module** imports"
     item "**First-class** methods"
     item "An **extensible**, **intuitive** and **interactive** interpreter"
+
+  section "Use cases"
+  p "Right now, HAL is really handy to perform fast prototyping and to write HTML or LaTeX documents."
+  
+  p "For instance, you could use HAL to create a simple OpenGL application with the `opengl` module. Furthermore,
+  using the `input` module you could develop even an OpenGL game! Do you want an example? No problem! HAL comes with
+  a builtin Tetris-clone game! To try it out just open the interpreter and import the module `tetris`.
+  All the code of the built-in modules written in HAL can be found in the `bin/lib` directory."
+  
+  p "Additionally, you can use the module `haltex` to write LaTeX documents in HAL! `haltex` provides a **DSL**
+  that lets you write LaTeX documents with all the power of a dynamic programming language. Thus, you would be
+  able to generate tables dynamically, define equations and evalaute them with your data, create new useful
+  commands, use loops, define your own data structures... There are no limits!"
+
+  hal "haltex"
 
   section "Source code"
   p "As said before, HAL is open-source. All the code can be found at Github: [https://github.com/hecrj/hal]"
@@ -30,6 +45,8 @@ chapter "Introduction":
   p "Be aware that HAL is currently in a very early stage of development. Thus,
      expect a high amount of changes and additions to the core of the language.
      Also, there are probably many internal issues and bugs to be found.
-     Still, it's pretty fun to develop using HAL, so we encourage you to try it out."
+     Thus, at the moment, it is not recommended to use HAL in a long-term project as
+     it could become very difficult to mantain. Review [Use cases](#use-cases) to understand
+     when to use HAL."
   note "If you find any bugs, feel free to [open an issue](https://github.com/hecrj/hal/issues/new)
   describing the problem in the HAL repository."

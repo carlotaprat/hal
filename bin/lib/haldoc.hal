@@ -144,7 +144,7 @@ class Chapter < HTMLHelper:
     h = Process.exec "hal examples/%s.hal" % example_file
 
     print '<pre>',
-          p.output,
+          hal_style(p.output),
           '</pre>'
 
     yield if block_given?
@@ -154,19 +154,26 @@ class Chapter < HTMLHelper:
           '</pre>'
 
 def markdown text:
-    for replacement in document.replacements:
-      text = text.gsub replacement[0], replacement[1]
+  for replacement in document.replacements:
+    text = text.gsub replacement[0], replacement[1]
 
-    text \
+  text \
     .gsub(r/\*\*((\n|[^\*])*)\*\*/, "<strong>$1</strong>") \
     .gsub(r/\*([^\*]*)\*/, "<em>$1</em>") \
     .gsub(r/\[http(.*)\]/, "<a href=\"http$1\" target=\"_blank\">http$1</a>") \
+    .gsub(r/\[(.*)\]\(#(.*)\)/, "<a href=\"#$2\">$1</a>") \
     .gsub(r/\[(.*)\]\((.*)\)/, "<a href=\"$2\" target=\"_blank\">$1</a>") \
     .gsub(r/`([^`]*)`/, "<code>$1</code>") \
     .gsub(r/\|([^\|]*)\|/, "<kbd>$1</kbd>")
 
+def hal_style code:
+  code \
+    .gsub(r/("[^"]*"|'[^']*')/, '<span style="color: #080">$1</span>') \
+    .gsub(r/(import|for|in)/, '<span style="color: #00f">$1</span>')
+
 class Kernel:
-  def documentation:
+  def documentation title:
+    document.title = title
     document.instance_exec &yield
 
   def chapter title:

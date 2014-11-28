@@ -1,0 +1,7 @@
+import haltex
+
+document:
+  my_list = ["Item 1", "Item 2", "Item 3", "Item 4"]
+  enumerate:
+    for element in my_list:
+      item; p element

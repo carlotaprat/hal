@@ -1,12 +1,11 @@
 import haldoc
 
-documentation:
-  @title = "The HAL Tutorial"
+documentation "The HAL Tutorial":
   css "styles/haldoc.css"
 
-  replace "HAL", "Ruby", "Python", "JDK", "git", "Makefile": "`$1`"
+  replace "HAL", "Ruby", "Python", "JDK", "LaTeX", "HTML", "git", "Makefile": "`$1`"
 
   generate \
-    "introduction",
-    "installation",
-    "getting_started"
+    :introduction,
+    :installation,
+    :getting_started
