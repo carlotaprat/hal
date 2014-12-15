@@ -15,12 +15,16 @@ class Square:
 
 
 class Piece:
+  class << self:
+    def squares_at x, y, rotation => 0:
+      [ Square.new(coords[0]+x, coords[1]+y, @rgb) for coords in @shape[rotation] ]
+
   def init board:
     @board = board
     @x = 3
     @y = -2
     @rotation = 0
-    @squares = [ Square.new(coords[0]+@x, coords[1]+@y, @@rgb) for coords in @@shape[@rotation] ]
+    @squares = squares_at @x, @y, @rotation
 
   def left!: move! -1, 0
   def right!: move! 1, 0

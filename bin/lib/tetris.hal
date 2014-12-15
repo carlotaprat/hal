@@ -9,14 +9,15 @@ class Game:
 
   def init:
     @board = Board.new
+    @status_bar = StatusBar.new
     @time_still = 0
     @infinity = 500
     @drop = false
-
+    @next = none
     new_piece!
 
   def new_piece!:
-    @piece = random_piece.new @board
+    @piece = @status_bar.next_piece!.new @board
 
   def over?:
     @board.full?
@@ -60,6 +61,7 @@ class Game:
   def render:
     @piece.render
     @board.render
+    @status_bar.render
 
 
 class Board:
@@ -110,19 +112,47 @@ class Board:
     # Board grid
     color 0.2, 0.2, 0.2
 
-    for i in range(@@hcells):
+    for i in range(@@hcells + 1):
       line i * Square.width, 0, i * Square.width, @@height
 
     for i in range(@@vcells):
       line 0, i * Square.width, @@width, i * Square.width
 
 
+class StatusBar:
+  @width = 240
+
+  def init:
+    @current = none
+    @squares = []
+    next_piece!
+
+  def next_piece!:
+    old = @current
+    @current = random_piece
+    @squares = @current.squares_at Board.hcells + 1, 2
+    old
+
+  def render:
+    for square in @squares:
+      square.render
+
+    color 0.2, 0.2, 0.2
+
+    for i in range(Board.hcells + 1, Board.hcells + 6):
+      line i * Square.width, 2 * Square.width, i * Square.width, 6 * Square.width
+
+    for i in range(2, 7):
+      line (Board.hcells + 1) * Square.width, i * Square.width, (Board.hcells + 5) * Square.width,
+        i * Square.width
+
+
 def play:
   game = Game.new
 
-  display title => "HALtris", width => Board.width, height => Board.height:
+  display title => "HALtris", width => Board.width + StatusBar.width, height => Board.height:
     # Initialize OpenGL
-    projection: ortho 0, Board.width, Board.height, 0, 0, 1
+    projection: ortho 0, Board.width + StatusBar.width, Board.height, 0, 0, 1
     disable DEPTH_TEST
 
     draw fps => 60 with delta:
