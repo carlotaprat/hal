@@ -30,7 +30,7 @@ public class HalSymbol extends HalObject<String>
     }
 
     public HalString str() {
-        return repr();
+        return new HalString(toString());
     }
 
     public HalBoolean bool(){
