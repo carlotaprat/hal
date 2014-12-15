@@ -1,0 +1,31 @@
+class BibTex:
+  def init filename, block:
+    @file = File.open filename.str + ".bib"
+    instance_exec &block
+    @file.close!
+
+  def __method_missing__ name, reference, *args:
+    @file.write "@%s{%s" % [name, reference]
+    BibItem.new @file, &yield
+    @file.print
+    @file.print "}"
+
+
+class BibItem:
+  def init file, block:
+    @file = file
+    instance_exec &block
+
+  def __method_missing__ attribute, value, *args:
+    @file.print ','
+    case attribute:
+      when 'url':
+        @file.write "  howpublished = {\\url{%s}}" % value
+      when 'online':
+        @file.write "  note = {[Online; accessed %s]}" % value
+      else:
+        @file.write "  %s = {%s}" % [attribute, value]
+
+
+def bibtex name:
+  BibTex.new name, &yield
