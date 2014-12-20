@@ -299,7 +299,7 @@ keyword
     ;
 
 funcall
-    :   (options {greedy=true;}: ID args) -> ^(FUNCALL ID args)
+    :   (options {greedy=true;}: ID args lambda_inline?) -> ^(FUNCALL ID args lambda_inline?)
     ;
 
 args
@@ -344,6 +344,11 @@ assign_lambda
 lambda
     :
         (LKW paramlist)? COLON block -> ^(LAMBDA ^(PARAMS paramlist?) block)
+    ;
+
+lambda_inline
+    :   {nextIs(LBRACE)}?
+        LBRACE paramlist? LTARROW expr RBRACE -> ^(LAMBDA ^(PARAMS paramlist?) ^(BLOCK ^(EXPR expr)))
     ;
 
 expr
@@ -431,7 +436,8 @@ list
     ;
 
 dict
-    :   LBRACE (entry (COMMA entry)*)? RBRACE -> ^(DICT entry*)
+    :
+    LBRACE (entry (COMMA entry)*)? RBRACE -> ^(DICT entry*)
     ;
 
 entry
@@ -494,6 +500,7 @@ RBRACK  : NL? SP? ']';
 LBRACE  : '{' NL?;
 RBRACE  : NL? SP? '}';
 LARROW  : '=>';
+LTARROW : '->';
 AT      : '@';
 DOUBLE_AT : '@@';
 DOLLAR    : '$';

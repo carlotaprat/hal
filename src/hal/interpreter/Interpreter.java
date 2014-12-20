@@ -475,7 +475,12 @@ public class Interpreter
                 value = evaluateDict(t);
                 break;
             case HalLexer.FUNCALL:
-                value = executeCall(t.getChild(0).getText(), null, listArguments(t.getChild(1)));
+                HalLambda lambda = null;
+
+                if(t.getChildCount() > 2)
+                    lambda = extractLambda(t.getChild(2));
+
+                value = executeCall(t.getChild(0).getText(), lambda, listArguments(t.getChild(1)));
                 break;
             case HalLexer.INSTANCE_VAR:
                 value = stack.getVariable("self").getRecord().getVariable(t.getChild(0).getText());
@@ -535,7 +540,13 @@ public class Interpreter
                 break;
 
             case HalLexer.METHCALL:
-                value2 = evaluateMethodCall(value, t.getChild(1), null);
+                HalTree funcall = t.getChild(1);
+                HalLambda lambda = null;
+
+                if(funcall.getChildCount() > 2)
+                    lambda = extractLambda(funcall.getChild(2));
+
+                value2 = evaluateMethodCall(value, t.getChild(1), lambda);
                 break;
         }
 
