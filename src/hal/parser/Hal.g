@@ -352,7 +352,11 @@ lambda_inline
     ;
 
 expr
-    :   boolterm (options {greedy=true;}: OR^ boolterm)*
+    :   (boolterm -> boolterm) (options {greedy=true;}:
+            (options {greedy=true;}: OR b=boolterm -> ^(OR $expr $b))+
+        |   (RANGE r1=boolterm -> ^(RANGE $expr $r1))
+        |   (RANGEI r2=boolterm -> ^(RANGEI $expr $r2))
+        )?
     ;
 
 boolterm
@@ -490,6 +494,8 @@ IMPORT  : 'import';
 FROM    : 'from';
 CASE    : 'case';
 WHEN    : 'when';
+RANGEI  : '..';
+RANGE   : '...';
 // SPECIAL SYMBOLS
 COLON     : ':' ;
 SEMICOLON : ';';

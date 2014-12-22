@@ -546,7 +546,12 @@ public class Interpreter
                 if(funcall.getChildCount() > 2)
                     lambda = extractLambda(funcall.getChild(2));
 
-                value2 = evaluateMethodCall(value, t.getChild(1), lambda);
+                value2 = evaluateMethodCall(value, funcall, lambda);
+                break;
+
+            case HalLexer.RANGE:
+            case HalLexer.RANGEI:
+                value2 = HalNone.NONE;
                 break;
         }
 
