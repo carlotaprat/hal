@@ -20,7 +20,7 @@ date "4th june, 2014"
 document:
   frame "\\titlepage"
 
-  frame "Objectve", options => "fragile":
+  frame "Objective", options => "fragile":
     p "Create a programming language:"
 
     itemize:
