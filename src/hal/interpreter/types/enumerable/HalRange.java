@@ -56,9 +56,18 @@ public class HalRange extends HalEnumerable<Range>
     }
 
     public HalInteger size() {
-        int size = (value.end - value.start + (value.include ? 1 : 0)) / value.step;
+        int size = (value.end - value.start) / value.step;
 
-        return new HalInteger(size < 0 ? 0 : size);
+        if(size >= 0) {
+            int x = value.start + size * value.step;
+        
+            if(x < value.end || x == value.end && value.include)
+                size++;
+        } else {
+            size = 0;
+        }
+
+        return new HalInteger(size);
     }
     
     private static final Reference __each__ = new Reference(new Builtin("each") {
