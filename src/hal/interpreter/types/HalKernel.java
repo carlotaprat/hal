@@ -13,6 +13,7 @@ import hal.interpreter.types.enumerable.HalArray;
 import hal.interpreter.types.enumerable.HalDictionary;
 import hal.interpreter.types.enumerable.HalEnumerable;
 import hal.interpreter.types.enumerable.HalString;
+import hal.interpreter.types.enumerable.HalRange;
 import hal.interpreter.types.numeric.HalFloat;
 import hal.interpreter.types.numeric.HalInteger;
 import hal.interpreter.types.numeric.HalNumber;
@@ -47,6 +48,7 @@ abstract public class HalKernel<T> extends HalObject<T>
                 HalArray.klass,
                 HalDictionary.klass,
                 HalString.klass,
+                HalRange.klass,
 
                 // Numerics
                 HalNumber.klass,
@@ -100,20 +102,16 @@ abstract public class HalKernel<T> extends HalObject<T>
     {
         @Override
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
-            int ini = 0;
-            int end = ((HalInteger)args.get("end")).getValue();
-            int step = ((HalInteger)args.get("step")).getValue();
+            HalObject ini = new HalInteger(0);
+            HalObject end = args.get("end");
+            HalObject step = args.get("step");
 
             if(args.get("start") != HalNone.NONE) {
                 ini = end;
-                end = ((HalInteger)args.get("start")).getValue();
+                end = args.get("start");
             }
 
-            HalArray arr = new HalArray();
-            for (int i = ini; i < end; i+=step) {
-                arr.methodcall("__append!__", new HalInteger(i));
-            }
-            return arr;
+            return new HalRange(ini, end, step, new HalBoolean(false));
         }
     });
 

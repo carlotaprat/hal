@@ -10,6 +10,7 @@ import hal.interpreter.types.*;
 import hal.interpreter.types.enumerable.HalArray;
 import hal.interpreter.types.enumerable.HalDictionary;
 import hal.interpreter.types.enumerable.HalString;
+import hal.interpreter.types.enumerable.HalRange;
 import hal.interpreter.types.numeric.HalFloat;
 import hal.interpreter.types.numeric.HalInteger;
 import hal.interpreter.types.numeric.HalLong;
@@ -548,11 +549,6 @@ public class Interpreter
 
                 value2 = evaluateMethodCall(value, funcall, lambda);
                 break;
-
-            case HalLexer.RANGE:
-            case HalLexer.RANGEI:
-                value2 = HalNone.NONE;
-                break;
         }
 
         if (value2 != null) {
@@ -603,6 +599,11 @@ public class Interpreter
             // Additional operators
             case HalLexer.GET_ITEM:
                 value = value.methodcall("__getitem__", value2); break;
+
+            case HalLexer.RANGE:
+            case HalLexer.RANGEI:
+                value = new HalRange(value, value2, new HalBoolean(type == HalLexer.RANGEI));
+                break;
 
             default: assert false; // Should never happen
         }

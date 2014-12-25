@@ -9,7 +9,8 @@ import hal.interpreter.exceptions.InvalidArgumentsException;
 import hal.interpreter.exceptions.NameException;
 import hal.interpreter.exceptions.TypeException;
 import hal.interpreter.types.enumerable.HalString;
-
+import hal.interpreter.types.numeric.HalInteger;
+import hal.interpreter.types.numeric.HalFloat;
 
 public abstract class HalObject<T> extends HalType implements Comparable<HalObject>
 {
@@ -98,6 +99,14 @@ public abstract class HalObject<T> extends HalType implements Comparable<HalObje
     }
 
     public Object toFormat(){ return this; }
+
+    public Integer toInteger() {
+        return ((HalInteger) methodcall("__int__")).getValue();
+    }
+
+    public Double toFloat() {
+        return ((HalFloat) methodcall("__float__")).getValue();
+    }
 
     public HalString repr() {
         return (HalString) methodcall("__str__");

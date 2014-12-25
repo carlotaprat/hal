@@ -42,6 +42,7 @@ class Game:
       if not falling:
         new_piece!
         @drop = false
+        # Compute score
 
   def process_keys delta:
     Keyboard.poll @@keys, delta with key, kept:
@@ -125,6 +126,8 @@ class StatusBar:
   def init:
     @current = none
     @squares = []
+    @score = 0
+    @level = 1
     next_piece!
 
   def next_piece!:

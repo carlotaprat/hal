@@ -21,8 +21,8 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
 
     public abstract boolean isZero();
 
-    public Integer toInteger() { return value.intValue(); }
-    public Double toFloat() { return value.doubleValue(); }
+    public Integer intValue() { return value.intValue(); }
+    public Double doubleValue() { return value.doubleValue(); }
     public Object toFormat() { return value; }
 
     public HalBoolean bool() { return new HalBoolean(!isZero()); }
@@ -59,14 +59,14 @@ public abstract class HalNumber<T extends Number> extends HalObject<T> {
     private static final Reference __int__ = new Reference(new Builtin("int") {
         @Override
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
-            return new HalInteger(((HalNumber) instance).toInteger());
+            return new HalInteger(((HalNumber) instance).intValue());
         }
     });
 
     private static final Reference __float__ = new Reference(new Builtin("float") {
         @Override
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
-            return new HalFloat(((HalNumber) instance).toFloat());
+            return new HalFloat(((HalNumber) instance).doubleValue());
         }
     });
 
