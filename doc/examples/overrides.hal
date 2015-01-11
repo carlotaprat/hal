@@ -1,4 +1,4 @@
-def concat: range(10) ++ range(20, start => 10)
+def concat: [x for x in range(0, 10)] ++ [x for x in range(10, 20)]
 
 print concat
 

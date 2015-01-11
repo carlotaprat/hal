@@ -1,3 +1,3 @@
 print \
   1.add(2), Array.new, "Chunky bacon!".size,
-  range(10).sum, &range.arity, Class.repr, none.none?
+  &range, &range.arity, Class.repr, none.none?
