@@ -1,4 +1,5 @@
 @packages = {}
+@typewrites = []
 
 def env name, *args, options => none:
   write "\\begin{%s}" % name
@@ -74,8 +75,12 @@ class Kernel:
   def c code:
     print code.strip "\n"
 
+  def typewrite *words:
+    for word in words: typewrites << word
+
   def pstyle paragraph:
     paragraph \
+      .gsub("\\b(" + typewrites.join('|') + ")\\b", "|$1|") \
       .gsub(r/\*\*((\n|[^\*])*)\*\*/, "\\\\textbf{$1}") \
       .gsub(r/\*([^\*]*)\*/, "\\\\emph{$1}") \
       .gsub(r/\|([^\|]*)\|/, "\\\\texttt{$1}") \
