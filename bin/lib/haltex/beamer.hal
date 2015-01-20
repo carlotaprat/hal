@@ -4,3 +4,8 @@ class Kernel:
       __method_missing__ "frame", pstyle(title), options => options: yield
     else:
       __method_missing__ "frame", pstyle(title), options => options
+
+  def titlegraphic:
+    print "\\titlegraphic{"
+    yield
+    print "}"

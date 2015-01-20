@@ -1,0 +1,10 @@
+import haltex
+
+documentclass "article", options => "a4paper,11pt"
+
+# Packages
+usepackage "inputenc", options => "utf8"
+
+document:
+  p "Some text here"
+

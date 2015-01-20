@@ -11,7 +11,7 @@ usepackage "xcolor", options => "usenames,dvipsnames"
 usepackage "soul"
 
 # HalTeX modules
-import haltex.utils
+import haltex.highlight_code
 
 document:
   cover title => "HAL",

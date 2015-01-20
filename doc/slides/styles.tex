@@ -1,0 +1,70 @@
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\newcommand{\CodeSymbol}[1]{\textcolor{brown}{#1}}
+\lstdefinelanguage{hal}{
+    basicstyle=\ttfamily,
+    sensitive=true,
+    morestring=[b]\",
+    morestring=[b]\',
+    keywords=[1]{for,in,while,if,else,elif,class,def,with,return,import,from},
+    keywords=[2]{Array, print, self, yield, block_given?},
+    keywordstyle=[1]\color{blue},
+    keywordstyle=[2]\color{red!60!black},
+    ={\color{brown!50!black}\bfseries},
+    morecomment=[l]{\#},
+    commentstyle={\color{gray}\itshape},
+    showstringspaces=false,
+    stringstyle=\color{green!50!black},
+    captionpos=b,
+    literate=%
+      {\{}{{\CodeSymbol{\{}}}1
+      {\}}{{\CodeSymbol{\}}}}1
+      {(}{{\CodeSymbol{(}}}1
+      {)}{{\CodeSymbol{)}}}1
+      {>}{{\CodeSymbol{>}}}1
+      {<}{{\CodeSymbol{<}}}1
+      {=}{{\CodeSymbol{=}}}1
+      {;}{{\CodeSymbol{;}}}1
+      {[}{{\CodeSymbol{[}}}1
+      {]}{{\CodeSymbol{]}}}1
+      {:}{{\CodeSymbol{:}}}1
+      {.}{{\CodeSymbol{.}}}1
+      {+}{{\CodeSymbol{+}}}1
+      {-}{{\CodeSymbol{-}}}1
+      {`}{{\CodeSymbol{\`{}}}}1
+      {@}{{\CodeSymbol{@}}}1
+}
+
+\lstdefinelanguage{output}{
+    basicstyle=\ttfamily\footnotesize,
+    columns=fullflexible,
+    backgroundcolor=\color{gray!180!black},
+    xleftmargin=0.5cm,frame=tlbr,framesep=4pt,framerule=0pt
+}
+
+\lstdefinestyle{antlr}{
+    basicstyle=\scriptsize\ttfamily,
+    language=Java,
+    moredelim=[s][\color{green!50!black}\ttfamily]{'}{'},
+    moredelim=*[s][\bf]{options}{\}},
+    emph=[1]{lexer,header,parser},
+    emphstyle=[1]{\color{green!70!black}\ttfamily},
+    commentstyle={\color{gray}\itshape},
+    alsoletter={:,|,;},
+    morekeywords={:,|,;},
+    keywordstyle=\color{blue},
+    stringstyle=\color{mauve},
+    breaklines=true,
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
+}
+
+\lstdefinestyle{java}{
+  language=Java,
+  basicstyle={\scriptsize\ttfamily},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
+}

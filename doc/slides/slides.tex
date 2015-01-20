@@ -1,0 +1,332 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\input{styles}
+\usetheme{Madrid}
+\title{HAL}
+\titlegraphic{
+\includegraphics[scale=0.15]{hal.png}
+}
+\author{Héctor Ramón and Alvaro Espuña}
+\date{4th june, 2014}
+\begin{document}
+\frame{\titlepage}
+\begin{frame}[fragile]{Objective}
+Create a programming language:
+\begin{itemize}
+\item
+That results useful in the future
+\item
+Easy to write and read
+\item
+Very dynamic
+\item
+Inspired in good ideas of other languages (\texttt{Python}, \texttt{Ruby},...)
+\end{itemize}
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+5.times: print "Hello world!"
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+Hello world!
+Hello world!
+Hello world!
+Hello world!
+Hello world!
+\end{lstlisting}
+\label{hello5}
+\end{figure}
+\end{frame}
+\begin{frame}{Main features}
+\begin{itemize}
+\item
+\textbf{Clean} syntax, perfect for creating \textbf{D}omain-\textbf{S}pecific \textbf{L}anguages
+\item
+\textbf{Object-oriented} with \textbf{inheritance}
+\item
+\textbf{Dynamic typing} and \textbf{duck typing}
+\item
+\textbf{Builtin} methods that can be \textbf{overriden} in \texttt{HAL} itself
+\item
+Module \textbf{imports}
+\item
+\textbf{First-class} functions
+\item
+Interactive and easy-to-extend interpreter
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]{Clean syntax}
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+class Array:
+  def sort!:
+    return self if size < 2
+    p = pop
+    filter{x -> x <= p}.sort! ++ [p] ++ filter{x -> x > p}.sort!
+
+a = [1, 3, 2, -1, -2, -3, 20, 40, 1, 2, 200, -5]
+print a.sort!
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+[-5, -3, -2, -1, 1, 1, 2, 2, 3, 20, 40, 200]
+\end{lstlisting}
+\label{quicksort}
+\end{figure}
+\end{frame}
+\begin{frame}[fragile]{\emph{List comprehension}}
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+class Array:
+  def map:
+    [ yield x for x in self ]
+
+a = range(10).map with x: x * 2
+print a
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+\end{lstlisting}
+\label{list_comprehension}
+\end{figure}
+\end{frame}
+\begin{frame}[fragile]{First-class functions}
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+def lambda: &yield
+
+add = lambda with x, y: x + y
+
+print add 5, add 3, add 1, 2
+print &add.arity
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+11
+2
+\end{lstlisting}
+\label{first_class_methods}
+\end{figure}
+\end{frame}
+\begin{frame}[fragile]{Lambda blocks}
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+class Integer:
+  def times:
+    i = 0
+    while i < self:
+      yield if &yield.arity == 0 else yield i
+      i = i + 1
+
+5.times: print "Something"
+3.times with t: print "%s" % t
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+Something
+Something
+Something
+Something
+Something
+0
+1
+2
+\end{lstlisting}
+\label{blocks_times}
+\end{figure}
+\end{frame}
+\begin{frame}[fragile]{\emph{Backticks}}
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+File.open "test.txt" with f:
+  f.write "Writing a file has never been so easy!"
+
+print `cat test.txt`
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+Writing a file has never been so easy!
+\end{lstlisting}
+\label{backticks}
+\end{figure}
+\end{frame}
+\begin{frame}[fragile]{Spaces are significative}
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+def f x: x * 20
+a = 10
+
+print \
+  a - 1,
+  a-1,
+  f -1
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+9
+9
+-20
+\end{lstlisting}
+\label{spaces_matter}
+\end{figure}
+\end{frame}
+\begin{frame}{Four levels of scopes}
+\begin{description}
+\item[Local]
+Without \emph{accessor}
+\item[Instance]
+Using \texttt{@}
+\item[Static]
+Using \texttt{@@}
+\item[Module]
+Instance variables in the current module
+\end{description}
+When a name is referenced without any \emph{accessor}, \texttt{HAL} looks in the scopes in that order.
+\end{frame}
+\begin{frame}[fragile]{Builtin classes}
+\begin{itemize}
+\item
+Boolean
+\item
+Class
+\item
+Enumerable
+\begin{itemize}
+\item
+Array
+\item
+Dictionary
+\item
+String
+\end{itemize}
+\item
+File
+\item
+Kernel
+\begin{itemize}
+\item
+Module
+\end{itemize}
+\item
+None
+\item
+Number
+\begin{itemize}
+\item
+Float
+\item
+Integer
+\item
+Long
+\item
+Rational
+\end{itemize}
+\item
+Object
+\item
+Package
+\item
+Process
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile,breaklines=true]{Basic data types}
+\begin{lstlisting}[style=java]
+
+public abstract class HalNumber<T extends Number>
+    extends HalObject<T> {
+  public abstract HalNumber add(HalNumber n);
+
+  public abstract boolean canCoerce(HalObject n);
+  public abstract HalNumber coerce(HalObject n);\end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]{Basic data types (I)}
+\begin{lstlisting}[style=java]
+
+private static final Reference __add__ =
+  new Reference(new Builtin("add", new Params.Param("x")) {
+    @Override
+    public HalObject mcall(HalObject instance,
+      HalMethod lambda, Arguments args) {
+       HalNumber i = ((HalNumber) instance);
+       HalObject x = args.get("x");
+
+            if (!i.canCoerce(x))
+                return x.methodcall("__radd__", i);
+
+            return i.add(i.coerce(x));
+        }
+    });\end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]{Basic data types (II)}
+\begin{lstlisting}[style=java]
+
+public static final HalClass klass =
+   new HalClass("Number", HalObject.klass,
+  // ...
+  __add__,
+  // ...
+);\end{lstlisting}
+\begin{lstlisting}[style=java]
+
+class HalInteger extends HalNumber<Integer> {
+ // ...
+ @Override
+ public HalNumber add(HalNumber n) {
+   if (addOverflows(toInteger(), n.toInteger()))
+     return new HalLong(toInteger())
+            .add(new HalLong(n.toInteger()));
+   return new HalInteger(toInteger() + n.toInteger());
+ }
+ // ...
+}\end{lstlisting}
+\end{frame}
+\begin{frame}{Basic data types (III)}
+Other \texttt{Number} methods:
+\begin{itemize}
+\item[·]
+\texttt{bool}
+\item[·]
+\texttt{pos}
+\item[·]
+\texttt{neg}
+\item[·]
+\texttt{sub}
+\item[·]
+\texttt{mul}
+\item[·]
+\texttt{pow}
+\item[·]
+\texttt{div}
+\item[·]
+\texttt{mod}
+\item[·]
+\texttt{ddiv}
+\item[·]
+\texttt{eq}
+\item[·]
+\texttt{lt}
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]{\texttt{HALTeX}}
+\begin{figure}[h!]
+\begin{lstlisting}[language=hal]
+import haltex
+
+section 'Use example'
+enumerate:
+  item; p '*First item*'
+  item; p '|second|'
+  item; p '**third**'
+\end{lstlisting}
+\begin{lstlisting}[language=output]
+\section{Use example}
+\begin{enumerate}
+\item
+\emph{First item}
+\item
+\texttt{second}
+\item
+\textbf{third}
+\end{enumerate}
+\end{lstlisting}
+\label{haltex}
+\end{figure}
+\end{frame}
+\end{document}

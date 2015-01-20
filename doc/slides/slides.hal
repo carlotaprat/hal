@@ -4,16 +4,13 @@ documentclass "beamer"
 
 usepackage "inputenc", options => "utf8"
 
-import haltex.utils
 import haltex.beamer
+import haltex.highlight_code
 
-usetheme "Madrid"
-
-print "\\setbeamertemplate{navigation symbols}{}
-\\setbeamertemplate{footline}[page number]{}"
+usetheme :Madrid
 
 title "HAL"
-titlegraphic "\\includegraphics[scale=0.15]{hal.png}"
+titlegraphic: includegraphics "hal.png", options => "scale=0.15"
 author "Héctor Ramón and Alvaro Espuña"
 date "4th june, 2014"
 
@@ -68,7 +65,7 @@ document:
 
     p "When a name is referenced without any *accessor*, |HAL| looks in the scopes in that order."
 
-  frame "Builtin classes", options=>"fragile":
+  frame "Builtin classes", options => "fragile":
     itemize:
       item; p "Boolean"
       item; p "Class"
@@ -92,8 +89,8 @@ document:
       item; p "Package"
       item; p "Process"
 
-  frame "Basic data types", options=> "fragile,breaklines=true":
-    lstlisting options=>"style=java":
+  frame "Basic data types", options => "fragile,breaklines=true":
+    lstlisting options => "style=java":
       write "
 public abstract class HalNumber<T extends Number>
     extends HalObject<T> {
@@ -102,8 +99,8 @@ public abstract class HalNumber<T extends Number>
   public abstract boolean canCoerce(HalObject n);
   public abstract HalNumber coerce(HalObject n);"
 
-  frame "Basic data types (I)", options=> "fragile":
-   lstlisting options=>"style=java":
+  frame "Basic data types (I)", options => "fragile":
+   lstlisting options => "style=java":
      write "
 private static final Reference __add__ =
   new Reference(new Builtin(\"add\", new Params.Param(\"x\")) {
@@ -121,7 +118,7 @@ private static final Reference __add__ =
     });"
 
   frame "Basic data types (II)", options => "fragile":
-   lstlisting options=>"style=java":
+   lstlisting options => "style=java":
      write "
 public static final HalClass klass =
    new HalClass(\"Number\", HalObject.klass,
@@ -130,7 +127,7 @@ public static final HalClass klass =
   // ...
 );"
 
-   lstlisting options=>"style=java":
+   lstlisting options => "style=java":
       write "
 class HalInteger extends HalNumber<Integer> {
  // ...

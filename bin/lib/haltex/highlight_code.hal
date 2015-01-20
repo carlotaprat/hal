@@ -1,0 +1,34 @@
+needs "listings"
+needs "xcolor"
+needs "graphicx"
+
+input :styles
+
+class Kernel:
+  def code file, capt => none:
+    code = Process.exec "cat ../examples/%s.hal" % file
+    exec = Process.exec "hal ../examples/%s.hal" % file
+
+    figure options => "h!":
+      lstlisting options => "language=hal":
+        print code.output
+
+      lstlisting options => "language=output":
+        print exec.output if exec.status == 0 else print exec.error
+
+      caption pstyle capt if not capt.none?
+      label file
+
+  def input_code file, language => none, style => none, firstline => none, lastline => none:
+    options = "frame=single"
+    options = options + ", language=" + language if not language.none?
+    options = options + ", style=" + style if not style.none?
+    options = options + ", firstline=%s" % firstline if not firstline.none?
+    options = options + ", lastline=%s" % lastline if not lastline.none?
+    lstinputlisting file, options => options
+
+  def antlr file => "../../src/hal/parser/Hal.g", fl => none, ll => none:
+    input_code file, style => "antlr", firstline => fl, lastline => ll
+
+  def java file, fl => none, ll => none:
+    input_code "../../src/hal/interpreter/" + file + ".java", style => "java", firstline => fl, lastline => ll
