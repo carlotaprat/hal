@@ -13,8 +13,12 @@ class BouncingRectangle:
   def update delta:
     @y = @y + @vspeed * delta
     @vspeed = @vspeed + 0.001 * delta
-    
-    if @y + @@height >= 600:
+
+    if (@y + @@height - 600).abs <= 3 and @vspeed.abs < 0.01:
+      @vspeed = 0
+      @y = 600 - @@height
+
+    elif @y + @@height >= 600:
         @vspeed = @vspeed * -0.6 if @vspeed > 0
 
   def render:

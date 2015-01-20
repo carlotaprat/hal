@@ -4,8 +4,13 @@ from tetris.pieces import random_piece, Square
 
 
 class Game:
-  @keys = [ Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT, Keyboard.KEY_DOWN, Keyboard.KEY_UP,
-    Keyboard.KEY_SPACE ]
+  @keys = [
+    Keyboard.KEY_LEFT,
+    Keyboard.KEY_RIGHT,
+    Keyboard.KEY_DOWN,
+    Keyboard.KEY_UP,
+    Keyboard.KEY_SPACE
+  ]
 
   def init:
     @board = Board.new
@@ -14,15 +19,15 @@ class Game:
     @infinity = 500
     @drop = false
     @next = none
-    new_piece!
+    new_piece
 
-  def new_piece!:
+  def new_piece:
     @piece = @status_bar.next_piece!.new @board
 
   def over?:
     @board.full?
 
-  def update! delta:
+  def update delta:
     @time_still = @time_still + delta
 
     if board.busy?:
@@ -33,31 +38,31 @@ class Game:
 
       if @time_still > @infinity:
         @time_still = @time_still - @infinity
-        new_piece! if not piece.down!
+        new_piece if not piece.down
 
     else:
-      falling = piece.down!
-      falling = piece.down! if falling
+      falling = piece.down
+      falling = piece.down if falling
 
       if not falling:
-        new_piece!
+        new_piece
         @drop = false
-        # Compute score
+        # TODO: Score, levels, etc.
 
   def process_keys delta:
-    Keyboard.poll @@keys, delta with key, kept:
+    Keyboard.poll @@keys, delta with key, held:
         case key:
           when Keyboard.KEY_LEFT:
-            piece.left!
+            piece.left
           when Keyboard.KEY_RIGHT:
-            piece.right!
+            piece.right
           when Keyboard.KEY_DOWN:
             @time_still = 0
-            new_piece! if not piece.down!
+            new_piece if not piece.down
           when Keyboard.KEY_UP:
-            piece.rotate_left!
+            piece.rotate_left
           when Keyboard.KEY_SPACE:
-            @drop = true if not kept
+            @drop = true if not held
           
   def render:
     @piece.render
@@ -77,7 +82,7 @@ class Board:
     @clear_queue = []
     @full? = false
 
-  def add! squares:
+  def add squares:
     for square in squares:
       if square.y >= 0:
         @cells[square.y][square.x] = square
@@ -90,8 +95,7 @@ class Board:
     @clear_queue != []
 
   def update:
-    row = @clear_queue.first
-    @clear_queue.pop!
+    row = @clear_queue.pop
     
     # Move cells down
     for i in range(1, row):
@@ -161,7 +165,7 @@ def play:
     draw fps => 60 with delta:
       clear
       
-      game.update! delta
+      game.update delta
       game.render
       
 play

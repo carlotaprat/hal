@@ -1,11 +1,8 @@
 class Array:
   def sort!:
     return self if size < 2
-    p = first
-    q = pop!
-    lesser = q.filter with x: x < p
-    greater = q.filter with x: x >= p
-    lesser.sort! ++ [p] ++ greater.sort!
+    p = pop
+    filter{x -> x <= p}.sort! ++ [p] ++ filter{x -> x > p}.sort!
 
-a = [1, 2, 3, -1, -2, -3, 20, 40, 1, 2, 200, -5]
+a = [1, 3, 2, -1, -2, -3, 20, 40, 1, 2, 200, -5]
 print a.sort!

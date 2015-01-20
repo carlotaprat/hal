@@ -26,15 +26,15 @@ class Piece:
     @rotation = 0
     @squares = squares_at @x, @y, @rotation
 
-  def left!: move! -1, 0
-  def right!: move! 1, 0
-  def down!:
-    if not move! 0, 1:
-      @board.add! @squares
+  def left: move -1, 0
+  def right: move 1, 0
+  def down:
+    if not move 0, 1:
+      @board.add @squares
       return false
     return true
 
-  def move! x_displ, y_displ:
+  def move x_displ, y_displ:
     return false if not can_move? x_displ, y_displ
 
     @x = @x + x_displ
@@ -46,9 +46,9 @@ class Piece:
 
     return true
 
-  def rotate_left!: rotate! -1
-  def rotate_right!: rotate! 1
-  def rotate! step:
+  def rotate_left: rotate -1
+  def rotate_right: rotate 1
+  def rotate step:
     old = @rotation
     @rotation = (@rotation + step) % 4
     update_shape!
@@ -76,7 +76,7 @@ class Piece:
 # Extend Array to handle RGB colors :D
 class Array:
   def rgb:
-    map with component: component.float / 255
+    map{component -> component.float / 255}
 
 
 class L < Piece:

@@ -63,11 +63,10 @@ public class HalArray extends HalEnumerable<List<HalObject>>
         }
     });
     
-    private static final Reference __pop__ = new Reference(new Builtin("pop!") {
+    private static final Reference __pop__ = new Reference(new Builtin("pop") {
         @Override
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
-            ((HalArray) instance).value.remove(0);
-            return instance;
+            return ((HalArray) instance).value.remove(0);
         }
     });
 

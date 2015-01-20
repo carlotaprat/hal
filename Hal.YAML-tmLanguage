@@ -13,13 +13,13 @@ patterns:
   match: \b(if|else|elif|return|for|while)\b
 
 - name: keyword.other.hal
-  match: \b(class|import|from|def|with|and|or|when|case|in)\b
+  match: \b(class|import|from|def|with|and|or|not|when|case|in)\b|(\->)
 
 - name: constant.other.symbol.hal
   match: (:([a-zA-Z_]+)(\?|\!)?_*)
 
 - name: keyword.operator.hal
-  match: (\+|\*|=|>|<|:|;|,|\\|\.)
+  match: (\+|\*|\-|=|>|<|:|;|,|\\|\.)
 
 - name: constant.numeric.hal
   match: \b([0-9]+(\.[0-9]+)?)\b
