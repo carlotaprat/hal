@@ -79,8 +79,8 @@ class Kernel:
     for word in words: typewrites << word
 
   def pstyle paragraph:
+    paragraph = paragraph.gsub("\\b(" + typewrites.join('|') + ")\\b", "|$1|") if typewrites
     paragraph \
-      .gsub("\\b(" + typewrites.join('|') + ")\\b", "|$1|") \
       .gsub(r/\*\*((\n|[^\*])*)\*\*/, "\\\\textbf{$1}") \
       .gsub(r/\*([^\*]*)\*/, "\\\\emph{$1}") \
       .gsub(r/\|([^\|]*)\|/, "\\\\texttt{$1}") \
