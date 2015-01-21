@@ -1,0 +1,58 @@
+import haltex
+
+documentclass "article", options => "a4paper, 11pt"
+usepackage "inputenc", options => "utf8"
+
+def i text, footnote => none:
+  text = text + "\\footnote{%s}" % footnote if footnote
+  item; p text      # A simple shortcut for \item
+  
+  if block_given?:  # Enables item nesting
+    itemize: yield
+
+# Show in typewriter font
+typewrite :HAL, :Ruby, :Python, :Lisp, :Java, :Swing, :SQLite3
+
+document:
+  section "Motivació"
+  p "Desenvolupar un llenguatge de programació que faciliti la creació de
+  **D**omain-**S**pecific **L**anguages que siguin molt fàcils d'escriure i
+  molt potents. Els principals llenguatges que ofereixen característiques
+  idònies per desenvolupar **DSL**s són Lisp y Ruby. Lisp és un llenguatge
+  molt senzill sintàcticament però no és fàcil d'escriure. Ruby millora
+  molt en aquest aspecte però el codi acaba ple de les *keywords* |do| y |end|.
+  Per altra banda, Ruby té una scope arrel global que fa que tot sigui visible
+  des de tot arreu, i en molts casos, el fluxe d'execució és molt complicat de
+  seguir. Per tant, HAL intenta proporcionar la potència i flexibilitat de Ruby
+  amb una sintaxi encara més neta i una visibilitat més controlada, utilitzant
+  la definició de blocs per indentació i l'estructuració dels arxius de codi
+  en mòduls, idees molt ben aplicades a Python."
+  br 0.5
+  p "Cal deixar clar que HAL no intenta reemplaçar Ruby. HAL vol proporcionar
+  les eines necessàries per a que qualsevol programador pugui personalitzar
+  i crear els seus subllenguatges per solucionar i/o automatitzar tasques que
+  facin habitualment (redactar documents, aplicacions petites, etc.). No
+  està tan orientat, per tant, a l'ús en un entorn professional."
+
+  section "Possibles tasques"
+  itemize:
+    i "Especificació del llenguatge"
+    i "Guía de referència, documentació i/o tutorial d'introducció"
+    i "Pàgina web del llenguatge"
+    i "*Currying*"
+    i "Nous mòduls que proporcionin |DSL|s per:":
+      i "Creació d'aplicacions amb |GUI|", footnote => "Utilitzant |Swing|."
+      i "Concurrència"
+      i "Autogenerar documentació HTML del llenguatge",
+        footnote => "Per documentar nous mòduls o el propi llenguatge."
+      i "Definir i evaluar equacions en LaTeX"
+      i "Muntar servidors web"
+      i "Gestionar bases de dades", footnote => "SQLite3, per exemple."
+    i "Implementar l'intèrpret en |C|", footnote => "Mantenint la versió en Java.
+      Cada intèrpret podria tenir els seus mòduls natius especials."
+    i "Afegir suport al tipus |Rational| per *big integers*"
+    i "Excepcions"
+    i "Executables *stand-alone*", footnote => "Amb l'intèrpret inclòs preparat
+      per funcionar a tot arreu."
+    i "Generació de *bytecode*"
+    i "Administració de paquets", footnote => "A l'estil |PyPI| o |RubyGems|."
