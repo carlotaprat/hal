@@ -59,7 +59,8 @@ public class HalProcess extends HalObject<Process>
             String cmd = ((HalString) args.get("command").methodcall("__str__")).value;
 
             try {
-                Process p = Runtime.getRuntime().exec(cmd);
+                String[] cmds = {"/bin/sh", "-c", cmd};
+                Process p = Runtime.getRuntime().exec(cmds);
                 p.waitFor();
                 return new HalProcess(p);
             } catch (IOException e) {

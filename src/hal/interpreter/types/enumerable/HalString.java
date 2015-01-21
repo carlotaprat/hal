@@ -140,6 +140,14 @@ public class HalString extends HalEnumerable<String>
             return new HalString(Character.toUpperCase(s.charAt(0)) + s.substring(1));
         }
     });
+
+    private static final Reference __int__ = new Reference(new Builtin("int")
+    {
+        @Override
+        public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
+            return new HalInteger(Integer.valueOf(((HalString) instance).value));
+        }
+    });
     
     public static final HalClass klass = new HalClass("String", HalEnumerable.klass,
             __each__,
@@ -149,7 +157,8 @@ public class HalString extends HalEnumerable<String>
             __strip__,
             __lowercase__,
             __uppercase__,
-            __capitalize__
+            __capitalize__,
+            __int__
     );
     
     public HalClass getKlass() { return klass; }
