@@ -4,7 +4,7 @@ documentclass "article", options => "a4paper, 11pt"
 usepackage "inputenc", options => "utf8"
 
 def i text, footnote => none:
-  text = text + "#footnote{%s}" % footnote if footnote
+  text = text + "\\footnote{%s}" % footnote if footnote
   item; p text      # A simple shortcut for \item
   
   if block_given?:  # Enables item nesting
