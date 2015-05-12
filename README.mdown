@@ -1,6 +1,6 @@
 HAL
 =================
-HAL is a scripting language based in other scripting languages like Python and Ruby.
+HAL is a scripting language based on other scripting languages like Python and Ruby.
 Our objective is to provide a clean, easy-to-use and powerful scripting language with the most interesting
 features and ideas that can be found in other languages!
 
