@@ -36,13 +36,19 @@ class Kernel:
       write_args args
       print
 
-  def cover title, subject, authors, footer, image => none:
+  def cover title, subject, authors, footer, image => none, subtitle => none, extra => none:
     titlepage:
       center:
         textsc "\\Large %s" % subject; br 1.5
         hrule; br 0.4
         wrap: huge; bfseries; print title; br 0.4
-        hrule; br 2.5
+        hrule;
+
+        if subtitle:
+          br 0.3
+          wrap: bfseries; print subtitle
+
+        br 2.5
 
         if authors.size == 2:
           minipage "0.4\\textwidth":
@@ -54,13 +60,16 @@ class Kernel:
           center:
             large; print authors[0]
 
-        if not image.none?:
+        if extra:
+          print extra
+
+        if image:
           includegraphics image
 
         vfill
+        wrap: large; p footer
+        br 0.5
         wrap: large; today
-        br
-        wrap: large; texttt footer
 
   def br size => none, units => "cm":
     write "\\\\"
@@ -105,14 +114,14 @@ class Kernel:
     __method_missing__ "caption", pstyle text
 
   def row col, *cols:
-    write "$", col.str, "$" if col != ""
+    write col.str if col != ""
 
     cols.each with col:
-      write " & $", col, "$ "
+      write " & ", col
     p "##"
 
   def head *heads:
-    row *heads
+    row *heads.map{ x -> "\\textbf{%s}" % x }
     hline
 
   def question text:

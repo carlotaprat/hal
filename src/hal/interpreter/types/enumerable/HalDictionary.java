@@ -10,24 +10,27 @@ import hal.interpreter.types.numeric.HalInteger;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
 
 
 public class HalDictionary extends HalEnumerable<HashMap<HalObject, HalObject>>
 {
-    
+    private ArrayList<HalObject> keys;
+
     public HalDictionary() {
         value = new HashMap<HalObject, HalObject>();
+        keys = new ArrayList<HalObject>();
     }
 
     public HalString str() {
         String s = "";
         boolean first = true;
 
-        for(Map.Entry<HalObject, HalObject> e : value.entrySet()) {
+        for(HalObject key : keys) {
             if(first) first = false;
             else s += ", ";
 
-            s += e.getKey().methodcall("__repr__") + " => " + e.getValue().methodcall("__repr__");
+            s += key.methodcall("__repr__") + " => " + value.get(key).methodcall("__repr__");
         }
 
         return new HalString("{" + s + "}");
@@ -43,6 +46,10 @@ public class HalDictionary extends HalEnumerable<HashMap<HalObject, HalObject>>
     }
 
     public void setitem(HalObject index, HalObject item) {
+        if(! value.containsKey(index)) {
+            keys.add(index);
+        }
+
         value.put(index, item);
     }
 
@@ -52,17 +59,21 @@ public class HalDictionary extends HalEnumerable<HashMap<HalObject, HalObject>>
     
     public HalArray keys() {
         HalArray arr = new HalArray();
-        for(Map.Entry<HalObject, HalObject> e : value.entrySet()) {
-            arr.methodcall("__append!__", e.getKey());
+
+        for(HalObject key : keys) {
+            arr.methodcall("__append!__", key);
         }
+
         return arr;
     }
     
     public HalArray values() {
         HalArray arr = new HalArray();
-        for(Map.Entry<HalObject, HalObject> e : value.entrySet()) {
-            arr.methodcall("__append!__", e.getValue());
+
+        for(HalObject key : keys) {
+            arr.methodcall("__append!__", value.get(key));
         }
+
         return arr; 
     }
     
@@ -85,9 +96,11 @@ public class HalDictionary extends HalEnumerable<HashMap<HalObject, HalObject>>
         public HalObject mcall(HalObject instance, HalMethod lambda, Arguments args) {
             HalObject last = HalNone.NONE;
             HalDictionary d = (HalDictionary) instance;
-            for(Map.Entry<HalObject, HalObject> e : d.value.entrySet()) {
-                last = lambda.call(instance, null, e.getKey(), e.getValue());
+
+            for(HalObject key : d.keys) {
+                last = lambda.call(instance, null, key, d.value.get(key));
             }
+            
             return last;
         }
     });
