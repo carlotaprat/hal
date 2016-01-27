@@ -13,7 +13,7 @@ public class HalNone extends HalObject
     }
 
     public HalString str() {
-        return new HalString("none");
+        return new HalString("");
     }
 
     public HalBoolean bool() {
